@@ -1,6 +1,6 @@
-# Expense Tracker
+# EB Equine Income and Expense Tracker
 
-An Expense Tracker application built with React, Node.js, Express, and MongoDB to help users manage their incomes and expenses efficiently.
+An Expense Tracker application designed for EB Equine built with React, Node.js, Express, and MongoDB to help users manage their incomes and expenses efficiently.
 
 ## Table of Contents
 - [Features](#features)
