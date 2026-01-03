@@ -1,11 +1,11 @@
-const IncomeSchema = require("../models/IncomeModel")
+const DeductionSchema = require("../models/DeductionModel")
 
 
 
-exports.addIncome = async (req, res) => {
+exports.addDeduction = async (req, res) => {
     const {title, amount, category, description, date, userid} = req.body
 
-    const income = IncomeSchema({
+    const expense = DeductionSchema({
         title, amount, category, description, date, userid
     })
 
@@ -17,22 +17,21 @@ exports.addIncome = async (req, res) => {
             return res.status(400).json({message: 'Amount must be positive number'})
         }
 
-        await income.save()
-        res.status(200).json({message: 'Income Added'})
+        await expense.save()
+        res.status(200).json({message: 'Deduction Added'})
     } catch (error) {
         res.status(500).json({message: 'Server Error'})
     }
 
-    console.log(income)
+    console.log(expense)
 }
 
-exports.getIncomes = async (req, res) => {
+exports.getDeductions = async (req, res) => {
     try {
-        const {userid} = req.query
-        console.log(userid)
-        const incomes = await IncomeSchema.find({userid:userid}).sort({createdAt: -1})
-        res.status(200).json(incomes)
-        console.log(incomes)
+
+        const {userid} = req.query;
+        const expenses = await ExpenseSchema.find({ userid: userid }).sort({ createdAt: -1 });
+        res.status(200).json(expenses)
     } catch (error) {
         res.status(500).json({message :'Server Error'})
     }
@@ -40,12 +39,12 @@ exports.getIncomes = async (req, res) => {
 }
 
 
-exports.deleteIncome = async (req, res) => {
+exports.deleteDeduction = async (req, res) => {
 
     const {id} = req.params;
-    IncomeSchema.findByIdAndDelete(id)
-    .then((income) => {
-        res.status(200).json({message :'Income deleted.'})
+    DeductionSchema.findByIdAndDelete(id)
+    .then((deduction) => {
+        res.status(200).json({message :'Deduction deleted.'})
     })
     .catch((err) => {
         res.status(500).json({message :'Server Error'})

@@ -5,8 +5,9 @@ import {MainLayout} from './styles/Layouts'
 import Orb from './Components/Orb/Orb'
 import Navigation from './Components/Navigation/Navigation'
 import Dashboard from './Components/Dashboard/Dashboard';
-import Income from './Components/Income/Income'
+import Revenue from './Components/Revenue/Revenue'
 import Expenses from './Components/Expenses/Expenses';
+import Deductions from './Components/Deductions/Deductions';
 import { GlobalProvider } from './context/globalContext';
 import ViewTransactions from './Components/Transactions/ViewTransactions';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
@@ -25,9 +26,11 @@ function App() {
       case 2:
         return <ViewTransactions />
       case 3:
-        return <Income />
+        return <Revenue />
       case 4: 
         return <Expenses />
+      case 5: 
+        return <Deductions />
       default: 
         return <Dashboard />
     }
