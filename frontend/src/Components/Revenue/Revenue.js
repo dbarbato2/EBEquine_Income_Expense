@@ -6,13 +6,13 @@ import Form from '../Form/Form';
 import RevenueItem from '../RevenueItem/RevenueItem';
 
 function Revenue() {
-    const {incomes, getIncomes, deleteIncome, totalIncome} = useGlobalContext()
+    const {incomes, getRevenue, deleteRevenue, totalRevenue = useGlobalContext()
 
     useEffect(() =>{
-        getIncomes()
+        getRevenue()
     }, [])
     return (
-        <IncomeStyled>
+        <RevenueStyled>
             <InnerLayout>
                 <h1>Incomes</h1>
                 <h2 className="total-income">Total Income: <span>${totalIncome()}</span></h2>
@@ -33,17 +33,17 @@ function Revenue() {
                                 type={type}
                                 category={category} 
                                 indicatorColor="var(--color-green)"
-                                deleteItem={deleteIncome}
+                                deleteItem={deleteRevenue}
                             />
                         })}
                     </div>
                 </div>
             </InnerLayout>
-        </IncomeStyled>
+        </RevenueStyled>
     )
 }
 
-const IncomeStyled = styled.div`
+const RevenueStyled = styled.div`
     display: flex;
     overflow: auto;
     .total-income{
