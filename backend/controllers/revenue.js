@@ -1,37 +1,37 @@
 const RevenueSchema = require("../models/RevenueModel")
 
 
-exports.addIncome = async (req, res) => {
-    const {title, amount, category, description, date, userid} = req.body
+exports.addRevenue = async (req, res) => {
+    const {date, client, service, quantity, addOnService, serviceLocation, servicefee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber} = req.body
 
-    const income = RevenueSchema({
-        title, amount, category, description, date, userid
+    const revenue = RevenueSchema({
+        date, client, service, quantity, addOnService, serviceLocation, servicefee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber
     })
 
     try {
-        if(!title || !category || !description || !date){
+        if(!date || !client || !service || !quantity){
             return res.status(400).json({message: 'All fields are required'})
         }
-        if(amount <=0 || !amount === 'number' ){
-            return res.status(400).json({message: 'Amount must be positive number'})
+        if(quantity <=0 || !quantity === 'number' ){
+            return res.status(400).json({message: 'Quantity must be positive number'})
         }
 
-        await income.save()
-        res.status(200).json({message: 'Income Added'})
+        await revenue.save()
+        res.status(200).json({message: 'Revenue Added'})
     } catch (error) {
         res.status(500).json({message: 'Server Error'})
     }
 
-    console.log(income)
+    console.log(revenue)
 }
 
-exports.getIncomes = async (req, res) => {
+exports.getRevenue = async (req, res) => {
     try {
         const {userid} = req.query
         console.log(userid)
-        const incomes = await RevenueSchema.find({userid:userid}).sort({createdAt: -1})
-        res.status(200).json(incomes)
-        console.log(incomes)
+        const revenue = await RevenueSchema.find({invoiceNumber:invoiceNumber}).sort({createdAt: -1})
+        res.status(200).json(revenue)
+        console.log(revenue)
     } catch (error) {
         res.status(500).json({message :'Server Error'})
     }
@@ -39,12 +39,12 @@ exports.getIncomes = async (req, res) => {
 }
 
 
-exports.deleteIncome = async (req, res) => {
+exports.deleteRevenue = async (req, res) => {
 
     const {id} = req.params;
     RevenueSchema.findByIdAndDelete(id)
-    .then((income) => {
-        res.status(200).json({message :'Income deleted.'})
+    .then((revenue) => {
+        res.status(200).json({message :'Revenue deleted.'})
     })
     .catch((err) => {
         res.status(500).json({message :'Server Error'})

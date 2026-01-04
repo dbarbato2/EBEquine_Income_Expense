@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
-import IncomeItem from '../RevenueItem/RevenueItem';
+import RevenueItem from '../RevenueItem/RevenueItem';
 import ExpenseForm from './ExpenseForm';
 
 function Expenses() {
@@ -15,15 +15,15 @@ function Expenses() {
         <ExpenseStyled>
             <InnerLayout>
                 <h1>Expenses</h1>
-                <h2 className="total-income">Total Expense: <span>${totalExpenses()}</span></h2>
-                <div className="income-content">
+                <h2 className="total-revenue">Total Expense: <span>${totalExpenses()}</span></h2>
+                <div className="revenue-content">
                     <div className="form-container">
                         <ExpenseForm />
                     </div>
-                    <div className="incomes">
-                        {expenses.map((income) => {
-                            const {_id, title, amount, date, category, description, type} = income;
-                            return <IncomeItem
+                    <div className="revenue">
+                        {expenses.map((revenue) => {
+                            const {_id, title, amount, date, category, description, type} = revenue;
+                            return <RevenueItem
                                 key={_id}
                                 id={_id} 
                                 title={title} 
@@ -46,7 +46,7 @@ function Expenses() {
 const ExpenseStyled = styled.div`
     display: flex;
     overflow: auto;
-    .total-income{
+    .total-revenue{
         display: flex;
         justify-content: center;
         align-items: center;
@@ -64,10 +64,10 @@ const ExpenseStyled = styled.div`
             color: var(--color-green);
         }
     }
-    .income-content{
+    .revenue-content{
         display: flex;
         gap: 2rem;
-        .incomes{
+        .revenue{
             flex: 1;
         }
     }

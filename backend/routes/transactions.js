@@ -1,13 +1,13 @@
 const { addExpense, getExpenses, deleteExpense } = require('../controllers/expense')
-const { addIncome, getIncomes, deleteIncome } = require('../controllers/revenue');
+const { addRevenue, getRevenue, deleteRevenue } = require('../controllers/revenue');
 const { addDeduction, getDeductions, deleteDeduction } = require('../controllers/deduction');
 const { checkUser, register, login } = require('../controllers/user');
 
 const router = require('express').Router()
 
-router.post('/api/v1/add-income', addIncome)
-    .get('/api/v1/get-incomes', getIncomes)
-    .delete('/api/v1/delete-income/:id', deleteIncome)
+router.post('/api/v1/add-revenue', addRevenue)
+    .get('/api/v1/get-revenue', getRevenue)
+    .delete('/api/v1/delete-revenue/:id', deleteRevenue)
     .post('/api/v1/add-expense', addExpense)
     .get('/api/v1/get-expenses', getExpenses)
     .delete('/api/v1/delete-expense/:id', deleteExpense)

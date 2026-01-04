@@ -62,7 +62,7 @@ const RevenueSchema = new mongoose.Schema({
         enum: ['Venmo', 'Cash', 'Check', 'Gift Certificate'],
         required: false
     },
-    transactionFees: {
+    transactionFee: {
         type: mongoose.Decimal128,
         required: false,
         min: 0

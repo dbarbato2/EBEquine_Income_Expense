@@ -17,21 +17,21 @@ ChartJs.register(
 )
 
 function Chart() {
-    const { incomes, expenses } = useGlobalContext()
+    const { revenue, expenses } = useGlobalContext()
 
-    // Sort the incomes and expenses by date
-    const sortedIncomes = [...incomes].sort((a, b) => new Date(a.date) - new Date(b.date))
+    // Sort the revenue and expenses by date
+    const sortedRevenue = [...revenue].sort((a, b) => new Date(a.date) - new Date(b.date))
     const sortedExpenses = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date))
 
     const data = {
-        labels: sortedIncomes.map((inc) => {
+        labels: sortedRevenue.map((inc) => {
             const { date } = inc
             return dateFormat(date)
         }),
         datasets: [
             {
-                label: 'Income',
-                data: sortedIncomes.map((income) => income.amount),
+                label: 'Revenue',
+                data: sortedRevenue.map((revenue) => revenue.amount),
                 backgroundColor: 'green',
                 borderColor: 'green',
                 tension: 0.2

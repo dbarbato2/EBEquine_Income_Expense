@@ -6,10 +6,10 @@ import styled from 'styled-components';
 import { InnerLayout } from '../../styles/Layouts';
 
 const ViewTransactions = () => {
-  const { getIncomes, getExpenses, incomes, expenses } = useGlobalContext();
+  const { getRevenue, getExpenses, revenue, expenses } = useGlobalContext();
 
   useEffect(() => {
-    getIncomes();
+    getRevenue();
     getExpenses();
   }, []);
 
@@ -20,7 +20,7 @@ const ViewTransactions = () => {
   return (
     <ViewTransactionsStyled>
         <InnerLayout>
-      <h2>Incomes</h2>
+      <h2>Revenue</h2>
       <table>
         <thead>
           <tr>
@@ -32,13 +32,13 @@ const ViewTransactions = () => {
           </tr>
         </thead>
         <tbody>
-          {incomes.map(income => (
-            <tr key={income._id} onClick={() => handleRowClick(income)}>
-              <td>{income.title}</td>
-              <td>{income.amount}</td>
-              <td>{income.category}</td>
-              <td>{new Date(income.date).toLocaleDateString()}</td>
-              <td>{income.description}</td>
+          {revenue.map(revenue => (
+            <tr key={revenue._id} onClick={() => handleRowClick(revenue)}>
+              <td>{revenue.title}</td>
+              <td>{revenue.amount}</td>
+              <td>{revenue.category}</td>
+              <td>{new Date(revenue.date).toLocaleDateString()}</td>
+              <td>{revenue.description}</td>
             </tr>
           ))}
         </tbody>

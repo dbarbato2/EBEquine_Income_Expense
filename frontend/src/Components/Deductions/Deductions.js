@@ -3,27 +3,27 @@ import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
 import Form from '../Form/Form';
-import IncomeItem from '../RevenueItem/RevenueItem';
+import RevenueItem from '../RevenueItem/RevenueItem';
 
 function Deductions() {
-    const {deductions, getDeductions, deleteDeduction, totalIncome} = useGlobalContext()
+    const {deductions, getDeductions, deleteDeduction, totalRevenue} = useGlobalContext()
 
     useEffect(() =>{
-        getIncomes()
+        getRevenue()
     }, [])
     return (
-        <IncomeStyled>
+        <RevenueStyled>
             <InnerLayout>
                 <h1>Deductions</h1>
-                <h2 className="total-income">Total Income: <span>${totalIncome()}</span></h2>
-                <div className="income-content">
+                <h2 className="total-revenue">Total Revenue: <span>${totalRevenue()}</span></h2>
+                <div className="revenue-content">
                     <div className="form-container">
                         <Form />
                     </div>
-                    <div className="incomes">
-                        {incomes.map((income) => {
-                            const {_id, title, amount, date, category, description, type} = income;
-                            return <IncomeItem
+                    <div className="revenue">
+                        {revenue.map((revenue) => {
+                            const {_id, title, amount, date, category, description, type} = revenue;
+                            return <RevenueItem
                                 key={_id}
                                 id={_id} 
                                 title={title} 
@@ -33,20 +33,20 @@ function Deductions() {
                                 type={type}
                                 category={category} 
                                 indicatorColor="var(--color-green)"
-                                deleteItem={deleteIncome}
+                                deleteItem={deleteRevenue}
                             />
                         })}
                     </div>
                 </div>
             </InnerLayout>
-        </IncomeStyled>
+        </RevenueStyled>
     )
 }
 
-const IncomeStyled = styled.div`
+const RevenueStyled = styled.div`
     display: flex;
     overflow: auto;
-    .total-income{
+    .total-revenue{
         display: flex;
         justify-content: center;
         align-items: center;
@@ -64,10 +64,10 @@ const IncomeStyled = styled.div`
             color: var(--color-green);
         }
     }
-    .income-content{
+    .revenue-content{
         display: flex;
         gap: 2rem;
-        .incomes{
+        .revenue{
             flex: 1;
         }
     }

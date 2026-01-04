@@ -6,7 +6,7 @@ import Form from '../Form/Form';
 import RevenueItem from '../RevenueItem/RevenueItem';
 
 function Revenue() {
-    const {incomes, getRevenue, deleteRevenue, totalRevenue = useGlobalContext()
+    const {revenue, getRevenue, deleteRevenue, totalRevenue} = useGlobalContext()
 
     useEffect(() =>{
         getRevenue()
@@ -14,15 +14,15 @@ function Revenue() {
     return (
         <RevenueStyled>
             <InnerLayout>
-                <h1>Incomes</h1>
-                <h2 className="total-income">Total Income: <span>${totalIncome()}</span></h2>
-                <div className="income-content">
+                <h1>Revenue</h1>
+                <h2 className="total-revenue">Total Revenue: <span>${totalRevenue()}</span></h2>
+                <div className="revenue-content">
                     <div className="form-container">
                         <Form />
                     </div>
-                    <div className="incomes">
-                        {incomes.map((revenue) => {
-                            const {_id, title, amount, date, category, description, type} = income;
+                    <div className="revenue">
+                        {revenue.map((revenue) => {
+                            const {_id, title, amount, date, category, description, type} = revenue;
                             return <RevenueItem
                                 key={_id}
                                 id={_id} 
@@ -46,7 +46,7 @@ function Revenue() {
 const RevenueStyled = styled.div`
     display: flex;
     overflow: auto;
-    .total-income{
+    .total-revenue{
         display: flex;
         justify-content: center;
         align-items: center;
@@ -64,10 +64,10 @@ const RevenueStyled = styled.div`
             color: var(--color-green);
         }
     }
-    .income-content{
+    .revenue-content{
         display: flex;
         gap: 2rem;
-        .incomes{
+        .revenue{
             flex: 1;
         }
     }

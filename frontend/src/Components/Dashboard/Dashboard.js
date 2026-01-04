@@ -7,7 +7,7 @@ import { dollar } from '../../utils/Icons';
 import Chart from '../Chart/Chart';
 
 function Dashboard() {
-    const {totalExpenses,incomes, expenses, totalIncome, totalBalance } = useGlobalContext()
+    const {totalExpenses,revenue, expenses, totalRevenue, totalBalance } = useGlobalContext()
 
     return (
         <DashboardStyled>
@@ -17,10 +17,10 @@ function Dashboard() {
                     <div className="chart-con">
                         <Chart />
                         <div className="amount-con">
-                            <div className="income">
-                                <h2>Total Income</h2>
+                            <div className="revenue">
+                                <h2>Total Revenue</h2>
                                 <p>
-                                    {dollar} {totalIncome()}
+                                    {dollar} {totalRevenue()}
                                 </p>
                             </div>
                             <div className="expense">
@@ -42,10 +42,10 @@ function Dashboard() {
                         <h2 className="salary-title">Min <span>Salary</span>Max</h2>
                         <div className="salary-item">
                             <p>
-                                ${Math.min(...incomes.map(item => item.amount))}
+                                ${Math.min(...revenue.map(item => item.amount))}
                             </p>
                             <p>
-                                ${Math.max(...incomes.map(item => item.amount))}
+                                ${Math.max(...revenue.map(item => item.amount))}
                             </p>
                         </div>
                         <h2 className="salary-title">Min <span>Expense</span>Max</h2>
@@ -77,10 +77,10 @@ const DashboardStyled = styled.div`
                 grid-template-columns: repeat(4, 1fr);
                 gap: 2rem;
                 margin-top: 2rem;
-                .income, .expense{
+                .revenue, .expense{
                     grid-column: span 2;
                 }
-                .income, .expense, .balance{
+                .revenue, .expense, .balance{
                     background: #FCF6F9;
                     border: 2px solid #FFFFFF;
                     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);

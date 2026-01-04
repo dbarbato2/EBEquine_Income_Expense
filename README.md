@@ -1,6 +1,6 @@
 # EB Equine Income and Expense Tracker
 
-An Expense Tracker application designed for EB Equine built with React, Node.js, Express, and MongoDB to help users manage their incomes and expenses efficiently.
+An Expense Tracker application designed for EB Equine built with React, Node.js, Express, and MongoDB to help users manage their revenue and expenses efficiently.
 
 ## Table of Contents
 - [Features](#features)
@@ -16,10 +16,10 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 
 ## Features
 - User authentication (register, login, logout)
-- Add, edit, and delete incomes
+- Add, edit, and delete revenue
 - Add, edit, and delete expenses
 - View transaction history
-- Responsive charts and graphs to visualize income and expenses
+- Responsive charts and graphs to visualize revenue and expenses
 - Notifications for user actions and errors
 
 ## Technologies Used
@@ -90,7 +90,7 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 
 ## Usage
 1. Register a new account or log in with an existing account.
-2. Add, edit, and delete incomes and expenses.
+2. Add, edit, and delete revenue and expenses.
 3. View the transaction history and visualizations on the dashboard.
 
 ## API Endpoints
@@ -100,10 +100,10 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 - **POST /api/v1/logout**: Log out the current user
 - **POST /**: Check user authentication status
 
-### Income
-- **POST /api/v1/add-income**: Add a new income
-- **GET /api/v1/get-incomes**: Get all incomes for the user
-- **DELETE /api/v1/delete-income/:id**: Delete an income by ID
+### Revenue
+- **POST /api/v1/add-revenue**: Add a new revenue
+- **GET /api/v1/get-revenue**: Get all revenue for the user
+- **DELETE /api/v1/delete-revenue/:id**: Delete an revenue by ID
 
 ### Expense
 - **POST /api/v1/add-expense**: Add a new expense

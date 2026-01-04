@@ -88,7 +88,7 @@ function Form() {
             </div>
             <div className="submit-btn">
                 <Button 
-                    name={'Add Income'}
+                    name={'Add Revenue'}
                     icon={plus}
                     bPad={'.8rem 1.6rem'}
                     bRad={'30px'}
