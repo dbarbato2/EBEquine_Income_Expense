@@ -4,21 +4,24 @@ import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 import { useGlobalContext } from '../../context/globalContext';
 import Button from '../Button/Button';
-import { plus } from '../../utils/Icons';
+import { plus, x } from '../../utils/Icons';
 
 
 function ExpenseForm() {
     const {addExpense, error, setError, user} = useGlobalContext()
     const [inputState, setInputState] = useState({
-        title: '',
-        amount: '',
         date: '',
-        category: '',
-        description: '',
-        userid: ''
+        vendor: '',
+        location: '',
+        expenseType: '',
+        expenseDescription: '',
+        amount: '',
+        paymentType: '',
+        businessTrip: false,
+        expenseRecordNumber: ''
     })
 
-    const { title, amount, date, category,description } = inputState;
+    const { date, vendor, location, expenseType, expenseDescription, amount, paymentType, businessTrip, expenseRecordNumber } = inputState;
 
     const handleInput = name => e => {
         setInputState({...inputState, [name]: e.target.value})
@@ -30,35 +33,37 @@ function ExpenseForm() {
         const updated = {...inputState, userid: user}
         addExpense(updated)
         setInputState({
-            title: '',
-            amount: '',
             date: '',
-            category: '',
-            description: '',
-            userid:''
+            vendor: '',
+            location: '',
+            expenseType: '',
+            expenseDescription: '',
+            amount: '',
+            paymentType: '',
+            businessTrip: false,
+            expenseRecordNumber: ''
         })
+    }
+
+    const handleReset = e => {
+        e.preventDefault()
+        setInputState({
+            date: '',
+            vendor: '',
+            location: '',
+            expenseType: '',
+            expenseDescription: '',
+            amount: '',
+            paymentType: '',
+            businessTrip: false,
+            expenseRecordNumber: ''
+        })
+        setError('')
     }
 
     return (
         <ExpenseFormStyled onSubmit={handleSubmit}>
             {error && <p className='error'>{error}</p>}
-            <div className="input-control">
-                <input 
-                    type="text" 
-                    value={title}
-                    name={'title'} 
-                    placeholder="Expense Title"
-                    onChange={handleInput('title')}
-                />
-            </div>
-            <div className="input-control">
-                <input value={amount}  
-                    type="text" 
-                    name={'amount'} 
-                    placeholder={'Expense Amount'}
-                    onChange={handleInput('amount')} 
-                />
-            </div>
             <div className="input-control">
                 <DatePicker 
                     id='date'
@@ -70,21 +75,90 @@ function ExpenseForm() {
                     }}
                 />
             </div>
+            <div className="input-control">
+                <input 
+                    type="text" 
+                    value={vendor}
+                    name={'vendor'} 
+                    placeholder="Vendor/Payee Name"
+                    onChange={handleInput('vendor')}
+                />
+            </div>
+            <div className="input-control">
+                <input 
+                    type="text" 
+                    value={location}
+                    name={'location'} 
+                    placeholder="Location"
+                    onChange={handleInput('location')}
+                />
+            </div>
             <div className="selects input-control">
-                <select required value={category} name="category" id="category" onChange={handleInput('category')}>
-                    <option value="" disabled >Select Option</option>
-                    <option value="education">Education</option>
-                    <option value="groceries">Groceries</option>
-                    <option value="health">Health</option>
-                    <option value="subscriptions">Subscriptions</option>
-                    <option value="takeaways">Takeaways</option>
-                    <option value="clothing">Clothing</option>  
-                    <option value="travelling">Travelling</option>  
-                    <option value="other">Other</option>  
+                <select value={expenseType} name="expenseType" id="expenseType" onChange={handleInput('expenseType')}>
+                    <option value="Airfare">Airfare</option>
+                    <option value="Hotel">Hotel</option>
+                    <option value="Rental Car">Rental Car</option>
+                    <option value="Food">Food</option>
+                    <option value="Parking">Parking</option>
+                    <option value="Professional">Professional</option>
+                    <option value="Supplies">Supplies</option>
+                    <option value="Home Office Expenses">Home Office Expenses</option>
+                    <option value="Gas">Gas</option>
+                    <option value="Gym">Gym</option>
+                    <option value="Car Payment">Car Payment</option>
+                    <option value="Car Maintenance">Car Maintenance</option>
                 </select>
             </div>
             <div className="input-control">
-                <textarea name="description" value={description} placeholder='Add A Reference' id="description" cols="30" rows="4" onChange={handleInput('description')}></textarea>
+                <input 
+                    type="text" 
+                    value={expenseDescription}
+                    name={'expenseDescription'} 
+                    placeholder="Expense Description"
+                    onChange={handleInput('expenseDescription')}
+                />
+            </div>
+            <div className="input-control">
+                <input 
+                    type="number" 
+                    value={amount}
+                    name={'amount'} 
+                    placeholder="Amount"
+                    onChange={handleInput('amount')}
+                    step="0.01"
+                    min="0"
+                />
+            </div>
+            <div className="selects input-control">
+                <select value={paymentType} name="paymentType" id="paymentType" onChange={handleInput('paymentType')}>
+                    <option value="" disabled>Select Payment Type</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Check">Check</option>
+                    <option value="Chase Credit Card">Chase Credit Card</option>
+                    <option value="Venmo">Venmo</option>
+                    <option value="AutoPay Needham Bank">AutoPay Needham Bank</option>
+                </select>
+            </div>
+            <div className="input-control checkbox">
+                <label>
+                    <input 
+                        type="checkbox" 
+                        name={'businessTrip'}
+                        checked={businessTrip}
+                        onChange={(e) => setInputState({...inputState, businessTrip: e.target.checked})}
+                    />
+                    Associated with a Business Trip
+                </label>
+            </div>
+            <div className="input-control">
+                <input 
+                    type="number" 
+                    value={expenseRecordNumber}
+                    name={'expenseRecordNumber'} 
+                    placeholder="Expense Record Number"
+                    onChange={handleInput('expenseRecordNumber')}
+                    min="0"
+                />
             </div>
             <div className="submit-btn">
                 <Button 
@@ -92,9 +166,17 @@ function ExpenseForm() {
                     icon={plus}
                     bPad={'.8rem 1.6rem'}
                     bRad={'30px'}
-                    bg={'var(--color-accent'}
+                    bg={'var(--color-green)'}
                     color={'#fff'}
                 />
+                <button 
+                    type="button"
+                    onClick={handleReset}
+                    className="reset-form-btn"
+                >
+                    {x}
+                    Reset Form
+                </button>
             </div>
         </ExpenseFormStyled>
     )
@@ -125,6 +207,18 @@ const ExpenseFormStyled = styled.form`
         input{
             width: 100%;
         }
+        &.checkbox{
+            label{
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                cursor: pointer;
+                input[type="checkbox"]{
+                    width: auto;
+                    margin: 0;
+                }
+            }
+        }
     }
 
     .selects{
@@ -139,10 +233,30 @@ const ExpenseFormStyled = styled.form`
     }
 
     .submit-btn{
+        display: flex;
+        gap: 1rem;
         button{
             box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
             &:hover{
                 background: var(--color-green) !important;
+            }
+        }
+        .reset-form-btn{
+            padding: .8rem 1.6rem;
+            border-radius: 30px;
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+            font-size: inherit;
+            &:hover{
+                background: #c82333 !important;
             }
         }
     }

@@ -10,6 +10,7 @@ const GlobalContext = React.createContext();
 
 export const GlobalProvider = ({ children }) => {
   const [revenue, setRevenue] = useState([]);
+  const [deductions, setDeductions] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
@@ -95,6 +96,7 @@ export const GlobalProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       getRevenue();
+      getDeductions();
       getExpenses();
     }
   }, [user]);
@@ -137,6 +139,32 @@ export const GlobalProvider = ({ children }) => {
       totalRevenue = totalRevenue + revenue.amount;
     });
     return totalRevenue;
+  };
+
+  const addDeduction = async (deduction) => {
+    await axios.post(`${BASE_URL}add-deduction`, deduction)
+      .catch((err) => {
+        setError(err.response.data.message);
+      });
+    getDeductions();
+  };
+
+  const getDeductions = async () => {
+    const response = await axios.get(`${BASE_URL}get-deductions?userid=${user}`);
+    setDeductions(response.data);
+  };
+
+  const deleteDeduction = async (id) => {
+    await axios.delete(`${BASE_URL}delete-deduction/${id}`);
+    getDeductions();
+  };
+
+  const totalDeductions = () => {
+    let total = 0;
+    deductions.forEach((d) => {
+      total = total + (d.deductionAmount ? Number(d.deductionAmount) : 0);
+    });
+    return total;
   };
 
   const addExpense = async (expense) => {
@@ -190,6 +218,11 @@ export const GlobalProvider = ({ children }) => {
       getRevenue,
       revenue,
       deleteRevenue,
+      addDeduction,
+      getDeductions,
+      deductions,
+      deleteDeduction,
+      totalDeductions,
       expenses,
       totalRevenue,
       addExpense,

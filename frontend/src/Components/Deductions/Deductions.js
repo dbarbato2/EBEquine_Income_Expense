@@ -2,38 +2,36 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
-import Form from '../Form/Form';
-import RevenueItem from '../RevenueItem/RevenueItem';
+import DeductionForm from './DeductionForm';
+import DeductionItem from './DeductionItem';
 
 function Deductions() {
-    const {deductions, getDeductions, deleteDeduction, totalRevenue} = useGlobalContext()
+    const {deductions, getDeductions, deleteDeduction, totalDeductions} = useGlobalContext()
 
     useEffect(() =>{
-        getRevenue()
+        getDeductions()
     }, [])
     return (
         <RevenueStyled>
             <InnerLayout>
                 <h1>Deductions</h1>
-                <h2 className="total-revenue">Total Revenue: <span>${totalRevenue()}</span></h2>
+                <h2 className="total-revenue">Total Deductions: <span>${totalDeductions()}</span></h2>
                 <div className="revenue-content">
                     <div className="form-container">
-                        <Form />
+                        <DeductionForm />
                     </div>
-                    <div className="revenue">
-                        {revenue.map((revenue) => {
-                            const {_id, title, amount, date, category, description, type} = revenue;
-                            return <RevenueItem
+                    <div className="deductions">
+                        {deductions.map((deduction) => {
+                            const {_id, deductionType, deductionAmount, month, deductionDescription } = deduction;
+                            return <DeductionItem
                                 key={_id}
                                 id={_id} 
-                                title={title} 
-                                description={description} 
-                                amount={amount} 
-                                date={date} 
-                                type={type}
-                                category={category} 
-                                indicatorColor="var(--color-green)"
-                                deleteItem={deleteRevenue}
+                                title={deductionType} 
+                                description={deductionDescription} 
+                                amount={deductionAmount} 
+                                date={month} 
+                                indicatorColor="var(--color-red)"
+                                deleteItem={deleteDeduction}
                             />
                         })}
                     </div>

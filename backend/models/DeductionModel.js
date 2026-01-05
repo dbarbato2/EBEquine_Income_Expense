@@ -1,42 +1,34 @@
 const mongoose = require('mongoose');
 
 const DeductionSchema = new mongoose.Schema({
-    title: {
+    month: {
         type: String,
         required: true,
-        trim: true,
-        maxLength: 50
+        enum: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        default: false
     },
-    amount: {
+    deductionType: {
+        type: String,
+        required: true,
+        enum: ['Mileage', 'Tolls', 'Car Payment', 'Auto Insurance', 'Gym Membership', 'Mortgage', 'Real Estate Taxes', 'Internet', 'Utilities - Electric', 'Utilities - Gas', 'Lawn Maintenance', 'Recycling/Rubbish', 'Utilities - Water'],
+        default: false
+    },
+    deductionDescription: {
+        type: String,
+        required: false,
+        maxLength:100,
+        trim: true
+    },
+    deductionAmount: {
+        type: mongoose.Decimal128,
+        required: false,
+        min: 0
+    },
+    deductionRecordNumber: {
         type: Number,
-        required: true,
-        maxLength:20,
-        trim: true
-    },
-    type: {
-        type: String,
-        default: "deduction"
-    },
-    date: {
-        type: Date,
-        required: true,
-        trim: true
-    },
-    category: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    description: {
-        type: String,
-        required: true,
-        maxLength:20,
-        trim: true
-    },
-    userid: {
-        type: String,
-        required: true,
-        maxLength: 40
+        required: false,
+        trim: true,
+        min: 0
     }
 }, {timestamps: true})
 

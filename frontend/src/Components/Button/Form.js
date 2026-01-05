@@ -63,7 +63,7 @@ function Form() {
             service: '1 Hour Massage',
             quantity: '',
             addOnService: '',
-            serviceLocation: '',
+            serviceLocation: 'MA',
             serviceFee: '',
             travelFee: '',
             discount: '',
@@ -302,7 +302,7 @@ const FormStyled = styled.form`
             font-family: inherit;
             font-size: inherit;
             &:hover{
-                background: #c82333 !important;
+                background: #7c141eff !important;
             }
         }
     }

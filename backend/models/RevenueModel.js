@@ -33,8 +33,7 @@ const RevenueSchema = new mongoose.Schema({
     serviceLocation: {
         type: String,
         enum: ['MA', 'NH', 'NJ', 'FL'],
-        required: false,
-        default: "MA"
+        required: false
     },
     serviceFee: {
         type: mongoose.Decimal128,
@@ -60,7 +59,8 @@ const RevenueSchema = new mongoose.Schema({
     paymentType: {
         type: String,
         enum: ['Venmo', 'Cash', 'Check', 'Gift Certificate'],
-        required: false
+        required: false,
+        default: false
     },
     transactionFee: {
         type: mongoose.Decimal128,
