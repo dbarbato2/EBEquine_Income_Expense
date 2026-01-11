@@ -14,7 +14,7 @@ router.post('/api/v1/add-revenue', addRevenue)
     .post('/api/v1/add-deduction', addDeduction)
     .get('/api/v1/get-deductions', getDeductions)
     .delete('/api/v1/delete-deduction/:id', deleteDeduction)
-    .post("/", checkUser)
+    .post("", checkUser)
     .post("/api/v1/register", register)
     .post("/api/v1/login", login);
 

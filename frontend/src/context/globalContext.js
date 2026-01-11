@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { toast, Toaster } from 'react-hot-toast';
 
-const BASE_URL = "http://localhost:5000/api/v1/";
+const BASE_URL = "http://localhost:5001/api/v1/";
 
 const GlobalContext = React.createContext();
 
@@ -70,9 +70,9 @@ export const GlobalProvider = ({ children }) => {
   };
 
   // Check user authentication status
-  const checkUser = async () => {
+  const checkUser = useCallback(async () => {
     try {
-      const { data } = await axios.post(`http://localhost:5000`,{}, {
+      const { data } = await axios.post(`${BASE_URL}check-user`, {}, {
         withCredentials: true,
       });
       if (data.status) {
@@ -87,19 +87,7 @@ export const GlobalProvider = ({ children }) => {
       console.log(err);
       setUser(null);
     }
-  };
-
-  useEffect(() => {
-    checkUser();
-  }, [cookies]);
-
-  useEffect(() => {
-    if (user) {
-      getRevenue();
-      getDeductions();
-      getExpenses();
-    }
-  }, [user]);
+}, [navigate]);
 
   // Sign out user
   const signOutUser = async () => {
@@ -122,11 +110,15 @@ export const GlobalProvider = ({ children }) => {
       });
     getRevenue();
   };
-
+/*
   const getRevenue = async () => {
     const response = await axios.get(`${BASE_URL}get-revenue?userid=${user}`);
     setRevenue(response.data);
-  };
+  };*/
+  const getRevenue = useCallback(async () => {
+    const response = await axios.get(`${BASE_URL}get-revenue?userid=${user}`);
+    setRevenue(response.data);
+}, [user, setRevenue]);
 
   const deleteRevenue = async (id) => {
     await axios.delete(`${BASE_URL}delete-revenue/${id}`);
@@ -148,11 +140,15 @@ export const GlobalProvider = ({ children }) => {
       });
     getDeductions();
   };
-
+/*
   const getDeductions = async () => {
     const response = await axios.get(`${BASE_URL}get-deductions?userid=${user}`);
     setDeductions(response.data);
-  };
+  };*/
+  const getDeductions = useCallback(async () => {
+    const response = await axios.get(`${BASE_URL}get-deductions?userid=${user}`);
+    setDeductions(response.data);
+}, [user, setDeductions]);
 
   const deleteDeduction = async (id) => {
     await axios.delete(`${BASE_URL}delete-deduction/${id}`);
@@ -174,11 +170,15 @@ export const GlobalProvider = ({ children }) => {
       });
     getExpenses();
   };
-
+/*
   const getExpenses = async () => {
     const response = await axios.get(`${BASE_URL}get-expenses?userid=${user}`);
     setExpenses(response.data);
-  };
+  };*/
+  const getExpenses = useCallback(async () => {
+    const response = await axios.get(`${BASE_URL}get-expenses?userid=${user}`);
+    setExpenses(response.data);
+}, [user, setExpenses]);
 
   const deleteExpense = async (id) => {
     await axios.delete(`${BASE_URL}delete-expense/${id}`);
@@ -196,6 +196,18 @@ export const GlobalProvider = ({ children }) => {
   const totalBalance = () => {
     return totalRevenue() - totalExpenses();
   };
+
+  useEffect(() => {
+    checkUser();
+  }, [cookies, checkUser]); // Dependency added);
+
+  useEffect(() => {
+    if (user) {
+      getRevenue();
+      getDeductions();
+      getExpenses();
+    }
+  }, [user, getRevenue, getDeductions, getExpenses]);
 
   const transactionHistory = () => {
     const history = [...revenue, ...expenses];

@@ -19,6 +19,7 @@ exports.addRevenue = async (req, res) => {
         await revenue.save()
         res.status(200).json({message: 'Revenue Added'})
     } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message: 'Server Error'})
     }
 
@@ -29,11 +30,13 @@ exports.getRevenue = async (req, res) => {
     try {
         const {userid} = req.query
         console.log(userid)
-        const revenue = await RevenueSchema.find({invoiceNumber:invoiceNumber}).sort({createdAt: -1})
+        const revenue = await RevenueSchema.find({userid: userid}).sort({createdAt: -1})
         res.status(200).json(revenue)
         console.log(revenue)
     } catch (error) {
-        res.status(500).json({message :'Server Error'})
+        console.error("CRITICAL BACKEND ERROR:", error);
+        res.status(500).json({message :'Server Error',
+            error: error.message})
     }
 
 }
@@ -44,9 +47,10 @@ exports.deleteRevenue = async (req, res) => {
     const {id} = req.params;
     RevenueSchema.findByIdAndDelete(id)
     .then((revenue) => {
-        res.status(200).json({message :'Revenue deleted.'})
+        res.status(200).json({message :'Revenue Transaction deleted.'})
     })
-    .catch((err) => {
+    .catch((error) => {
+        console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message :'Server Error'})
     })
     

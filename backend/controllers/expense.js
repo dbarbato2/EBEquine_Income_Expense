@@ -20,6 +20,7 @@ exports.addExpense = async (req, res) => {
         await expense.save()
         res.status(200).json({message: 'Expense Added'})
     } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message: 'Server Error'})
     }
 
@@ -33,6 +34,7 @@ exports.getExpenses = async (req, res) => {
         const expenses = await ExpenseSchema.find({ userid: userid }).sort({ createdAt: -1 });
         res.status(200).json(expenses)
     } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message :'Server Error'})
     }
 
@@ -46,7 +48,8 @@ exports.deleteExpense = async (req, res) => {
     .then((expense) => {
         res.status(200).json({message :'Expense deleted.'})
     })
-    .catch((err) => {
+    .catch((error) => {
+        console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message :'Server Error'})
     })
     

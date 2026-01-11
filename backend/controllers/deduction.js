@@ -20,6 +20,7 @@ exports.addDeduction = async (req, res) => {
         await expense.save()
         res.status(200).json({message: 'Deduction Added'})
     } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message: 'Server Error'})
     }
 
@@ -30,9 +31,10 @@ exports.getDeductions = async (req, res) => {
     try {
 
         const {userid} = req.query;
-        const expenses = await ExpenseSchema.find({ userid: userid }).sort({ createdAt: -1 });
-        res.status(200).json(expenses)
+        const deductions = await DeductionSchema.find({ userid: userid }).sort({ createdAt: -1 });
+        res.status(200).json(deductions)
     } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message :'Server Error'})
     }
 
@@ -46,7 +48,8 @@ exports.deleteDeduction = async (req, res) => {
     .then((deduction) => {
         res.status(200).json({message :'Deduction deleted.'})
     })
-    .catch((err) => {
+    .catch((error) => {
+        console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message :'Server Error'})
     })
     
