@@ -28,7 +28,8 @@ exports.addRevenue = async (req, res) => {
 
 exports.getRevenue = async (req, res) => {
     try {
-        const {userid} = req.query
+        /*const {userid} = req.query*/
+        const userid = "erinBarbato";
         console.log(userid)
         const revenue = await RevenueSchema.find({userid: userid}).sort({createdAt: -1})
         res.status(200).json(revenue)

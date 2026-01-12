@@ -6,12 +6,13 @@ import styled from 'styled-components';
 import { InnerLayout } from '../../styles/Layouts';
 
 const ViewTransactions = () => {
-  const { getRevenue, getExpenses, revenue, expenses } = useGlobalContext();
+  const { getRevenue, getExpenses, getDeductions, revenue, expenses, deductions } = useGlobalContext();
 
   useEffect(() => {
     getRevenue();
     getExpenses();
-  }, []);
+    getDeductions();
+  }, [getRevenue, getExpenses, getDeductions]);
 
   const handleRowClick = (item) => {
     alert(JSON.stringify(item, null, 2));
@@ -24,21 +25,39 @@ const ViewTransactions = () => {
       <table>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Amount</th>
-            <th>Category</th>
             <th>Date</th>
-            <th>Description</th>
+            <th>Client</th>
+            <th>Service</th>
+            <th>Quantity</th>
+            <th>Add-On Service</th>
+            <th>Location</th>
+            <th>Service Fee</th>
+            <th>Travel Fee</th>
+            <th>Discount</th>
+            <th>Discount Reason</th>
+            <th>Payment Type</th>
+            <th>Transaction Fee</th>
+            <th>Actual Revenue</th>
+            <th>Invoice Number</th>
           </tr>
         </thead>
         <tbody>
           {revenue.map(revenue => (
             <tr key={revenue._id} onClick={() => handleRowClick(revenue)}>
-              <td>{revenue.title}</td>
-              <td>{revenue.amount}</td>
-              <td>{revenue.category}</td>
-              <td>{new Date(revenue.date).toLocaleDateString()}</td>
-              <td>{revenue.description}</td>
+              <td>{revenue.date}</td>
+              <td>{revenue.client}</td>
+              <td>{revenue.service}</td>
+              <td>{revenue.quantity}</td>
+              <td>{revenue.addOnService}</td>
+              <td>{revenue.serviceLocation}</td>
+              <td>{revenue.serviceFee}</td>
+              <td>{revenue.travelFee}</td>
+              <td>{revenue.discount}</td>
+              <td>{revenue.discountReason}</td>
+              <td>{revenue.paymentType}</td>
+              <td>{revenue.transactionFee}</td>
+              <td>{revenue.actualRevenue}</td>
+              <td>{revenue.invoiceNumber}</td>
             </tr>
           ))}
         </tbody>
@@ -48,21 +67,55 @@ const ViewTransactions = () => {
       <table>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Amount</th>
-            <th>Category</th>
             <th>Date</th>
+            <th>Vendor</th>
+            <th>Location</th>
+            <th>Expense Type</th>
             <th>Description</th>
+            <th>Amount</th>
+            <th>Payment Type</th>
+            <th>Business Trip</th>
+            <th>Record Number</th>
           </tr>
         </thead>
         <tbody>
           {expenses.map(expense => (
             <tr key={expense._id} onClick={() => handleRowClick(expense)}>
-              <td>{expense.title}</td>
-              <td>{expense.amount}</td>
-              <td>{expense.category}</td>
-              <td>{new Date(expense.date).toLocaleDateString()}</td>
+              <td>{expense.date}</td>
+              <td>{expense.vendor}</td>
+              <td>{expense.location}</td>
+              <td>{expense.expenseType}</td>
               <td>{expense.description}</td>
+              <td>{expense.amount}</td>
+              <td>{expense.paymentType}</td>
+              <td>{expense.businessTrip ? "Yes" : "No"}</td>
+              <td>{expense.recordNumber}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h2>Deductions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Month</th>
+            <th>Deduction Type</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Record Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {deductions.map(deduction => (
+            <tr key={deduction._id} onClick={() => handleRowClick(deduction)}>
+              <td>{deduction.year}</td>
+              <td>{deduction.month}</td>
+              <td>{deduction.deductionType}</td>
+              <td>{deduction.description}</td>
+              <td>{deduction.amount}</td>
+              <td>{deduction.recordNumber}</td>
             </tr>
           ))}
         </tbody>
