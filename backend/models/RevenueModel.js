@@ -83,6 +83,6 @@ const RevenueSchema = new mongoose.Schema({
         trim: true,
         min: 0
     }
-}, {timestamps: true})
+}, {timestamps: true, collection: 'revenue'})
 
 module.exports = mongoose.model('Revenue', RevenueSchema)

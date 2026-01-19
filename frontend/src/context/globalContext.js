@@ -33,12 +33,12 @@ export const GlobalProvider = ({ children }) => {
         if (email) setError(email);
         else if (password) setError(password);
       } else {
+        console.log('Login successful, setting user to:', data.user);
         setUser(data.user);
         setName(data.name);
         navigate('/');
-        await checkUser();
         toast.success("Login Sucessful!")
-
+        // Don't call checkUser here - the useEffect will trigger when user state updates
       }
     } catch (err) {
       console.log(err);
@@ -63,11 +63,12 @@ export const GlobalProvider = ({ children }) => {
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (data.status || data.user) {
+        console.log('Setting user to:', data.user);
         setUser(data.user);
         setName(data.name);
         toast.success("Register Successful!")
         navigate('/');
-        await checkUser();
+        // Don't call checkUser here - the useEffect will trigger when user state updates
       }
     } catch (err) {
       console.log('Register error:', err);
