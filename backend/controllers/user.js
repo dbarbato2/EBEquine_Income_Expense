@@ -11,7 +11,8 @@ const createToken = (id) => {
 const handleErrors = (err) => {
   let errors = { email: "", password: "" };
 
-  console.log(err);
+  console.log('Error details:', err.message, err.code);
+  
   if (err.message === "incorrect email") {
     errors.email = "That email is not registered";
   }
@@ -37,6 +38,12 @@ const handleErrors = (err) => {
 module.exports.register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
+    console.log('Register attempt:', { name, email, passwordLength: password?.length });
+    
+    if (!email || !password || !name) {
+      return res.status(400).json({ errors: { email: "All fields are required" }, created: false });
+    }
+    
     const user = await User.create({ name, email, password });
     const token = createToken(user._id);
 
@@ -46,24 +53,28 @@ module.exports.register = async (req, res, next) => {
       maxAge: maxAge * 1000,
     });
 
-    res.status(201).json({ status: true, user: user._id.toString(), name:user.name });
+    console.log('User registered successfully:', user._id);
+    res.status(201).json({ status: true, user: user._id.toString(), name: user.name });
   } catch (err) {
-    console.log(err);
+    console.log('Register error:', err.message);
     const errors = handleErrors(err);
-    res.json({ errors, created: false });
+    res.status(400).json({ errors, created: false });
   }
 };
 
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.login(email, password);
+    console.log('Login attempt:', email);
+    const user = await User.login(email.toLowerCase().trim(), password);
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
+    console.log('Login successful:', user._id);
     res.status(200).json({ status: true, user: user._id.toString(), name:user.name });
   } catch (err) {
+    console.log('Login error:', err.message);
     const errors = handleErrors(err);
-    res.json({ errors, status: false });
+    res.status(400).json({ errors, status: false });
   }
 };
 

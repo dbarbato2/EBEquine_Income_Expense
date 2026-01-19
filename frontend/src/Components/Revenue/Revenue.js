@@ -6,11 +6,16 @@ import Form from '../Form/Form';
 import RevenueItem from '../RevenueItem/RevenueItem';
 
 function Revenue() {
-    const {revenue, getRevenue, deleteRevenue, totalRevenue} = useGlobalContext()
+    const {revenue, getRevenue, deleteRevenue, totalRevenue, user} = useGlobalContext()
+
+    // Log the user ID to verify it's set correctly
+    console.log('Current user ID:', user)
 
     useEffect(() =>{
-        getRevenue()
-    }, [])
+        if (user) {
+            getRevenue()
+        }
+    }, [user, getRevenue])
     return (
         <RevenueStyled>
             <InnerLayout>
@@ -22,16 +27,40 @@ function Revenue() {
                     </div>
                     <div className="revenue">
                         {revenue.map((revenue) => {
-                            const {_id, title, amount, date, category, description, type} = revenue;
+                            const {
+                                _id,
+                                client,
+                                service,
+                                quantity,
+                                addOnService,
+                                serviceLocation,
+                                serviceFee,
+                                travelFee,
+                                discount,
+                                discountReason,
+                                paymentType,
+                                transactionFee,
+                                actualRevenue,
+                                invoiceNumber,
+                                date
+                            } = revenue;
                             return <RevenueItem
                                 key={_id}
-                                id={_id} 
-                                title={title} 
-                                description={description} 
-                                amount={amount} 
-                                date={date} 
-                                type={type}
-                                category={category} 
+                                id={_id}
+                                client={client}
+                                service={service}
+                                quantity={quantity}
+                                addOnService={addOnService}
+                                serviceLocation={serviceLocation}
+                                serviceFee={serviceFee}
+                                travelFee={travelFee}
+                                discount={discount}
+                                discountReason={discountReason}
+                                paymentType={paymentType}
+                                transactionFee={transactionFee}
+                                actualRevenue={actualRevenue}
+                                invoiceNumber={invoiceNumber}
+                                date={date}
                                 indicatorColor="var(--color-green)"
                                 deleteItem={deleteRevenue}
                             />

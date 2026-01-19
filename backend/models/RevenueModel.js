@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const RevenueSchema = new mongoose.Schema({
+    userid: {
+        type: String,
+        required: true,
+        trim: true
+    },
     date: {
         type: Date,
         required: true,

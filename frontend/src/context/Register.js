@@ -11,10 +11,9 @@ function Register() {
 
   useEffect(() => {
     if (cookies.jwt) {
-      console.log('User already logged in, redirecting to home');
       navigate("/");
     }
-  }, [cookies.jwt, navigate]);
+  }, [cookies, navigate]);
 
   const [values, setValues] = useState({ email: "", password: "", name: "" });
 

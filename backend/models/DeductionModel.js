@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const DeductionSchema = new mongoose.Schema({
+    userid: {
+        type: String,
+        required: true,
+        trim: true
+    },
     month: {
         type: String,
         required: true,

@@ -34,6 +34,7 @@ export const GlobalProvider = ({ children }) => {
         else if (password) setError(password);
       } else {
         setUser(data.user);
+        setName(data.name);
         navigate('/');
         await checkUser();
         toast.success("Login Sucessful!")
@@ -47,6 +48,7 @@ export const GlobalProvider = ({ children }) => {
   // Register user
   const register = async (values) => {
     try {
+      console.log('Register attempt with:', values);
       const { data } = await axios.post(
         `${BASE_URL}register`,
         {
@@ -54,23 +56,28 @@ export const GlobalProvider = ({ children }) => {
         },
         { withCredentials: true }
       );
-      if (data.errors) {
-        const { email, password } = data.errors;
-        if (email) setError(email);
-        else if (password) setError(password);
-      } else {
+      console.log('Register response:', data);
+      if (data.errors && Object.values(data.errors).some(e => e)) {
+        const { email, password, name } = data.errors;
+        const errorMsg = email || password || name || "Registration failed";
+        setError(errorMsg);
+        toast.error(errorMsg);
+      } else if (data.status || data.user) {
         setUser(data.user);
+        setName(data.name);
+        toast.success("Register Successful!")
         navigate('/');
         await checkUser();
-        toast.success("Register Sucessful!")
       }
     } catch (err) {
-      console.log(err);
+      console.log('Register error:', err);
+      const errorMsg = err.response?.data?.errors?.email || err.response?.data?.message || err.message;
+      toast.error('Registration failed: ' + errorMsg);
     }
   };
 
   // Check user authentication status
-  const checkUser = useCallback(async () => {
+  const checkUser = useCallback(async (redirectIfNotAuth = true) => {
     try {
       const { data } = await axios.post(`${BASE_URL}check-user`, {}, {
         withCredentials: true,
@@ -78,14 +85,18 @@ export const GlobalProvider = ({ children }) => {
       if (data.status) {
         setUser(data.user);
         setName(data.name);
-        navigate('/');
       } else {
         setUser(null);
-        navigate('/login');
+        if (redirectIfNotAuth) {
+          navigate('/login');
+        }
       }
     } catch (err) {
       console.log(err);
       setUser(null);
+      if (redirectIfNotAuth) {
+        navigate('/login');
+      }
     }
 }, [navigate]);
 
@@ -116,9 +127,20 @@ export const GlobalProvider = ({ children }) => {
     setRevenue(response.data);
   };*/
   const getRevenue = useCallback(async () => {
-    const response = await axios.get(`${BASE_URL}get-revenue?userid=${user}`);
-    setRevenue(response.data);
-}, [user, setRevenue]);
+    if (!user) {
+      console.log('Skipping getRevenue: user is not set');
+      return;
+    }
+    try {
+      console.log('Fetching revenue for user:', user);
+      const response = await axios.get(`${BASE_URL}get-revenue?userid=${user}`);
+      console.log('Revenue data received:', response.data);
+      setRevenue(response.data);
+    } catch (error) {
+      console.error('Error fetching revenue:', error);
+      setError('Failed to fetch revenue data');
+    }
+}, [user]);
 
   const deleteRevenue = async (id) => {
     await axios.delete(`${BASE_URL}delete-revenue/${id}`);
@@ -127,8 +149,10 @@ export const GlobalProvider = ({ children }) => {
 
   const totalRevenue = () => {
     let totalRevenue = 0;
-    revenue.forEach((revenue) => {
-      totalRevenue = totalRevenue + revenue.amount;
+    revenue.forEach((item) => {
+      // Handle Decimal128 objects from MongoDB
+      const amount = item.actualRevenue ? parseFloat(item.actualRevenue.toString()) : 0;
+      totalRevenue = totalRevenue + amount;
     });
     return totalRevenue;
   };
@@ -146,9 +170,15 @@ export const GlobalProvider = ({ children }) => {
     setDeductions(response.data);
   };*/
   const getDeductions = useCallback(async () => {
-    const response = await axios.get(`${BASE_URL}get-deductions?userid=${user}`);
-    setDeductions(response.data);
-}, [user, setDeductions]);
+    if (!user) return;
+    try {
+      const response = await axios.get(`${BASE_URL}get-deductions?userid=${user}`);
+      setDeductions(response.data);
+    } catch (error) {
+      console.error('Error fetching deductions:', error);
+      setError('Failed to fetch deductions data');
+    }
+}, [user]);
 
   const deleteDeduction = async (id) => {
     await axios.delete(`${BASE_URL}delete-deduction/${id}`);
@@ -170,15 +200,21 @@ export const GlobalProvider = ({ children }) => {
       });
     getExpenses();
   };
-/*
-  const getExpenses = async () => {
-    const response = await axios.get(`${BASE_URL}get-expenses?userid=${user}`);
-    setExpenses(response.data);
-  };*/
   const getExpenses = useCallback(async () => {
-    const response = await axios.get(`${BASE_URL}get-expenses?userid=${user}`);
-    setExpenses(response.data);
-}, [user, setExpenses]);
+    if (!user) {
+      console.log('Skipping getExpenses: user is not set');
+      return;
+    }
+    try {
+      console.log('Fetching expenses for user:', user);
+      const response = await axios.get(`${BASE_URL}get-expenses?userid=${user}`);
+      console.log('Expenses data received:', response.data);
+      setExpenses(response.data);
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+      setError('Failed to fetch expenses data');
+    }
+}, [user]);
 
   const deleteExpense = async (id) => {
     await axios.delete(`${BASE_URL}delete-expense/${id}`);
@@ -188,7 +224,9 @@ export const GlobalProvider = ({ children }) => {
   const totalExpenses = () => {
     let totalExpense = 0;
     expenses.forEach((expense) => {
-      totalExpense = totalExpense + expense.amount;
+      // Handle Decimal128 objects from MongoDB
+      const amount = expense.amount ? parseFloat(expense.amount.toString()) : 0;
+      totalExpense = totalExpense + amount;
     });
     return totalExpense;
   };
@@ -198,8 +236,8 @@ export const GlobalProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    checkUser();
-  }, [cookies, checkUser]); // Dependency added);
+    checkUser(false); // Don't redirect on initial check
+  }, [checkUser]);
 
   useEffect(() => {
     if (user) {

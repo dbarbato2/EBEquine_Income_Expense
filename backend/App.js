@@ -23,8 +23,8 @@ app.use(cookieParser());
 
 readdirSync('./routes').map((route) => app.use('', require('./routes/' + route)))
 
-const server = () => {
-    db()
+const server = async () => {
+    await db()
     app.listen(PORT, () => {
         console.log(PORT);
     })

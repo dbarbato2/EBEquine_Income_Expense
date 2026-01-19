@@ -1,82 +1,48 @@
 import React from 'react'
 import styled from 'styled-components'
 import { dateFormat } from '../../utils/dateFormat';
-import { bitcoin, book, calender, card, circle, clothing, comment, dollar, food, freelance, medical, money, piggy, stocks, takeaway, trash, tv, users, yt } from '../../utils/Icons';
+import { trash } from '../../utils/Icons';
 import Button from '../Button/Button';
 
 function RevenueItem({
     id,
-    title,
-    amount,
+    client,
+    service,
+    quantity,
+    addOnService,
+    serviceLocation,
+    serviceFee,
+    travelFee,
+    discount,
+    discountReason,
+    paymentType,
+    transactionFee,
+    actualRevenue,
+    invoiceNumber,
     date,
-    category,
-    description,
     deleteItem,
-    indicatorColor,
-    type
+    indicatorColor
 }) {
-
-    const categoryIcon = () =>{
-        switch(category) {
-            case 'salary':
-                return money;
-            case 'freelancing':
-                return freelance
-            case 'investments':
-                return stocks;
-            case 'stocks':
-                return users;
-            case 'bitcoin':
-                return bitcoin;
-            case 'bank':
-                return card;
-            case 'youtube':
-                return yt;
-            case 'other':
-                return piggy;
-            default:
-                return ''
-        }
-    }
-
-    const expenseCatIcon = () => {
-        switch (category) {
-            case 'education':
-                return book;
-            case 'groceries':
-                return food;
-            case 'health':
-                return medical;
-            case 'subscriptions':
-                return tv;
-            case 'takeaways':
-                return takeaway;
-            case 'clothing':
-                return clothing;
-            case 'travelling':
-                return freelance;
-            case 'other':
-                return circle;
-            default:
-                return ''
-        }
-    }
 
     return (
         <RevenueItemStyled indicator={indicatorColor}>
-            <div className="icon">
-                {type === 'expense' ? expenseCatIcon() : categoryIcon()}
-            </div>
             <div className="content">
-                <h5>{title}</h5>
+                <h5>Client: {client}</h5>
                 <div className="inner-content">
                     <div className="text">
-                        <p>{dollar} {amount}</p>
-                        <p>{calender} {dateFormat(date)}</p>
-                        <p>
-                            {comment}
-                            {description}
-                        </p>
+                        <p>Service: {service}</p>
+                        <p>Quantity: {quantity}</p>
+                        <p>Add-On: {addOnService}</p>
+                        <p>Location: {serviceLocation}</p>
+                        <p>Service Fee: {serviceFee && serviceFee.toString()}</p>
+                        <p>Travel Fee: {travelFee && travelFee.toString()}</p>
+                        <p>Discount: {discount && discount.toString()}</p>
+                        <p>Discount Reason: {discountReason}</p>
+                        <p>Payment Type: {paymentType}</p>
+                        <p>Transaction Fee: {transactionFee && transactionFee.toString()}</p>
+                        <p>Actual Revenue: {actualRevenue && actualRevenue.toString()}</p>
+                        <p>Invoice #: {invoiceNumber}</p>
+                        <p>Date: {dateFormat(date)}</p>
                     </div>
                     <div className="btn-con">
                         <Button 
