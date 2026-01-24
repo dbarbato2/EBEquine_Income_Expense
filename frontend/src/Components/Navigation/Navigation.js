@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import avatar from '../../img/avatar.png'
 import { signout } from '../../utils/Icons'
@@ -8,12 +8,26 @@ import { useGlobalContext } from '../../context/globalContext'
 function Navigation({active, setActive}) {
 
     const { signOutUser, setError, name, email } = useGlobalContext();
+    const [expandedMenu, setExpandedMenu] = useState(null);
 
     const handleSignOut = async (event) => {
         event.preventDefault();
         setError(null); // Reset error before new request
         await signOutUser();
       };
+
+    const handleMenuClick = (item) => {
+        if (item.submenu) {
+            setExpandedMenu(expandedMenu === item.id ? null : item.id);
+        } else {
+            setActive(item.id);
+            setExpandedMenu(null);
+        }
+    };
+
+    const handleSubmenuClick = (subitem) => {
+        setActive(subitem.id);
+    };
     
     return (
         <NavStyled>
@@ -26,13 +40,33 @@ function Navigation({active, setActive}) {
             </div>
             <ul className="menu-items">
                 {menuItems.map((item) => {
-                    return <li
-                        key={item.id}
-                        onClick={() => setActive(item.id)}
-                        className={active === item.id ? 'active': ''}
-                    >
-                        {item.icon}
-                        <span>{item.title}</span>
+                    return <li key={item.id}>
+                        <div
+                            onClick={() => handleMenuClick(item)}
+                            className={`menu-item ${active === item.id ? 'active': ''}`}
+                        >
+                            {item.icon}
+                            <span>{item.title}</span>
+                            {item.submenu && (
+                                <span className="submenu-arrow">
+                                    {expandedMenu === item.id ? '▼' : '▶'}
+                                </span>
+                            )}
+                        </div>
+                        {item.submenu && expandedMenu === item.id && (
+                            <ul className="submenu">
+                                {item.submenu.map((subitem) => (
+                                    <li key={subitem.id}>
+                                        <div
+                                            onClick={() => handleSubmenuClick(subitem)}
+                                            className={`submenu-item ${active === subitem.id ? 'active' : ''}`}
+                                        >
+                                            <span>{subitem.title}</span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </li>
                 })}
             </ul>
@@ -84,25 +118,85 @@ const NavStyled = styled.nav`
         flex: 1;
         display: flex;
         flex-direction: column;
-        li{
-            display: grid;
-            grid-template-columns: 40px auto;
-            align-items: center;
+        
+        li {
             margin: .6rem 0;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all .4s ease-in-out;
-            color: rgba(34, 34, 96, .6);
-            padding-left: 1rem;
-            position: relative;
-            i{
-                color: rgba(34, 34, 96, 0.6);
-                font-size: 1.4rem;
+
+            .menu-item {
+                display: grid;
+                grid-template-columns: 40px auto 1fr;
+                align-items: center;
+                font-weight: 500;
+                cursor: pointer;
                 transition: all .4s ease-in-out;
+                color: rgba(34, 34, 96, .6);
+                padding-left: 1rem;
+                position: relative;
+                i{
+                    color: rgba(34, 34, 96, 0.6);
+                    font-size: 1.4rem;
+                    transition: all .4s ease-in-out;
+                }
+
+                .submenu-arrow {
+                    justify-self: end;
+                    padding-right: 1rem;
+                    font-size: 0.8rem;
+                }
+
+                &.active {
+                    color: rgba(34, 34, 96, 1) !important;
+                    i{
+                        color: rgba(34, 34, 96, 1) !important;
+                    }
+                    &::before{
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 4px;
+                        height: 100%;
+                        background: #222260;
+                        border-radius: 0 10px 10px 0;
+                    }
+                }
+            }
+
+            .submenu {
+                display: flex;
+                flex-direction: column;
+                margin-top: 0.5rem;
+                padding-left: 3rem;
+                list-style: none;
+
+                li {
+                    margin: 0.4rem 0;
+
+                    .submenu-item {
+                        padding: 0.5rem 0.5rem;
+                        cursor: pointer;
+                        transition: all .4s ease-in-out;
+                        color: rgba(34, 34, 96, .6);
+                        border-left: 3px solid transparent;
+                        padding-left: 1.5rem;
+
+                        &:hover {
+                            color: rgba(34, 34, 96, 1);
+                            background: rgba(34, 34, 96, 0.1);
+                        }
+
+                        &.active {
+                            color: rgba(34, 34, 96, 1) !important;
+                            border-left-color: #222260;
+                            font-weight: 600;
+                        }
+                    }
+                }
             }
         }
     }
-      .bottom-nav {
+
+    .bottom-nav {
     cursor: pointer;
     span {
       display: flex;
@@ -116,23 +210,6 @@ const NavStyled = styled.nav`
       color: black;
     }
   }
-
-    .active{
-        color: rgba(34, 34, 96, 1) !important;
-        i{
-            color: rgba(34, 34, 96, 1) !important;
-        }
-        &::before{
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background: #222260;
-            border-radius: 0 10px 10px 0;
-        }
-    }
 `;
 
 export default Navigation

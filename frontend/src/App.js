@@ -9,7 +9,9 @@ import Revenue from './Components/Revenue/Revenue'
 import Expenses from './Components/Expenses/Expenses';
 import Deductions from './Components/Deductions/Deductions';
 import { GlobalProvider } from './context/globalContext';
-import ViewTransactions from './Components/Transactions/ViewTransactions';
+import ViewRevenue from './Components/Transactions/ViewRevenue';
+import ViewExpenses from './Components/Transactions/ViewExpenses';
+import ViewDeductions from './Components/Transactions/ViewDeductions';
 import ViewClients from './Components/Transactions/ViewClients';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Register from './Components/User/Register';
@@ -24,16 +26,40 @@ function App() {
     switch(active){
       case 1:
         return <Dashboard />
-      case 2:
-        return <ViewTransactions />
       case 3:
+        return <ViewExpenses />
+      case 5:
         return <Revenue />
-      case 4: 
-        return <Expenses />
-      case 5: 
-        return <Deductions />
       case 6:
+        return <Expenses />
+      case 7:
+        return <Deductions />
+      case 8:
         return <ViewClients />
+      case 50:
+        return <ViewRevenue />
+      case 51:
+        return <Revenue />
+      case 52:
+        return <></>
+      case 60:
+        return <ViewExpenses />
+      case 61:
+        return <Expenses />
+      case 62:
+        return <></>
+      case 70:
+        return <ViewDeductions />
+      case 71:
+        return <Deductions />
+      case 72:
+        return <></>
+      case 80:
+        return <ViewClients />
+      case 81:
+        return <></>
+      case 82:
+        return <></>
       default: 
         return <Dashboard />
     }

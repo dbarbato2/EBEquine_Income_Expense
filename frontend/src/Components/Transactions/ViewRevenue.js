@@ -1,25 +1,21 @@
-// ViewTransactions.js
-
 import React, { useEffect } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
 import { InnerLayout } from '../../styles/Layouts';
 
-const ViewTransactions = () => {
-  const { getRevenue, getExpenses, getDeductions, revenue, expenses, deductions } = useGlobalContext();
+const ViewRevenue = () => {
+  const { getRevenue, revenue } = useGlobalContext();
 
   useEffect(() => {
     getRevenue();
-    getExpenses();
-    getDeductions();
-  }, [getRevenue, getExpenses, getDeductions]);
+  }, [getRevenue]);
 
   const handleRowClick = (item) => {
     alert(JSON.stringify(item, null, 2));
   };
 
   return (
-    <ViewTransactionsStyled>
+    <ViewRevenueStyled>
         <InnerLayout>
       <h2>Revenue</h2>
       <div className="table-wrapper">
@@ -64,74 +60,12 @@ const ViewTransactions = () => {
         </tbody>
       </table>
       </div>
-
-      <h2>Expenses</h2>
-      <div className="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Vendor</th>
-            <th>Location</th>
-            <th>Expense Type</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Payment Type</th>
-            <th>Business Trip</th>
-            <th>Record Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {expenses.map(expenses => (
-            <tr key={expenses._id} onClick={() => handleRowClick(expenses)}>
-              <td>{expenses.Date}</td>
-              <td>{expenses['Vendor/Payee']}</td>
-              <td>{expenses.Location}</td>
-              <td>{expenses['Expense Type']}</td>
-              <td>{expenses['Expense Description']}</td>
-              <td>{expenses.Amount}</td>
-              <td>{expenses['Payment Type']}</td>
-              <td>{expenses['Associated with a Business Trip'] ? "Yes" : "No"}</td>
-              <td>{expenses['Expense Record Number']}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
-
-      <h2>Deductions</h2>
-      <div className="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th>Month</th>
-            <th>Deduction Type</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Record Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {deductions.map(deductions => (
-            <tr key={deductions._id} onClick={() => handleRowClick(deductions)}>
-              <td>{deductions.Year}</td>
-              <td>{deductions.Month}</td>
-              <td>{deductions['Deduction Type']}</td>
-              <td>{deductions['Deduction Description']}</td>
-              <td>{deductions['Deduction Amount']}</td>
-              <td>{deductions['Deduction Record Number']}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
       </InnerLayout>
-    </ViewTransactionsStyled>
+    </ViewRevenueStyled>
   );
 }
 
-const ViewTransactionsStyled = styled.div`
+const ViewRevenueStyled = styled.div`
 
     h2{
     margin-bottom: 10px}
@@ -194,4 +128,4 @@ const ViewTransactionsStyled = styled.div`
   }
 `;
 
-export default ViewTransactions;
+export default ViewRevenue;
