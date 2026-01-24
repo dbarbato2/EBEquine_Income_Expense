@@ -44,20 +44,20 @@ const ViewTransactions = () => {
         <tbody>
           {revenue.map(revenue => (
             <tr key={revenue._id} onClick={() => handleRowClick(revenue)}>
-              <td>{revenue.date}</td>
-              <td>{revenue.client}</td>
-              <td>{revenue.service}</td>
-              <td>{revenue.quantity}</td>
-              <td>{revenue.addOnService}</td>
-              <td>{revenue.serviceLocation}</td>
-              <td>{revenue.serviceFee}</td>
-              <td>{revenue.travelFee}</td>
-              <td>{revenue.discount}</td>
-              <td>{revenue.discountReason}</td>
-              <td>{revenue.paymentType}</td>
-              <td>{revenue.transactionFee}</td>
-              <td>{revenue.actualRevenue}</td>
-              <td>{revenue.invoiceNumber}</td>
+              <td>{revenue.Date}</td>
+              <td>{revenue.Client}</td>
+              <td>{revenue.Service}</td>
+              <td>{revenue.Quantity}</td>
+              <td>{revenue['Add-On Service']}</td>
+              <td>{revenue['Service Location']}</td>
+              <td>{revenue['Service Fee']}</td>
+              <td>{revenue['Travel Fee']}</td>
+              <td>{revenue.Discount}</td>
+              <td>{revenue['Discount Reason']}</td>
+              <td>{revenue['Payment Type']}</td>
+              <td>{revenue['Transaction Fees']}</td>
+              <td>{revenue['Actual Fees']}</td>
+              <td>{revenue['Invoice Number']}</td>
             </tr>
           ))}
         </tbody>
@@ -79,17 +79,17 @@ const ViewTransactions = () => {
           </tr>
         </thead>
         <tbody>
-          {expenses.map(expense => (
-            <tr key={expense._id} onClick={() => handleRowClick(expense)}>
-              <td>{expense.date}</td>
-              <td>{expense.vendor}</td>
-              <td>{expense.location}</td>
-              <td>{expense.expenseType}</td>
-              <td>{expense.description}</td>
-              <td>{expense.amount}</td>
-              <td>{expense.paymentType}</td>
-              <td>{expense.businessTrip ? "Yes" : "No"}</td>
-              <td>{expense.recordNumber}</td>
+          {expenses.map(expenses => (
+            <tr key={expenses._id} onClick={() => handleRowClick(expenses)}>
+              <td>{expenses.Date}</td>
+              <td>{expenses['Vendor/Payee']}</td>
+              <td>{expenses.Location}</td>
+              <td>{expenses['Expense Type']}</td>
+              <td>{expenses['Expense Description']}</td>
+              <td>{expenses.Amount}</td>
+              <td>{expenses['Payment Type']}</td>
+              <td>{expenses['Associated with a Business Trip'] ? "Yes" : "No"}</td>
+              <td>{expenses['Expense Record Number']}</td>
             </tr>
           ))}
         </tbody>
@@ -108,14 +108,14 @@ const ViewTransactions = () => {
           </tr>
         </thead>
         <tbody>
-          {deductions.map(deduction => (
-            <tr key={deduction._id} onClick={() => handleRowClick(deduction)}>
-              <td>{deduction.year}</td>
-              <td>{deduction.month}</td>
-              <td>{deduction.deductionType}</td>
-              <td>{deduction.description}</td>
-              <td>{deduction.amount}</td>
-              <td>{deduction.recordNumber}</td>
+          {deductions.map(deductions => (
+            <tr key={deductions._id} onClick={() => handleRowClick(deductions)}>
+              <td>{deductions.Year}</td>
+              <td>{deductions.Month}</td>
+              <td>{deductions['Deduction Type']}</td>
+              <td>{deductions['Deduction Description']}</td>
+              <td>{deductions['Deduction Amount']}</td>
+              <td>{deductions['Deduction Record Number']}</td>
             </tr>
           ))}
         </tbody>

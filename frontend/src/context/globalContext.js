@@ -136,6 +136,7 @@ export const GlobalProvider = ({ children }) => {
       console.log('Fetching revenue for user:', user);
       const response = await axios.get(`${BASE_URL}get-revenue?userid=${user}`);
       console.log('Revenue data received:', response.data);
+      console.log('First revenue item:', response.data[0]);
       setRevenue(response.data);
     } catch (error) {
       console.error('Error fetching revenue:', error);
