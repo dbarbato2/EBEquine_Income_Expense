@@ -54,7 +54,7 @@ module.exports.register = async (req, res, next) => {
     });
 
     console.log('User registered successfully:', user._id);
-    res.status(201).json({ status: true, user: user._id.toString(), name: user.name });
+    res.status(201).json({ status: true, user: user._id.toString(), name: user.name, email: user.email });
   } catch (err) {
     console.log('Register error:', err.message);
     const errors = handleErrors(err);
@@ -70,7 +70,7 @@ module.exports.login = async (req, res) => {
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
     console.log('Login successful:', user._id);
-    res.status(200).json({ status: true, user: user._id.toString(), name:user.name });
+    res.status(200).json({ status: true, user: user._id.toString(), name:user.name, email: user.email });
   } catch (err) {
     console.log('Login error:', err.message);
     const errors = handleErrors(err);
@@ -90,7 +90,7 @@ module.exports.checkUser = (req, res, next) => {
             next();
           } else {
             const user = await User.findById(decodedToken.id);
-            if (user) res.json({ status: true, user: user._id.toString(), name:user.name });
+            if (user) res.json({ status: true, user: user._id.toString(), name:user.name, email: user.email });
             else res.json({ status: false });
             next();
           }

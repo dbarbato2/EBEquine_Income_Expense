@@ -22,6 +22,7 @@ const ViewTransactions = () => {
     <ViewTransactionsStyled>
         <InnerLayout>
       <h2>Revenue</h2>
+      <div className="table-wrapper">
       <table>
         <thead>
           <tr>
@@ -62,8 +63,10 @@ const ViewTransactions = () => {
           ))}
         </tbody>
       </table>
+      </div>
 
       <h2>Expenses</h2>
+      <div className="table-wrapper">
       <table>
         <thead>
           <tr>
@@ -94,8 +97,10 @@ const ViewTransactions = () => {
           ))}
         </tbody>
       </table>
+      </div>
 
       <h2>Deductions</h2>
+      <div className="table-wrapper">
       <table>
         <thead>
           <tr>
@@ -120,6 +125,7 @@ const ViewTransactions = () => {
           ))}
         </tbody>
       </table>
+      </div>
       </InnerLayout>
     </ViewTransactionsStyled>
   );
@@ -129,6 +135,33 @@ const ViewTransactionsStyled = styled.div`
 
     h2{
     margin-bottom: 10px}
+
+    .table-wrapper {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 400px;
+      margin-bottom: 2rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+      height: 10px;
+      width: 10px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 5px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
 
     th {
     background-color:blue;

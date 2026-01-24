@@ -7,7 +7,7 @@ import { useGlobalContext } from '../../context/globalContext'
 
 function Navigation({active, setActive}) {
 
-    const { signOutUser, setError, name } = useGlobalContext();
+    const { signOutUser, setError, name, email } = useGlobalContext();
 
     const handleSignOut = async (event) => {
         event.preventDefault();
@@ -21,7 +21,7 @@ function Navigation({active, setActive}) {
                 <img src={avatar} alt="" />
                 <div className="text">
                     <h2>{name}</h2>
-                    <p>Your Money</p>
+                    <p>{email || 'Your Money'}</p>
                 </div>
             </div>
             <ul className="menu-items">

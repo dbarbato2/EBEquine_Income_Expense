@@ -10,6 +10,7 @@ import Expenses from './Components/Expenses/Expenses';
 import Deductions from './Components/Deductions/Deductions';
 import { GlobalProvider } from './context/globalContext';
 import ViewTransactions from './Components/Transactions/ViewTransactions';
+import ViewClients from './Components/Transactions/ViewClients';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Register from './Components/User/Register';
 import Login from './Components/User/Login';
@@ -31,6 +32,8 @@ function App() {
         return <Expenses />
       case 5: 
         return <Deductions />
+      case 6:
+        return <ViewClients />
       default: 
         return <Dashboard />
     }

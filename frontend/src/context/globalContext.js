@@ -12,9 +12,11 @@ export const GlobalProvider = ({ children }) => {
   const [revenue, setRevenue] = useState([]);
   const [deductions, setDeductions] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const [clients, setClients] = useState([]);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [cookies, setCookie ,removeCookie] = useCookies([]);
   const navigate = useNavigate();
 
@@ -36,6 +38,7 @@ export const GlobalProvider = ({ children }) => {
         console.log('Login successful, setting user to:', data.user);
         setUser(data.user);
         setName(data.name);
+        setEmail(data.email);
         navigate('/');
         toast.success("Login Sucessful!")
         // Don't call checkUser here - the useEffect will trigger when user state updates
@@ -66,6 +69,7 @@ export const GlobalProvider = ({ children }) => {
         console.log('Setting user to:', data.user);
         setUser(data.user);
         setName(data.name);
+        setEmail(data.email);
         toast.success("Register Successful!")
         navigate('/');
         // Don't call checkUser here - the useEffect will trigger when user state updates
@@ -86,6 +90,7 @@ export const GlobalProvider = ({ children }) => {
       if (data.status) {
         setUser(data.user);
         setName(data.name);
+        setEmail(data.email);
       } else {
         setUser(null);
         if (redirectIfNotAuth) {
@@ -107,6 +112,7 @@ export const GlobalProvider = ({ children }) => {
       removeCookie('jwt', { path: '/' });
       setCookie(null);
       setUser(null);
+      setEmail("");
       navigate('/login');
       window.location.reload();
     } catch (err) {
@@ -141,6 +147,22 @@ export const GlobalProvider = ({ children }) => {
     } catch (error) {
       console.error('Error fetching revenue:', error);
       setError('Failed to fetch revenue data');
+    }
+}, [user]);
+
+  const getClients = useCallback(async () => {
+    if (!user) {
+      console.log('Skipping getClients: user is not set');
+      return;
+    }
+    try {
+      console.log('Fetching clients for user:', user);
+      const response = await axios.get(`${BASE_URL}get-clients?userid=${user}`);
+      console.log('Clients data received:', response.data);
+      setClients(response.data);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      setError('Failed to fetch clients data');
     }
 }, [user]);
 
@@ -246,8 +268,9 @@ export const GlobalProvider = ({ children }) => {
       getRevenue();
       getDeductions();
       getExpenses();
+      getClients();
     }
-  }, [user, getRevenue, getDeductions, getExpenses]);
+  }, [user, getRevenue, getDeductions, getExpenses, getClients]);
 
   const transactionHistory = () => {
     const history = [...revenue, ...expenses];
@@ -283,8 +306,11 @@ export const GlobalProvider = ({ children }) => {
       totalExpenses,
       totalBalance,
       transactionHistory,
+      getClients,
+      clients,
       error,
       setError,
+      email,
       user,
       login,
       register,
