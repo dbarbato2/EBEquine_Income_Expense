@@ -128,11 +128,7 @@ export const GlobalProvider = ({ children }) => {
       });
     getRevenue();
   };
-/*
-  const getRevenue = async () => {
-    const response = await axios.get(`${BASE_URL}get-revenue?userid=${user}`);
-    setRevenue(response.data);
-  };*/
+
   const getRevenue = useCallback(async () => {
     if (!user) {
       console.log('Skipping getRevenue: user is not set');
@@ -166,6 +162,14 @@ export const GlobalProvider = ({ children }) => {
     }
 }, [user]);
 
+  const addClient = async (client) => {
+    await axios.post(`${BASE_URL}add-client`, client)
+      .catch((err) => {
+        setError(err.response.data.message);
+      });
+    getClients();
+  };
+
   const deleteRevenue = async (id) => {
     await axios.delete(`${BASE_URL}delete-revenue/${id}`);
     getRevenue();
@@ -181,6 +185,127 @@ export const GlobalProvider = ({ children }) => {
     return totalRevenue;
   };
 
+  const quarterlyRevenue = (year) => {
+    const quarters = {
+      Q1: 0,
+      Q2: 0,
+      Q3: 0,
+      Q4: 0
+    };
+
+    const getQuarter = (month) => {
+      // Q1: Jan-Mar (0-2), Q2: Apr-Jun (3-5), Q3: Jul-Aug (6-7), Q4: Sep-Dec (8-11)
+      if (month <= 2) return 'Q1';
+      if (month <= 5) return 'Q2';
+      if (month <= 7) return 'Q3';
+      return 'Q4';
+    };
+
+    revenue.forEach((item) => {
+      let dateValue = item.date || item.Date || item.createdAt;
+      
+      if (dateValue && item['Actual Fees']) {
+        const date = new Date(dateValue);
+        if (year && date.getFullYear() !== year) return; // Filter by year if provided
+        const month = date.getMonth(); // 0-11
+        const quarterKey = getQuarter(month);
+        
+        // Parse the Actual Fees field (comes as string like "$107.81")
+        const valueStr = item['Actual Fees'].toString().replace('$', '').trim();
+        const amount = parseFloat(valueStr);
+        
+        if (!isNaN(amount) && amount > 0) {
+          quarters[quarterKey] = quarters[quarterKey] + amount;
+        }
+      }
+    });
+
+    return quarters;
+  };
+
+  const quarterlyExpenses = (year) => {
+    const quarters = {
+      Q1: 0,
+      Q2: 0,
+      Q3: 0,
+      Q4: 0
+    };
+
+    const getQuarter = (month) => {
+      // Q1: Jan-Mar (0-2), Q2: Apr-Jun (3-5), Q3: Jul-Aug (6-7), Q4: Sep-Dec (8-11)
+      if (month <= 2) return 'Q1';
+      if (month <= 5) return 'Q2';
+      if (month <= 7) return 'Q3';
+      return 'Q4';
+    };
+
+    expenses.forEach((item) => {
+      let dateValue = item.date || item.Date || item.createdAt;
+      
+      if (dateValue && item.Amount) {
+        const date = new Date(dateValue);
+        if (year && date.getFullYear() !== year) return; // Filter by year if provided
+        const month = date.getMonth(); // 0-11
+        const quarterKey = getQuarter(month);
+        
+        // Parse the amount field (comes as string or number)
+        const valueStr = item.Amount.toString().replace('$', '').trim();
+        const amount = parseFloat(valueStr);
+        
+        if (!isNaN(amount) && amount > 0) {
+          quarters[quarterKey] = quarters[quarterKey] + amount;
+        }
+      }
+    });
+
+    return quarters;
+  };
+
+  const quarterlyDeductions = (year) => {
+    const quarters = {
+      Q1: 0,
+      Q2: 0,
+      Q3: 0,
+      Q4: 0
+    };
+
+    const monthMap = {
+      'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
+      'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11,
+      'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+      'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+    };
+
+    const getQuarter = (month) => {
+      // Q1: Jan-Mar (0-2), Q2: Apr-Jun (3-5), Q3: Jul-Aug (6-7), Q4: Sep-Dec (8-11)
+      if (month <= 2) return 'Q1';
+      if (month <= 5) return 'Q2';
+      if (month <= 7) return 'Q3';
+      return 'Q4';
+    };
+
+    deductions.forEach((item) => {
+      if (item.Month && item['Deduction Amount'] && item.Year) {
+        if (year && parseInt(item.Year) !== year) return; // Filter by year if provided
+        // Convert month string to number
+        const monthNum = monthMap[item.Month];
+        if (monthNum !== undefined && monthNum >= 0 && monthNum <= 11) {
+          const quarterKey = getQuarter(monthNum);
+          
+          // Parse the Deduction Amount field (comes as string or number)
+          const valueStr = item['Deduction Amount'].toString().replace('$', '').trim();
+          const amount = parseFloat(valueStr);
+          
+          if (!isNaN(amount) && amount > 0) {
+            quarters[quarterKey] = quarters[quarterKey] + amount;
+          }
+        }
+      }
+    });
+
+    return quarters;
+  };
+
   const addDeduction = async (deduction) => {
     await axios.post(`${BASE_URL}add-deduction`, deduction)
       .catch((err) => {
@@ -188,11 +313,7 @@ export const GlobalProvider = ({ children }) => {
       });
     getDeductions();
   };
-/*
-  const getDeductions = async () => {
-    const response = await axios.get(`${BASE_URL}get-deductions?userid=${user}`);
-    setDeductions(response.data);
-  };*/
+
   const getDeductions = useCallback(async () => {
     if (!user) return;
     try {
@@ -212,7 +333,7 @@ export const GlobalProvider = ({ children }) => {
   const totalDeductions = () => {
     let total = 0;
     deductions.forEach((d) => {
-      total = total + (d.deductionAmount ? Number(d.deductionAmount) : 0);
+      total = total + (d['Deduction Amount'] ? Number(d['Deduction Amount']) : 0);
     });
     return total;
   };
@@ -305,7 +426,11 @@ export const GlobalProvider = ({ children }) => {
       deleteExpense,
       totalExpenses,
       totalBalance,
+      quarterlyRevenue,
+      quarterlyExpenses,
+      quarterlyDeductions,
       transactionHistory,
+      addClient,
       getClients,
       clients,
       error,

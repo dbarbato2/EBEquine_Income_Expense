@@ -2,11 +2,10 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
-import Form from '../Form/Form';
-import RevenueItem from '../RevenueItem/RevenueItem';
+import RevenueForm from '../Form/RevenueForm';
 
 function Revenue() {
-    const {revenue, getRevenue, deleteRevenue, totalRevenue, user} = useGlobalContext()
+    const {getRevenue, user} = useGlobalContext()
 
     // Log the user ID to verify it's set correctly
     console.log('Current user ID:', user)
@@ -19,53 +18,9 @@ function Revenue() {
     return (
         <RevenueStyled>
             <InnerLayout>
-                <h1>Revenue</h1>
-                <h2 className="total-revenue">Total Revenue: <span>${totalRevenue()}</span></h2>
-                <div className="revenue-content">
-                    <div className="form-container">
-                        <Form />
-                    </div>
-                    <div className="revenue">
-                        {revenue.map((revenue) => {
-                            const {
-                                _id,
-                                client,
-                                service,
-                                quantity,
-                                addOnService,
-                                serviceLocation,
-                                serviceFee,
-                                travelFee,
-                                discount,
-                                discountReason,
-                                paymentType,
-                                transactionFee,
-                                actualRevenue,
-                                invoiceNumber,
-                                date
-                            } = revenue;
-                            return <RevenueItem
-                                key={_id}
-                                id={_id}
-                                client={client}
-                                service={service}
-                                quantity={quantity}
-                                addOnService={addOnService}
-                                serviceLocation={serviceLocation}
-                                serviceFee={serviceFee}
-                                travelFee={travelFee}
-                                discount={discount}
-                                discountReason={discountReason}
-                                paymentType={paymentType}
-                                transactionFee={transactionFee}
-                                actualRevenue={actualRevenue}
-                                invoiceNumber={invoiceNumber}
-                                date={date}
-                                indicatorColor="var(--color-green)"
-                                deleteItem={deleteRevenue}
-                            />
-                        })}
-                    </div>
+                <h1>Add Revenue</h1>
+                <div className="form-container">
+                    <RevenueForm />
                 </div>
             </InnerLayout>
         </RevenueStyled>

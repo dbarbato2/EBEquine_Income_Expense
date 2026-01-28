@@ -2,11 +2,10 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layouts';
-import DeductionForm from './DeductionForm';
-import DeductionItem from './DeductionItem';
+import DeductionForm from '../Form/DeductionForm';
 
 function Deductions() {
-    const {deductions, getDeductions, deleteDeduction, totalDeductions} = useGlobalContext()
+    const {getDeductions} = useGlobalContext()
 
     useEffect(() =>{
         getDeductions()
@@ -14,27 +13,9 @@ function Deductions() {
     return (
         <RevenueStyled>
             <InnerLayout>
-                <h1>Deductions</h1>
-                <h2 className="total-revenue">Total Deductions: <span>${totalDeductions()}</span></h2>
-                <div className="revenue-content">
-                    <div className="form-container">
-                        <DeductionForm />
-                    </div>
-                    <div className="deductions">
-                        {deductions.map((deduction) => {
-                            const {_id, deductionType, deductionAmount, month, deductionDescription } = deduction;
-                            return <DeductionItem
-                                key={_id}
-                                id={_id} 
-                                title={deductionType} 
-                                description={deductionDescription} 
-                                amount={deductionAmount} 
-                                date={month} 
-                                indicatorColor="var(--color-red)"
-                                deleteItem={deleteDeduction}
-                            />
-                        })}
-                    </div>
+                <h1>Add Deductions</h1>
+                <div className="form-container">
+                    <DeductionForm />
                 </div>
             </InnerLayout>
         </RevenueStyled>

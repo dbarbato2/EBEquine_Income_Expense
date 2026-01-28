@@ -8,6 +8,7 @@ import Dashboard from './Components/Dashboard/Dashboard';
 import Revenue from './Components/Revenue/Revenue'
 import Expenses from './Components/Expenses/Expenses';
 import Deductions from './Components/Deductions/Deductions';
+import Clients from './Components/Clients/Clients';
 import { GlobalProvider } from './context/globalContext';
 import ViewRevenue from './Components/Transactions/ViewRevenue';
 import ViewExpenses from './Components/Transactions/ViewExpenses';
@@ -57,7 +58,7 @@ function App() {
       case 80:
         return <ViewClients />
       case 81:
-        return <></>
+        return <Clients />
       case 82:
         return <></>
       default: 

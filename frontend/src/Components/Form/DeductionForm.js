@@ -8,6 +8,7 @@ import { plus, x } from '../../utils/Icons';
 function DeductionForm() {
     const {addDeduction, error, setError, user} = useGlobalContext()
     const [inputState, setInputState] = useState({
+        year: '',
         month: '',
         deductionType: '',
         deductionDescription: '',
@@ -15,7 +16,7 @@ function DeductionForm() {
         deductionRecordNumber: ''
     })
 
-    const { month, deductionType, deductionDescription, deductionAmount, deductionRecordNumber } = inputState;
+    const { year, month, deductionType, deductionDescription, deductionAmount, deductionRecordNumber } = inputState;
 
     const handleInput = name => e => {
         const value = name === 'deductionAmount' || name === 'deductionRecordNumber' ? e.target.value : e.target.value
@@ -28,6 +29,7 @@ function DeductionForm() {
         const updated = {...inputState, userid: user}
         addDeduction(updated)
         setInputState({
+            year: '',
             month: '',
             deductionType: '',
             deductionDescription: '',
@@ -39,6 +41,7 @@ function DeductionForm() {
     const handleReset = e => {
         e.preventDefault()
         setInputState({
+            year: '',
             month: '',
             deductionType: '',
             deductionDescription: '',
@@ -51,8 +54,20 @@ function DeductionForm() {
     return (
         <FormStyled onSubmit={handleSubmit}>
             {error && <p className='error'>{error}</p>}
+            <div className="input-control">
+                <input 
+                    type="number" 
+                    value={year}
+                    name={'year'} 
+                    placeholder="Year"
+                    onChange={handleInput('year')}
+                    min="2000"
+                    max="2100"
+                />
+            </div>
             <div className="selects input-control">
                 <select value={month} name="month" id="month" onChange={handleInput('month')}>
+                    <option value="" disabled>Select Month</option>
                     <option>January</option>
                     <option>February</option>
                     <option>March</option>
@@ -69,6 +84,7 @@ function DeductionForm() {
             </div>
             <div className="selects input-control">
                 <select value={deductionType} name="deductionType" id="deductionType" onChange={handleInput('deductionType')}>
+                    <option value="" disabled>Select Deduction Type</option>
                     <option>Mileage</option>
                     <option>Tolls</option>
                     <option>Car Payment</option>
@@ -165,7 +181,7 @@ const FormStyled = styled.form`
 
     .selects{
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-start;
         select{
             color: rgba(34, 34, 96, 0.4);
             &:focus, &:active{
