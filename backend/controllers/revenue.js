@@ -3,17 +3,31 @@ const mongoose = require("mongoose")
 
 
 exports.addRevenue = async (req, res) => {
-    const {userid, date, client, service, quantity, addOnService, serviceLocation, servicefee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber} = req.body
+    const {userid, date, client, service, quantity, addOnService, serviceLocation, serviceFee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber} = req.body
 
     const revenue = RevenueSchema({
-        userid, date, client, service, quantity, addOnService, serviceLocation, servicefee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber
+        userid,
+        date,
+        client,
+        service,
+        quantity,
+        addOnService,
+        serviceLocation,
+        serviceFee: serviceFee ? `$${Number(serviceFee).toFixed(2)}` : '',
+        travelFee: travelFee ? `$${Number(travelFee).toFixed(2)}` : '',
+        discount: discount ? `$${Number(discount).toFixed(2)}` : '',
+        discountReason,
+        paymentType,
+        transactionFee: transactionFee ? `$${Number(transactionFee).toFixed(2)}` : '',
+        actualRevenue: actualRevenue ? `$${Number(actualRevenue).toFixed(2)}` : '',
+        invoiceNumber
     })
 
     try {
-        if(!userid || !date || !client || !service || !quantity){
-            return res.status(400).json({message: 'All fields are required'})
+        if(!userid || !date || !client || !service){
+            return res.status(400).json({message: 'Date, Client, and Service are required'})
         }
-        if(quantity <=0 || !quantity === 'number' ){
+        if(quantity && Number(quantity) <= 0){
             return res.status(400).json({message: 'Quantity must be positive number'})
         }
 
@@ -24,7 +38,7 @@ exports.addRevenue = async (req, res) => {
         res.status(500).json({message: 'Server Error'})
     }
 
-    console.log(revenue)
+    // console.log(revenue)
 }
 
 exports.getRevenue = async (req, res) => {

@@ -14,6 +14,30 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 
 ![Recording2024-07-20061649-ezgif com-optimize](https://github.com/user-attachments/assets/64e35882-fa9c-497c-90ec-802331e0d6f9)
 
+## Backlog
+- Add Expense Functionality
+- Add Revenue Functionality
+- Upload Client Database to MongoDB
+- Display Client Database Transactions
+- Add Client Functionality
+- Test New User/Register Functionality
+- Delete Deduction Functionality
+- Delete Expense Functionality
+- Delete Revenue Functionality
+- Delete Client Functionality
+- Search Revenue
+- Search Expense
+- Search Deduction
+- Search Client
+- Modify Deduction Functionality
+- Modify Expense Functionality
+- Modify Revenue Functionality
+- Modify Client Functionality
+- Add Incremental Invoice Number Automatically
+- Load Historical Data for Graphs
+- Add additional cuts of data on Dashboard
+- Ability to download tables and graphs
+
 ## Features
 - User authentication (register, login, logout)
 - Add, edit, and delete revenue
@@ -90,7 +114,7 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 
 ## Usage
 1. Register a new account or log in with an existing account.
-2. Add, edit, and delete revenue and expenses.
+2. Add, edit, and delete revenue, expenses, deductions, and clients.
 3. View the transaction history and visualizations on the dashboard.
 
 ## API Endpoints

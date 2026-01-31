@@ -9,7 +9,7 @@ exports.addDeduction = async (req, res) => {
         Year: year,
         'Deduction Type': deductionType,
         'Deduction Description': deductionDescription,
-        'Deduction Amount': deductionAmount ? `$${deductionAmount}` : '',
+        'Deduction Amount': deductionAmount ? `$${Number(deductionAmount).toFixed(2)}` : '',
         'Deduction Record Number': deductionRecordNumber,
         userid
     })

@@ -7,5 +7,5 @@ export const dateFormat = (date) =>{
     if (typeof date === 'string' && moment(date, 'MMMM', true).isValid()) {
         return date
     }
-    return moment(date).isValid() ? moment(date).format('DD/MM/YYYY') : String(date)
+    return moment(date).isValid() ? moment(date).format('M/D/YYYY') : String(date)
 }

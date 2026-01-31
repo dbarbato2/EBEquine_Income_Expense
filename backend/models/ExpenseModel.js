@@ -6,52 +6,52 @@ const ExpenseSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    date: {
+    Date: {
         type: Date,
         required: true,
         trim: true
     },
-    vendor: {
+    'Vendor/Payee': {
         type: String,
         required: true,
         maxLength:100,
         trim: true
     },
-    location: {
+    Location: {
         type: String,
         required: true,
         maxLength:100,
         trim: true
     },
-    expenseType: {
+    'Expense Type': {
         type: String,
         required: true,
         enum: ['Airfare', 'Hotel', 'Rental Car', 'Food', 'Parking', 'Professional', 'Supplies', 'Home Office Expenses', 'Gas', 'Gym', 'Car Payment', 'Car Maintenance'],
         default: false
     },
-    expenseDescription: {
+    'Expense Description': {
         type: String,
         required: false,
         maxLength:100,
         trim: true
     },
-    amount: {
-        type: mongoose.Decimal128,
+    Amount: {
+        type: String,
         required: false,
-        min: 0
+        trim: true
     },
-    paymentType: {
+    'Payment Type': {
         type: String,
         required: false,
         enum: ['Cash', 'Check', 'Chase Credit Card', 'Venmo', 'AutoPay Needham Bank'],
         default: false
     },
-    businessTrip: {
-        type: Boolean,
+    'Associated with a Business Trip': {
+        type: String,
         required: false,
-        default: false
+        default: null
     },
-    expenseRecordNumber: {
+    'Expense Record Number': {
         type: Number,
         required: false,
         trim: true,

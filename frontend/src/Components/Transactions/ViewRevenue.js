@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
 import { InnerLayout } from '../../styles/Layouts';
+import { dateFormat } from '../../utils/dateFormat';
 
 const ViewRevenue = () => {
   const { getRevenue, revenue } = useGlobalContext();
@@ -41,7 +42,7 @@ const ViewRevenue = () => {
         <tbody>
           {revenue.map(revenue => (
             <tr key={revenue._id} onClick={() => handleRowClick(revenue)}>
-              <td>{revenue.Date}</td>
+              <td>{dateFormat(revenue.Date)}</td>
               <td>{revenue.Client}</td>
               <td>{revenue.Service}</td>
               <td>{revenue.Quantity}</td>

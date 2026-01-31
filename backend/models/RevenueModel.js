@@ -6,78 +6,78 @@ const RevenueSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    date: {
+    Date: {
         type: Date,
         required: true,
         trim: true
     },
-    client: {
+    Client: {
         type: String,
         required: true,
         maxLength:50,
         trim: true
     },
-    service: {
+    Service: {
         type: String,
         enum: ['Introductory Massager', '1 Hour Massage', 'Kinesiology Tape', '8 Hours Teaching', 'Gift Certificate'],
         required: false,
         default: "1 Hour Massage"
     },
-    quantity: {
+    Quantity: {
         type: Number,
         required: false,
         trim: true,
         min: 0
     },
-    addOnService: {
+    'Add-On Service': {
         type: String,
         required: false,
         maxLength:50,
         trim: true
     },
-    serviceLocation: {
+    'Service Location': {
         type: String,
         enum: ['MA', 'NH', 'NJ', 'FL'],
         required: false
     },
-    serviceFee: {
-        type: mongoose.Decimal128,
+    'Service Fee': {
+        type: String,
         required: false,
-        min: 0
+        trim: true
     },
-    travelFee: {
-        type: mongoose.Decimal128,
+    'Travel Fee': {
+        type: String,
         required: false,
-        min: 0
+        trim: true
     },
-    discount: {
-        type: mongoose.Decimal128,
+    Discount: {
+        type: String,
         required: false,
-        min: 0
+        trim: true
     },
-    discountReason: {
+    'Discount Reason': {
         type: String,
         required: false,
         maxLength:50,
         trim: true
     },
-    paymentType: {
+    'Payment Type': {
         type: String,
         enum: ['Venmo', 'Cash', 'Check', 'Gift Certificate'],
         required: false,
         default: false
     },
-    transactionFee: {
-        type: mongoose.Decimal128,
+    'Transaction Fees': {
+        type: String,
         required: false,
-        min: 0
+        trim: true
     },
-    actualRevenue: {
-        type: mongoose.Decimal128,
+    'Actual Fees': {
+        type: String,
         required: false,
-        min: 0
+        trim: true
     },
-    invoiceNumber: {
+    'Invoice Number': {
         type: Number,
         required: false,
         trim: true,

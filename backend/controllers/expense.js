@@ -2,17 +2,26 @@ const ExpenseSchema = require("../models/ExpenseModel")
 const mongoose = require("mongoose")
 
 exports.addExpense = async (req, res) => {
-    const {title, amount, category, description, date, userid} = req.body
+    const {date, vendor, location, expenseType, expenseDescription, amount, paymentType, businessTrip, expenseRecordNumber, userid} = req.body
 
     const expense = ExpenseSchema({
-        title, amount, category, description, date, userid
+        Date: date,
+        'Vendor/Payee': vendor,
+        Location: location,
+        'Expense Type': expenseType,
+        'Expense Description': expenseDescription,
+        Amount: amount ? `$${Number(amount).toFixed(2)}` : '',
+        'Payment Type': paymentType,
+        'Associated with a Business Trip': businessTrip ? 'Yes' : null,
+        'Expense Record Number': expenseRecordNumber,
+        userid
     })
 
     try {
-        if(!title || !category || !description || !date){
-            return res.status(400).json({message: 'All fields are required'})
+        if(!date || !vendor || !location || !expenseType){
+            return res.status(400).json({message: 'Date, Vendor, Location, and Expense Type are required'})
         }
-        if(amount <=0 || !amount === 'number' ){
+        if(amount && Number(amount) <= 0){
             return res.status(400).json({message: 'Amount must be positive number'})
         }
 

@@ -123,8 +123,12 @@ export const GlobalProvider = ({ children }) => {
   // Revenue and expense functions
   const addRevenue = async (revenue) => {
     await axios.post(`${BASE_URL}add-revenue`, revenue)
+      .then(() => {
+        toast.success('Revenue added successfully!');
+      })
       .catch((err) => {
         setError(err.response.data.message);
+        toast.error(err.response.data.message || 'Failed to add revenue');
       });
     getRevenue();
   };
@@ -164,8 +168,12 @@ export const GlobalProvider = ({ children }) => {
 
   const addClient = async (client) => {
     await axios.post(`${BASE_URL}add-client`, client)
+      .then(() => {
+        toast.success('Client added successfully!');
+      })
       .catch((err) => {
         setError(err.response.data.message);
+        toast.error(err.response.data.message || 'Failed to add client');
       });
     getClients();
   };
@@ -308,8 +316,12 @@ export const GlobalProvider = ({ children }) => {
 
   const addDeduction = async (deduction) => {
     await axios.post(`${BASE_URL}add-deduction`, deduction)
+      .then(() => {
+        toast.success('Deduction added successfully!');
+      })
       .catch((err) => {
         setError(err.response.data.message);
+        toast.error(err.response.data.message || 'Failed to add deduction');
       });
     getDeductions();
   };
@@ -340,8 +352,12 @@ export const GlobalProvider = ({ children }) => {
 
   const addExpense = async (expense) => {
     await axios.post(`${BASE_URL}add-expense`, expense)
+      .then(() => {
+        toast.success('Expense added successfully!');
+      })
       .catch((err) => {
         setError(err.response.data.message);
+        toast.error(err.response.data.message || 'Failed to add expense');
       });
     getExpenses();
   };
