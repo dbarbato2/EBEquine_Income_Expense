@@ -5,7 +5,13 @@ exports.addClient = async (req, res) => {
     const { userid, name, ownerName, barn, address, emailAddress, phoneNumber } = req.body
 
     const client = ClientSchema({
-        userid, name, ownerName, barn, address, emailAddress, phoneNumber
+        userid,
+        Name: name,
+        'Owner Name': ownerName,
+        Barn: barn,
+        Address: address,
+        'Email Address': emailAddress,
+        'Phone Number': phoneNumber
     })
 
     try {
@@ -20,7 +26,7 @@ exports.addClient = async (req, res) => {
         res.status(500).json({ message: 'Server Error' })
     }
 
-    console.log(client)
+    // console.log(client)
 }
 
 exports.getClients = async (req, res) => {

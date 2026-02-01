@@ -342,6 +342,23 @@ export const GlobalProvider = ({ children }) => {
     getDeductions();
   };
 
+  const searchDeductions = async (year, month, deductionType) => {
+    if (!user) return [];
+    try {
+      let queryParams = `userid=${user}`;
+      if (year) queryParams += `&year=${year}`;
+      if (month) queryParams += `&month=${month}`;
+      if (deductionType) queryParams += `&deductionType=${deductionType}`;
+      
+      const response = await axios.get(`${BASE_URL}search-deductions?${queryParams}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error searching deductions:', error);
+      toast.error('Failed to search deductions');
+      return [];
+    }
+  };
+
   const totalDeductions = () => {
     let total = 0;
     deductions.forEach((d) => {
@@ -434,6 +451,7 @@ export const GlobalProvider = ({ children }) => {
       getDeductions,
       deductions,
       deleteDeduction,
+      searchDeductions,
       totalDeductions,
       expenses,
       totalRevenue,

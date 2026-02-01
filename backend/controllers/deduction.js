@@ -93,3 +93,34 @@ exports.deleteDeduction = async (req, res) => {
     })
     
 }
+
+exports.searchDeductions = async (req, res) => {
+    try {
+        const { userid, year, month, deductionType } = req.query;
+        
+        if (!userid) {
+            return res.status(400).json({message: 'User ID is required'})
+        }
+        
+        // Build search criteria
+        const searchCriteria = { userid: userid.trim() };
+        
+        if (year) {
+            searchCriteria.Year = Number(year);
+        }
+        
+        if (month) {
+            searchCriteria.Month = month;
+        }
+        
+        if (deductionType) {
+            searchCriteria['Deduction Type'] = deductionType;
+        }
+        
+        const deductions = await DeductionSchema.find(searchCriteria).sort({ createdAt: -1 });
+        res.status(200).json(deductions);
+    } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
+        res.status(500).json({message: 'Server Error', error: error.message})
+    }
+}

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import Button from '../Button/Button';
 import { plus, x } from '../../utils/Icons';
+import { toast } from 'react-hot-toast';
 
 
 function DeductionForm() {
@@ -49,6 +50,7 @@ function DeductionForm() {
             deductionRecordNumber: ''
         })
         setError('')
+        toast.success('Form reset successfully!')
     }
 
     return (

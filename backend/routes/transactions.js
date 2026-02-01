@@ -1,6 +1,6 @@
 const { addExpense, getExpenses, deleteExpense } = require('../controllers/expense')
 const { addRevenue, getRevenue, deleteRevenue } = require('../controllers/revenue');
-const { addDeduction, getDeductions, deleteDeduction } = require('../controllers/deduction');
+const { addDeduction, getDeductions, deleteDeduction, searchDeductions } = require('../controllers/deduction');
 const { addClient, getClients, deleteClient, editClient } = require('../controllers/client');
 const { checkUser, register, login } = require('../controllers/user');
 
@@ -14,6 +14,7 @@ router.post('/api/v1/add-revenue', addRevenue)
     .delete('/api/v1/delete-expense/:id', deleteExpense)
     .post('/api/v1/add-deduction', addDeduction)
     .get('/api/v1/get-deductions', getDeductions)
+    .get('/api/v1/search-deductions', searchDeductions)
     .delete('/api/v1/delete-deduction/:id', deleteDeduction)
     .post('/api/v1/add-client', addClient)
     .get('/api/v1/get-clients', getClients)

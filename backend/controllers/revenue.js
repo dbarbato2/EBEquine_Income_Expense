@@ -5,22 +5,27 @@ const mongoose = require("mongoose")
 exports.addRevenue = async (req, res) => {
     const {userid, date, client, service, quantity, addOnService, serviceLocation, serviceFee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber} = req.body
 
+    console.log('=== ADD REVENUE DEBUG ===');
+    console.log('serviceLocation received:', serviceLocation);
+    console.log('serviceLocation type:', typeof serviceLocation);
+    console.log('serviceLocation value will be:', serviceLocation || undefined);
+
     const revenue = RevenueSchema({
         userid,
-        date,
-        client,
-        service,
-        quantity,
-        addOnService,
-        serviceLocation,
-        serviceFee: serviceFee ? `$${Number(serviceFee).toFixed(2)}` : '',
-        travelFee: travelFee ? `$${Number(travelFee).toFixed(2)}` : '',
-        discount: discount ? `$${Number(discount).toFixed(2)}` : '',
-        discountReason,
-        paymentType,
-        transactionFee: transactionFee ? `$${Number(transactionFee).toFixed(2)}` : '',
-        actualRevenue: actualRevenue ? `$${Number(actualRevenue).toFixed(2)}` : '',
-        invoiceNumber
+        Date: date,
+        Client: client,
+        Service: service,
+        Quantity: quantity,
+        'Add-On Service': addOnService,
+        'Service Location': serviceLocation || undefined,
+        'Service Fee': serviceFee ? `$${Number(serviceFee).toFixed(2)}` : '',
+        'Travel Fee': travelFee ? `$${Number(travelFee).toFixed(2)}` : '',
+        Discount: discount ? `$${Number(discount).toFixed(2)}` : '',
+        'Discount Reason': discountReason,
+        'Payment Type': paymentType || undefined,
+        'Transaction Fees': transactionFee ? `$${Number(transactionFee).toFixed(2)}` : '',
+        'Actual Fees': actualRevenue ? `$${Number(actualRevenue).toFixed(2)}` : '',
+        'Invoice Number': invoiceNumber
     })
 
     try {

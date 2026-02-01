@@ -13,6 +13,7 @@ import { GlobalProvider } from './context/globalContext';
 import ViewRevenue from './Components/Transactions/ViewRevenue';
 import ViewExpenses from './Components/Transactions/ViewExpenses';
 import ViewDeductions from './Components/Transactions/ViewDeductions';
+import ViewDeductionsSimple from './Components/Transactions/ViewDeductionsSimple';
 import ViewClients from './Components/Transactions/ViewClients';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Register from './Components/User/Register';
@@ -50,11 +51,11 @@ function App() {
       case 62:
         return <></>
       case 70:
-        return <ViewDeductions />
+        return <ViewDeductionsSimple />
       case 71:
         return <Deductions />
       case 72:
-        return <></>
+        return <ViewDeductions />
       case 80:
         return <ViewClients />
       case 81:

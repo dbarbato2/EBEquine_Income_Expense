@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import Button from '../Button/Button';
 import { plus, x } from '../../utils/Icons';
+import { toast } from 'react-hot-toast';
 
 
 function ClientForm() {
@@ -23,10 +24,37 @@ function ClientForm() {
         setError('')
     }
 
+    const formatPhoneNumber = (phone) => {
+        // Remove all non-digit characters
+        const cleaned = phone.replace(/\D/g, '');
+        
+        // Check if we have exactly 10 digits
+        if (cleaned.length !== 10) {
+            return null; // Invalid phone number
+        }
+        
+        // Format as ###-###-####
+        return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+    }
+
     const handleSubmit = e => {
         e.preventDefault()
-        const updated = {...inputState, userid: user}
-        addClient(updated)
+        
+        // Validate and format phone number if provided
+        if (phoneNumber) {
+            const formattedPhone = formatPhoneNumber(phoneNumber);
+            if (!formattedPhone) {
+                setError('Phone number must be 10 digits');
+                return;
+            }
+            // Update the phone number with formatted version
+            const updated = {...inputState, phoneNumber: formattedPhone, userid: user}
+            addClient(updated)
+        } else {
+            const updated = {...inputState, userid: user}
+            addClient(updated)
+        }
+        
         setInputState({
             name: '',
             ownerName: '',
@@ -48,6 +76,7 @@ function ClientForm() {
             phoneNumber: ''
         })
         setError('')
+        toast.success('Form reset successfully!')
     }
 
     return (

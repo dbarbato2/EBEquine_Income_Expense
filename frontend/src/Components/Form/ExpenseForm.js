@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useGlobalContext } from '../../context/globalContext';
 import Button from '../Button/Button';
 import { plus, x } from '../../utils/Icons';
+import { toast } from 'react-hot-toast';
 
 
 function ExpenseForm() {
@@ -59,6 +60,7 @@ function ExpenseForm() {
             expenseRecordNumber: ''
         })
         setError('')
+        toast.success('Form reset successfully!')
     }
 
     return (
@@ -69,7 +71,7 @@ function ExpenseForm() {
                     id='date'
                     placeholderText='Enter A Date'
                     selected={date}
-                    dateFormat="dd/MM/yyyy"
+                    dateFormat="MM/dd/yyyy"
                     onChange={(date) => {
                         setInputState({...inputState, date: date})
                     }}

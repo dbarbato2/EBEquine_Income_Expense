@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useGlobalContext } from '../../context/globalContext';
 import Button from '../Button/Button';
 import { plus, x } from '../../utils/Icons';
+import { toast } from 'react-hot-toast';
 
 
 function RevenueForm() {
@@ -74,6 +75,7 @@ function RevenueForm() {
             invoiceNumber: ''
         })
         setError('')
+        toast.success('Form reset successfully!')
     }
 
     return (
@@ -84,7 +86,7 @@ function RevenueForm() {
                     id='date'
                     placeholderText='Enter A Date'
                     selected={date}
-                    dateFormat="dd/MM/yyyy"
+                    dateFormat="MM/dd/yyyy"
                     onChange={(date) => {
                         setInputState({...inputState, date: date})
                     }}
@@ -129,6 +131,7 @@ function RevenueForm() {
             </div>
             <div className="selects input-control">
                 <select value={serviceLocation} name="serviceLocation" id="serviceLocation" onChange={handleInput('serviceLocation')}>
+                    <option value="" disabled>Select Service Location</option>
                     <option value="MA">MA</option>
                     <option value="NH">NH</option>
                     <option value="NJ">NJ</option>

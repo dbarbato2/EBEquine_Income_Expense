@@ -78,10 +78,9 @@ const RevenueSchema = new mongoose.Schema({
         trim: true
     },
     'Invoice Number': {
-        type: Number,
+        type: String,
         required: false,
-        trim: true,
-        min: 0
+        trim: true
     }
 }, {timestamps: true, collection: 'revenue'})
 

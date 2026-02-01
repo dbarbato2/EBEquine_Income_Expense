@@ -6,37 +6,37 @@ const ClientSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    name: {
+    Name: {
         type: String,
         required: true,
         maxLength: 50,
         trim: true
     },
-    ownerName: {
+    'Owner Name': {
         type: String,
         required: false,
         maxLength: 50,
         trim: true
     },
-    barn: {
+    Barn: {
         type: String,
         required: false,
         maxLength: 50,
         trim: true
     },
-    address: {
+    Address: {
         type: String,
         required: false,
         maxLength: 200,
         trim: true
     },
-    emailAddress: {
+    'Email Address': {
         type: String,
         required: false,
         trim: true,
         lowercase: true
     },
-    phoneNumber: {
+    'Phone Number': {
         type: String,
         required: false,
         trim: true
