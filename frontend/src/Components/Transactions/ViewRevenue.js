@@ -40,7 +40,16 @@ const ViewRevenue = () => {
           </tr>
         </thead>
         <tbody>
-          {revenue.map(revenue => (
+          {[...revenue].sort((a, b) => {
+            // Primary sort: by Date (newest first)
+            const dateCompare = new Date(b.Date) - new Date(a.Date);
+            if (dateCompare !== 0) return dateCompare;
+            
+            // Secondary sort: by Invoice Number (higher values first)
+            const invoiceA = parseInt(a['Invoice Number']) || 0;
+            const invoiceB = parseInt(b['Invoice Number']) || 0;
+            return invoiceB - invoiceA;
+          }).map(revenue => (
             <tr key={revenue._id} onClick={() => handleRowClick(revenue)}>
               <td>{dateFormat(revenue.Date)}</td>
               <td>{revenue.Client}</td>

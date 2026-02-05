@@ -3,7 +3,7 @@ import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
 import { InnerLayout } from '../../styles/Layouts';
 
-const ViewDeductionsSimple = () => {
+const ViewDeductionsWithModify = () => {
   const { getDeductions, deductions } = useGlobalContext();
 
   useEffect(() => {
@@ -14,8 +14,29 @@ const ViewDeductionsSimple = () => {
     alert(JSON.stringify(item, null, 2));
   };
 
+  const monthOrder = {
+    'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
+    'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
+  };
+
+  const sortedDeductions = [...deductions].sort((a, b) => {
+    // Primary sort: by Year (newest first)
+    if (b.Year !== a.Year) {
+      return b.Year - a.Year;
+    }
+    // Secondary sort: by Month (newest first)
+    const monthCompare = (monthOrder[b.Month] || 0) - (monthOrder[a.Month] || 0);
+    if (monthCompare !== 0) {
+      return monthCompare;
+    }
+    // Tertiary sort: by Record Number (highest first)
+    const recordA = parseInt(a['Deduction Record Number']) || 0;
+    const recordB = parseInt(b['Deduction Record Number']) || 0;
+    return recordB - recordA;
+  });
+
   return (
-    <ViewDeductionsSimpleStyled>
+    <ViewDeductionsWithModifyStyled>
         <InnerLayout>
       <h2>View Deductions</h2>
       <div className="table-wrapper">
@@ -31,7 +52,7 @@ const ViewDeductionsSimple = () => {
           </tr>
         </thead>
         <tbody>
-          {deductions.map(deductions => (
+          {sortedDeductions.map(deductions => (
             <tr key={deductions._id} onClick={() => handleRowClick(deductions)}>
               <td>{deductions.Year}</td>
               <td>{deductions.Month}</td>
@@ -45,11 +66,11 @@ const ViewDeductionsSimple = () => {
       </table>
       </div>
       </InnerLayout>
-    </ViewDeductionsSimpleStyled>
+    </ViewDeductionsWithModifyStyled>
   );
 }
 
-const ViewDeductionsSimpleStyled = styled.div`
+const ViewDeductionsWithModifyStyled = styled.div`
 
     h2{
     margin-bottom: 10px}
@@ -112,4 +133,4 @@ const ViewDeductionsSimpleStyled = styled.div`
   }
 `;
 
-export default ViewDeductionsSimple;
+export default ViewDeductionsWithModify;

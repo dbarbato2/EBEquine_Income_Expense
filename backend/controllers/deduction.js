@@ -96,7 +96,7 @@ exports.deleteDeduction = async (req, res) => {
 
 exports.searchDeductions = async (req, res) => {
     try {
-        const { userid, year, month, deductionType } = req.query;
+        const { userid, year, month, deductionType, recordNumber } = req.query;
         
         if (!userid) {
             return res.status(400).json({message: 'User ID is required'})
@@ -117,10 +117,55 @@ exports.searchDeductions = async (req, res) => {
             searchCriteria['Deduction Type'] = deductionType;
         }
         
+        // Exact match for record number
+        if (recordNumber) {
+            searchCriteria['Deduction Record Number'] = Number(recordNumber);
+        }
+        
         const deductions = await DeductionSchema.find(searchCriteria).sort({ createdAt: -1 });
         res.status(200).json(deductions);
     } catch (error) {
         console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({message: 'Server Error', error: error.message})
+    }
+}
+
+exports.updateDeduction = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { month, year, deductionType, deductionDescription, deductionAmount, deductionRecordNumber } = req.body;
+
+        // Format amount - remove $ if present and add it back with proper formatting
+        let formattedAmount = '';
+        if (deductionAmount) {
+            const amountStr = String(deductionAmount).replace(/\$/g, '').trim();
+            if (amountStr) {
+                formattedAmount = `$${Number(amountStr).toFixed(2)}`;
+            }
+        }
+
+        const updateData = {
+            Month: month,
+            Year: Number(year),
+            'Deduction Type': deductionType,
+            'Deduction Description': deductionDescription,
+            'Deduction Amount': formattedAmount,
+            'Deduction Record Number': deductionRecordNumber ? Number(deductionRecordNumber) : undefined
+        };
+
+        const updatedDeduction = await DeductionSchema.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedDeduction) {
+            return res.status(404).json({ message: 'Deduction not found' });
+        }
+
+        res.status(200).json({ message: 'Deduction updated successfully', deduction: updatedDeduction });
+    } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
+        res.status(500).json({ message: 'Server Error', error: error.message });
     }
 }

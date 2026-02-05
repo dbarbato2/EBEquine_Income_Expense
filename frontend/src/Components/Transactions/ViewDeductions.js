@@ -3,17 +3,22 @@ import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
 import { InnerLayout } from '../../styles/Layouts';
 import { toast } from 'react-hot-toast';
+import Button from '../Button/Button';
+import { edit, trash, plus, x } from '../../utils/Icons';
 
 const ViewDeductions = () => {
-  const { getDeductions, deductions, searchDeductions } = useGlobalContext();
+  const { getDeductions, deductions, searchDeductions, deleteDeduction, updateDeduction } = useGlobalContext();
   const [searchCriteria, setSearchCriteria] = useState({
     year: '',
     month: '',
-    deductionType: ''
+    deductionType: '',
+    recordNumber: ''
   });
   const [searchResults, setSearchResults] = useState([]);
   const [selectedDeduction, setSelectedDeduction] = useState(null);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedDeduction, setEditedDeduction] = useState(null);
 
   useEffect(() => {
     getDeductions();
@@ -25,14 +30,14 @@ const ViewDeductions = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    const { year, month, deductionType } = searchCriteria;
+    const { year, month, deductionType, recordNumber } = searchCriteria;
     
-    if (!year && !month && !deductionType) {
+    if (!year && !month && !deductionType && !recordNumber) {
       toast.error('Please select at least one search criteria');
       return;
     }
 
-    const results = await searchDeductions(year, month, deductionType);
+    const results = await searchDeductions(year, month, deductionType, recordNumber);
     setSearchResults(results);
     setShowSearchResults(true);
     
@@ -50,11 +55,95 @@ const ViewDeductions = () => {
 
   const handleResultClick = (deduction) => {
     setSelectedDeduction(deduction);
+    setEditedDeduction(deduction);
+    setIsEditing(false);
   };
 
   const handleRowClick = (item) => {
     alert(JSON.stringify(item, null, 2));
   };
+
+  const handleModify = () => {
+    setEditedDeduction({ ...selectedDeduction });
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedDeduction(selectedDeduction);
+  };
+
+  const handleEditInput = (field) => (e) => {
+    setEditedDeduction({ ...editedDeduction, [field]: e.target.value });
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      const updateData = {
+        month: editedDeduction.Month,
+        year: editedDeduction.Year,
+        deductionType: editedDeduction['Deduction Type'],
+        deductionDescription: editedDeduction['Deduction Description'],
+        deductionAmount: editedDeduction['Deduction Amount'],
+        deductionRecordNumber: editedDeduction['Deduction Record Number']
+      };
+
+      await updateDeduction(selectedDeduction._id, updateData);
+      setSelectedDeduction(editedDeduction);
+      setIsEditing(false);
+      
+      // Refresh search results if applicable
+      if (showSearchResults) {
+        const { year, month, deductionType, recordNumber } = searchCriteria;
+        const results = await searchDeductions(year, month, deductionType, recordNumber);
+        setSearchResults(results);
+      }
+    } catch (error) {
+      console.error('Error saving changes:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this deduction?')) {
+      try {
+        await deleteDeduction(selectedDeduction._id);
+        toast.success('Deduction deleted successfully!');
+        setSelectedDeduction(null);
+        setEditedDeduction(null);
+        setIsEditing(false);
+        
+        // Refresh search results if applicable
+        if (showSearchResults) {
+          const { year, month, deductionType, recordNumber } = searchCriteria;
+          const results = await searchDeductions(year, month, deductionType, recordNumber);
+          setSearchResults(results);
+        }
+      } catch (error) {
+        console.error('Error deleting deduction:', error);
+      }
+    }
+  };
+
+  const monthOrder = {
+    'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
+    'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
+  };
+
+  const sortedDeductions = [...deductions].sort((a, b) => {
+    // Primary sort: by Year (newest first)
+    if (b.Year !== a.Year) {
+      return b.Year - a.Year;
+    }
+    // Secondary sort: by Month (newest first)
+    const monthCompare = (monthOrder[b.Month] || 0) - (monthOrder[a.Month] || 0);
+    if (monthCompare !== 0) {
+      return monthCompare;
+    }
+    // Tertiary sort: by Record Number (highest first)
+    const recordA = parseInt(a['Deduction Record Number']) || 0;
+    const recordB = parseInt(b['Deduction Record Number']) || 0;
+    return recordB - recordA;
+  });
 
   return (
     <ViewDeductionsStyled>
@@ -120,6 +209,15 @@ const ViewDeductions = () => {
                 <option value="Utilities - Water">Utilities - Water</option>
               </select>
             </div>
+            <div className="input-control">
+              <input 
+                type="text"
+                value={searchCriteria.recordNumber}
+                name="recordNumber"
+                placeholder="Record Number"
+                onChange={handleSearchInput('recordNumber')}
+              />
+            </div>
             <button type="submit" className="search-btn">Search</button>
           </div>
         </form>
@@ -169,28 +267,134 @@ const ViewDeductions = () => {
           <div className="form-content">
             <div className="form-group">
               <label>Year:</label>
-              <input type="number" value={selectedDeduction.Year} readOnly />
+              <input 
+                type="number" 
+                value={isEditing ? editedDeduction.Year : selectedDeduction.Year} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('Year') : undefined}
+              />
             </div>
             <div className="form-group">
               <label>Month:</label>
-              <input type="text" value={selectedDeduction.Month} readOnly />
+              {isEditing ? (
+                <select 
+                  value={editedDeduction.Month} 
+                  onChange={handleEditInput('Month')}
+                >
+                  <option value="January">January</option>
+                  <option value="February">February</option>
+                  <option value="March">March</option>
+                  <option value="April">April</option>
+                  <option value="May">May</option>
+                  <option value="June">June</option>
+                  <option value="July">July</option>
+                  <option value="August">August</option>
+                  <option value="September">September</option>
+                  <option value="October">October</option>
+                  <option value="November">November</option>
+                  <option value="December">December</option>
+                </select>
+              ) : (
+                <input type="text" value={selectedDeduction.Month} readOnly />
+              )}
             </div>
             <div className="form-group">
               <label>Deduction Type:</label>
-              <input type="text" value={selectedDeduction['Deduction Type']} readOnly />
+              {isEditing ? (
+                <select 
+                  value={editedDeduction['Deduction Type']} 
+                  onChange={handleEditInput('Deduction Type')}
+                >
+                  <option value="Mileage">Mileage</option>
+                  <option value="Tolls">Tolls</option>
+                  <option value="Car Payment">Car Payment</option>
+                  <option value="Auto Insurance">Auto Insurance</option>
+                  <option value="Gym Membership">Gym Membership</option>
+                  <option value="Mortgage">Mortgage</option>
+                  <option value="Real Estate Taxes">Real Estate Taxes</option>
+                  <option value="Internet">Internet</option>
+                  <option value="Utilities - Electric">Utilities - Electric</option>
+                  <option value="Utilities - Gas">Utilities - Gas</option>
+                  <option value="Lawn Maintenance">Lawn Maintenance</option>
+                  <option value="Recycling/Rubbish">Recycling/Rubbish</option>
+                  <option value="Utilities - Water">Utilities - Water</option>
+                </select>
+              ) : (
+                <input type="text" value={selectedDeduction['Deduction Type']} readOnly />
+              )}
             </div>
             <div className="form-group">
               <label>Description:</label>
-              <input type="text" value={selectedDeduction['Deduction Description'] || ''} readOnly />
+              <input 
+                type="text" 
+                value={isEditing ? (editedDeduction['Deduction Description'] || '') : (selectedDeduction['Deduction Description'] || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('Deduction Description') : undefined}
+              />
             </div>
             <div className="form-group">
               <label>Amount:</label>
-              <input type="text" value={selectedDeduction['Deduction Amount'] || ''} readOnly />
+              <input 
+                type="text" 
+                value={isEditing ? (editedDeduction['Deduction Amount'] || '') : (selectedDeduction['Deduction Amount'] || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('Deduction Amount') : undefined}
+              />
             </div>
             <div className="form-group">
               <label>Record Number:</label>
-              <input type="text" value={selectedDeduction['Deduction Record Number'] || ''} readOnly />
+              <input 
+                type="number" 
+                value={isEditing ? (editedDeduction['Deduction Record Number'] || '') : (selectedDeduction['Deduction Record Number'] || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('Deduction Record Number') : undefined}
+              />
             </div>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="button-group">
+            {!isEditing ? (
+              <>
+                <Button 
+                  name={'Modify Deduction'}
+                  icon={edit}
+                  onClick={handleModify}
+                  bPad={'.8rem 1.6rem'}
+                  bRad={'30px'}
+                  bg={'var(--color-green)'}
+                  color={'#fff'}
+                />
+                <button 
+                  type="button"
+                  onClick={handleDelete}
+                  className="delete-btn"
+                >
+                  {trash}
+                  Delete Deduction
+                </button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  name={'Save Changes'}
+                  icon={plus}
+                  onClick={handleSaveChanges}
+                  bPad={'.8rem 1.6rem'}
+                  bRad={'30px'}
+                  bg={'var(--color-green)'}
+                  color={'#fff'}
+                />
+                <button 
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="cancel-btn"
+                >
+                  {x}
+                  Cancel
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -210,7 +414,7 @@ const ViewDeductions = () => {
           </tr>
         </thead>
         <tbody>
-          {deductions.map(deductions => (
+          {sortedDeductions.map(deductions => (
             <tr key={deductions._id} onClick={() => handleRowClick(deductions)}>
               <td>{deductions.Year}</td>
               <td>{deductions.Month}</td>
@@ -280,17 +484,23 @@ const ViewDeductionsStyled = styled.div`
       }
 
       .search-btn {
-        padding: .5rem 2rem;
-        border-radius: 5px;
-        border: 2px solid #fff;
+        padding: .8rem 1.6rem;
+        border-radius: 30px;
+        border: none;
         background: #222260;
         color: #fff;
-        font-size: 1rem;
+        font-size: inherit;
+        font-family: inherit;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all .4s ease-in-out;
+        box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         
         &:hover {
-          background: #42224a;
+          filter: brightness(0.75);
         }
       }
     }
@@ -311,6 +521,7 @@ const ViewDeductionsStyled = styled.div`
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
+        margin-bottom: 1.5rem;
       }
 
       .form-group {
@@ -323,7 +534,7 @@ const ViewDeductionsStyled = styled.div`
           color: rgba(34, 34, 96, 0.9);
         }
 
-        input {
+        input, select {
           font-family: inherit;
           font-size: inherit;
           outline: none;
@@ -334,6 +545,45 @@ const ViewDeductionsStyled = styled.div`
           background: transparent;
           box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
           color: rgba(34, 34, 96, 0.9);
+        }
+
+        select {
+          cursor: pointer;
+        }
+      }
+
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-start;
+        margin-top: 1rem;
+
+        button {
+          box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+          &:hover {
+            background: var(--color-green) !important;
+          }
+        }
+
+        .delete-btn, .cancel-btn {
+          padding: .8rem 1.6rem;
+          border-radius: 30px;
+          background: #dc3545;
+          color: #fff;
+          border: none;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-family: inherit;
+          font-size: inherit;
+          transition: all .4s ease-in-out;
+          
+          &:hover {
+            background: #c82333 !important;
+          }
         }
       }
     }

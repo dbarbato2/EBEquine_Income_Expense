@@ -1,23 +1,29 @@
-const { addExpense, getExpenses, deleteExpense } = require('../controllers/expense')
-const { addRevenue, getRevenue, deleteRevenue } = require('../controllers/revenue');
-const { addDeduction, getDeductions, deleteDeduction, searchDeductions } = require('../controllers/deduction');
-const { addClient, getClients, deleteClient, editClient } = require('../controllers/client');
+const { addExpense, getExpenses, deleteExpense, searchExpenses, updateExpense } = require('../controllers/expense')
+const { addRevenue, getRevenue, deleteRevenue, searchRevenue, updateRevenue } = require('../controllers/revenue');
+const { addDeduction, getDeductions, deleteDeduction, searchDeductions, updateDeduction } = require('../controllers/deduction');
+const { addClient, getClients, deleteClient, editClient, searchClients } = require('../controllers/client');
 const { checkUser, register, login } = require('../controllers/user');
 
 const router = require('express').Router()
 
 router.post('/api/v1/add-revenue', addRevenue)
     .get('/api/v1/get-revenue', getRevenue)
+    .get('/api/v1/search-revenue', searchRevenue)
+    .put('/api/v1/update-revenue/:id', updateRevenue)
     .delete('/api/v1/delete-revenue/:id', deleteRevenue)
     .post('/api/v1/add-expense', addExpense)
     .get('/api/v1/get-expenses', getExpenses)
+    .get('/api/v1/search-expenses', searchExpenses)
+    .put('/api/v1/update-expense/:id', updateExpense)
     .delete('/api/v1/delete-expense/:id', deleteExpense)
     .post('/api/v1/add-deduction', addDeduction)
     .get('/api/v1/get-deductions', getDeductions)
     .get('/api/v1/search-deductions', searchDeductions)
+    .put('/api/v1/update-deduction/:id', updateDeduction)
     .delete('/api/v1/delete-deduction/:id', deleteDeduction)
     .post('/api/v1/add-client', addClient)
     .get('/api/v1/get-clients', getClients)
+    .get('/api/v1/search-clients', searchClients)
     .delete('/api/v1/delete-client/:id', deleteClient)
     .put('/api/v1/edit-client/:id', editClient)
     .post('/api/v1/check-user', checkUser)

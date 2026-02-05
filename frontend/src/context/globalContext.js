@@ -342,13 +342,31 @@ export const GlobalProvider = ({ children }) => {
     getDeductions();
   };
 
-  const searchDeductions = async (year, month, deductionType) => {
+  const updateDeduction = async (id, deductionData) => {
+    try {
+      console.log('Updating deduction with ID:', id);
+      console.log('Deduction data:', deductionData);
+      const response = await axios.put(`${BASE_URL}update-deduction/${id}`, deductionData);
+      console.log('Update response:', response.data);
+      toast.success('Deduction updated successfully!');
+      getDeductions();
+      return response.data;
+    } catch (error) {
+      console.error('Error updating deduction:', error);
+      console.error('Error response:', error.response?.data);
+      toast.error(error.response?.data?.message || 'Failed to update deduction');
+      throw error;
+    }
+  };
+
+  const searchDeductions = async (year, month, deductionType, recordNumber) => {
     if (!user) return [];
     try {
       let queryParams = `userid=${user}`;
       if (year) queryParams += `&year=${year}`;
       if (month) queryParams += `&month=${month}`;
       if (deductionType) queryParams += `&deductionType=${deductionType}`;
+      if (recordNumber) queryParams += `&recordNumber=${recordNumber}`;
       
       const response = await axios.get(`${BASE_URL}search-deductions?${queryParams}`);
       return response.data;
@@ -356,6 +374,113 @@ export const GlobalProvider = ({ children }) => {
       console.error('Error searching deductions:', error);
       toast.error('Failed to search deductions');
       return [];
+    }
+  };
+
+  // Revenue search and update
+  const searchRevenue = async (date, client, service, invoiceNumber) => {
+    if (!user) return [];
+    try {
+      let queryParams = `userid=${user}`;
+      if (date) queryParams += `&date=${date}`;
+      if (client) queryParams += `&client=${client}`;
+      if (service) queryParams += `&service=${service}`;
+      if (invoiceNumber) queryParams += `&invoiceNumber=${invoiceNumber}`;
+      
+      const response = await axios.get(`${BASE_URL}search-revenue?${queryParams}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error searching revenue:', error);
+      toast.error('Failed to search revenue');
+      return [];
+    }
+  };
+
+  const updateRevenue = async (id, revenueData) => {
+    try {
+      console.log('Updating revenue with ID:', id);
+      console.log('Revenue data:', revenueData);
+      const response = await axios.put(`${BASE_URL}update-revenue/${id}`, revenueData);
+      console.log('Update response:', response.data);
+      toast.success('Revenue updated successfully!');
+      getRevenue();
+      return response.data;
+    } catch (error) {
+      console.error('Error updating revenue:', error);
+      console.error('Error response:', error.response?.data);
+      toast.error(error.response?.data?.message || 'Failed to update revenue');
+      throw error;
+    }
+  };
+
+  // Expense search and update
+  const searchExpenses = async (date, vendor, expenseType, location, recordNumber) => {
+    if (!user) return [];
+    try {
+      let queryParams = `userid=${user}`;
+      if (date) queryParams += `&date=${date}`;
+      if (vendor) queryParams += `&vendor=${vendor}`;
+      if (expenseType) queryParams += `&expenseType=${expenseType}`;
+      if (location) queryParams += `&location=${location}`;
+      if (recordNumber) queryParams += `&recordNumber=${recordNumber}`;
+      
+      const response = await axios.get(`${BASE_URL}search-expenses?${queryParams}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error searching expenses:', error);
+      toast.error('Failed to search expenses');
+      return [];
+    }
+  };
+
+  const updateExpense = async (id, expenseData) => {
+    try {
+      console.log('Updating expense with ID:', id);
+      console.log('Expense data:', expenseData);
+      const response = await axios.put(`${BASE_URL}update-expense/${id}`, expenseData);
+      console.log('Update response:', response.data);
+      toast.success('Expense updated successfully!');
+      getExpenses();
+      return response.data;
+    } catch (error) {
+      console.error('Error updating expense:', error);
+      console.error('Error response:', error.response?.data);
+      toast.error(error.response?.data?.message || 'Failed to update expense');
+      throw error;
+    }
+  };
+
+  // Client search and update
+  const searchClients = async (name, ownerName) => {
+    if (!user) return [];
+    try {
+      let queryParams = `userid=${user}`;
+      if (name) queryParams += `&name=${name}`;
+      if (ownerName) queryParams += `&ownerName=${ownerName}`;
+      
+      const response = await axios.get(`${BASE_URL}search-clients?${queryParams}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error searching clients:', error);
+      toast.error('Failed to search clients');
+      return [];
+    }
+  };
+
+  const updateClient = async (id, clientData) => {
+    try {
+      console.log('Updating client with ID:', id);
+      console.log('Client data:', clientData);
+      const response = await axios.put(`${BASE_URL}edit-client/${id}`, clientData);
+      console.log('Update response:', response.data);
+      toast.success('Client updated successfully!');
+      getClients();
+      return response.data;
+    } catch (error) {
+      console.error('Error updating client:', error);
+      console.error('Error response:', error.response?.data);
+      toast.error(error.response?.data?.message || 'Failed to update client');
+      throw error;
     }
   };
 
@@ -447,10 +572,13 @@ export const GlobalProvider = ({ children }) => {
       getRevenue,
       revenue,
       deleteRevenue,
+      searchRevenue,
+      updateRevenue,
       addDeduction,
       getDeductions,
       deductions,
       deleteDeduction,
+      updateDeduction,
       searchDeductions,
       totalDeductions,
       expenses,
@@ -458,6 +586,8 @@ export const GlobalProvider = ({ children }) => {
       addExpense,
       getExpenses,
       deleteExpense,
+      searchExpenses,
+      updateExpense,
       totalExpenses,
       totalBalance,
       quarterlyRevenue,
@@ -467,6 +597,8 @@ export const GlobalProvider = ({ children }) => {
       addClient,
       getClients,
       clients,
+      searchClients,
+      updateClient,
       error,
       setError,
       email,

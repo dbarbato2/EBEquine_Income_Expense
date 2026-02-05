@@ -7,5 +7,7 @@ export const dateFormat = (date) =>{
     if (typeof date === 'string' && moment(date, 'MMMM', true).isValid()) {
         return date
     }
-    return moment(date).isValid() ? moment(date).format('M/D/YYYY') : String(date)
+    // Parse as UTC and display in UTC (don't convert to local timezone)
+    // This ensures the date matches what was stored
+    return moment.utc(date).isValid() ? moment.utc(date).format('M/D/YYYY') : String(date)
 }

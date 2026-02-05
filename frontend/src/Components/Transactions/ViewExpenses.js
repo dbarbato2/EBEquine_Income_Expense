@@ -35,7 +35,16 @@ const ViewExpenses = () => {
           </tr>
         </thead>
         <tbody>
-          {expenses.map(expenses => (
+          {[...expenses].sort((a, b) => {
+            // Primary sort: by Date (newest first)
+            const dateCompare = new Date(b.Date) - new Date(a.Date);
+            if (dateCompare !== 0) return dateCompare;
+            
+            // Secondary sort: by Record Number (higher values first)
+            const recordA = parseInt(a['Expense Record Number']) || 0;
+            const recordB = parseInt(b['Expense Record Number']) || 0;
+            return recordB - recordA;
+          }).map(expenses => (
             <tr key={expenses._id} onClick={() => handleRowClick(expenses)}>
               <td>{dateFormat(expenses.Date)}</td>
               <td>{expenses['Vendor/Payee']}</td>

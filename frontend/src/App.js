@@ -13,8 +13,11 @@ import { GlobalProvider } from './context/globalContext';
 import ViewRevenue from './Components/Transactions/ViewRevenue';
 import ViewExpenses from './Components/Transactions/ViewExpenses';
 import ViewDeductions from './Components/Transactions/ViewDeductions';
-import ViewDeductionsSimple from './Components/Transactions/ViewDeductionsSimple';
+import ViewDeductionsWithModify from './Components/Transactions/ViewDeductionsWithModify';
 import ViewClients from './Components/Transactions/ViewClients';
+import ViewRevenueWithModify from './Components/Transactions/ViewRevenueWithModify';
+import ViewExpensesWithModify from './Components/Transactions/ViewExpensesWithModify';
+import ViewClientsWithModify from './Components/Transactions/ViewClientsWithModify';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Register from './Components/User/Register';
 import Login from './Components/User/Login';
@@ -43,15 +46,15 @@ function App() {
       case 51:
         return <Revenue />
       case 52:
-        return <></>
+        return <ViewRevenueWithModify />
       case 60:
         return <ViewExpenses />
       case 61:
         return <Expenses />
       case 62:
-        return <></>
+        return <ViewExpensesWithModify />
       case 70:
-        return <ViewDeductionsSimple />
+        return <ViewDeductionsWithModify />
       case 71:
         return <Deductions />
       case 72:
@@ -61,7 +64,7 @@ function App() {
       case 81:
         return <Clients />
       case 82:
-        return <></>
+        return <ViewClientsWithModify />
       default: 
         return <Dashboard />
     }
