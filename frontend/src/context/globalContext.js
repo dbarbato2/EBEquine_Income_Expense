@@ -122,15 +122,16 @@ export const GlobalProvider = ({ children }) => {
 
   // Revenue and expense functions
   const addRevenue = async (revenue) => {
-    await axios.post(`${BASE_URL}add-revenue`, revenue)
-      .then(() => {
-        toast.success('Revenue added successfully!');
-      })
-      .catch((err) => {
-        setError(err.response.data.message);
-        toast.error(err.response.data.message || 'Failed to add revenue');
-      });
-    getRevenue();
+    try {
+      await axios.post(`${BASE_URL}add-revenue`, revenue)
+      toast.success('Revenue added successfully!');
+      await getRevenue();
+      return true;
+    } catch (err) {
+      setError(err.response.data.message);
+      toast.error(err.response.data.message || 'Failed to add revenue');
+      return false;
+    }
   };
 
   const getRevenue = useCallback(async () => {
@@ -167,15 +168,16 @@ export const GlobalProvider = ({ children }) => {
 }, [user]);
 
   const addClient = async (client) => {
-    await axios.post(`${BASE_URL}add-client`, client)
-      .then(() => {
-        toast.success('Client added successfully!');
-      })
-      .catch((err) => {
-        setError(err.response.data.message);
-        toast.error(err.response.data.message || 'Failed to add client');
-      });
-    getClients();
+    try {
+      await axios.post(`${BASE_URL}add-client`, client)
+      toast.success('Client added successfully!');
+      await getClients();
+      return true;
+    } catch (err) {
+      setError(err.response.data.message);
+      toast.error(err.response.data.message || 'Failed to add client');
+      return false;
+    }
   };
 
   const deleteRevenue = async (id) => {
@@ -315,15 +317,16 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const addDeduction = async (deduction) => {
-    await axios.post(`${BASE_URL}add-deduction`, deduction)
-      .then(() => {
-        toast.success('Deduction added successfully!');
-      })
-      .catch((err) => {
-        setError(err.response.data.message);
-        toast.error(err.response.data.message || 'Failed to add deduction');
-      });
-    getDeductions();
+    try {
+      await axios.post(`${BASE_URL}add-deduction`, deduction)
+      toast.success('Deduction added successfully!');
+      await getDeductions();
+      return true;
+    } catch (err) {
+      setError(err.response.data.message);
+      toast.error(err.response.data.message || 'Failed to add deduction');
+      return false;
+    }
   };
 
   const getDeductions = useCallback(async () => {
@@ -493,15 +496,16 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const addExpense = async (expense) => {
-    await axios.post(`${BASE_URL}add-expense`, expense)
-      .then(() => {
-        toast.success('Expense added successfully!');
-      })
-      .catch((err) => {
-        setError(err.response.data.message);
-        toast.error(err.response.data.message || 'Failed to add expense');
-      });
-    getExpenses();
+    try {
+      await axios.post(`${BASE_URL}add-expense`, expense)
+      toast.success('Expense added successfully!');
+      await getExpenses();
+      return true;
+    } catch (err) {
+      setError(err.response.data.message);
+      toast.error(err.response.data.message || 'Failed to add expense');
+      return false;
+    }
   };
   const getExpenses = useCallback(async () => {
     if (!user) {

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 import { useGlobalContext } from '../../context/globalContext';
@@ -6,7 +6,7 @@ import { useGlobalContext } from '../../context/globalContext';
 function DetailedBreakdown() {
     const { revenue, expenses, deductions } = useGlobalContext()
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
-    const [selectedType, setSelectedType] = useState('revenue')
+    const [selectedType, setSelectedType] = useState('expenses')
 
     // Get available years from all collections
     const availableYears = useMemo(() => {
@@ -44,6 +44,13 @@ function DetailedBreakdown() {
         const sortedYears = Array.from(years).sort((a, b) => b - a)
         return sortedYears.length > 0 ? sortedYears : [new Date().getFullYear()]
     }, [revenue, expenses, deductions])
+
+    // Set selectedYear to the most recent year on component mount or when availableYears changes
+    useEffect(() => {
+        if (availableYears.length > 0) {
+            setSelectedYear(availableYears[0])
+        }
+    }, [availableYears])
 
     // Month to quarter mapping
     const getQuarter = (month) => {
@@ -136,9 +143,6 @@ function DetailedBreakdown() {
             maximumFractionDigits: 2
         }).format(amount)
     }
-
-    const typeLabel = selectedType === 'revenue' ? 'Revenue' : 
-                     selectedType === 'expenses' ? 'Expenses' : 'Deductions'
 
     return (
         <DetailedBreakdownStyled>

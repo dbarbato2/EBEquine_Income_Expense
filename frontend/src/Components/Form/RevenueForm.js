@@ -37,22 +37,25 @@ function RevenueForm() {
     const handleSubmit = e => {
         e.preventDefault()
         const updated = {...inputState, userid: user}
-        addRevenue(updated)
-        setInputState({
-            date: '',
-            client: '',
-            service: '1 Hour Massage',
-            quantity: '',
-            addOnService: '',
-            serviceLocation: '',
-            serviceFee: '',
-            travelFee: '',
-            discount: '',
-            discountReason: '',
-            paymentType: '',
-            transactionFee: '',
-            actualRevenue: '',
-            invoiceNumber: ''
+        addRevenue(updated).then(success => {
+            if (success) {
+                setInputState({
+                    date: '',
+                    client: '',
+                    service: '1 Hour Massage',
+                    quantity: '',
+                    addOnService: '',
+                    serviceLocation: '',
+                    serviceFee: '',
+                    travelFee: '',
+                    discount: '',
+                    discountReason: '',
+                    paymentType: '',
+                    transactionFee: '',
+                    actualRevenue: '',
+                    invoiceNumber: ''
+                })
+            }
         })
     }
 
@@ -103,7 +106,7 @@ function RevenueForm() {
             </div>
             <div className="selects input-control">
                 <select value={service} name="service" id="service" onChange={handleInput('service')}>
-                    <option value="Introductory Massager">Introductory Massager</option>
+                    <option value="Introductory Massage">Introductory Massage</option>
                     <option value="1 Hour Massage">1 Hour Massage</option>
                     <option value="Kinesiology Tape">Kinesiology Tape</option>
                     <option value="8 Hours Teaching">8 Hours Teaching</option>
@@ -130,7 +133,7 @@ function RevenueForm() {
                 />
             </div>
             <div className="selects input-control">
-                <select value={serviceLocation} name="serviceLocation" id="serviceLocation" onChange={handleInput('serviceLocation')}>
+                <select value={serviceLocation} name="serviceLocation" id="serviceLocation" onChange={handleInput('serviceLocation')} required>
                     <option value="" disabled>Select Service Location</option>
                     <option value="MA">MA</option>
                     <option value="NH">NH</option>
@@ -181,7 +184,7 @@ function RevenueForm() {
                 />
             </div>
             <div className="selects input-control">
-                <select value={paymentType} name="paymentType" id="paymentType" onChange={handleInput('paymentType')}>
+                <select value={paymentType} name="paymentType" id="paymentType" onChange={handleInput('paymentType')} required>
                     <option value="" disabled>Select Payment Type</option>
                     <option value="Venmo">Venmo</option>
                     <option value="Cash">Cash</option>
@@ -274,7 +277,10 @@ const FormStyled = styled.form`
         display: flex;
         justify-content: flex-start;
         select{
-            color: rgba(34, 34, 96, 0.4);
+            color: rgba(34, 34, 96, 0.9);
+            &:invalid{
+                color: rgba(34, 34, 96, 0.4);
+            }
             &:focus, &:active{
                 color: rgba(34, 34, 96, 1);
             }

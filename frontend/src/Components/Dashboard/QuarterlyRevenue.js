@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 
@@ -43,7 +43,14 @@ function QuarterlyRevenue() {
     }, [revenue, expenses, deductions])
 
     // Set selected year to the most recent year available in data
-    const [selectedYear, setSelectedYear] = useState(availableYears[0])
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+
+    // Update selectedYear to the most recent year on component mount or when availableYears changes
+    useEffect(() => {
+        if (availableYears.length > 0) {
+            setSelectedYear(availableYears[0])
+        }
+    }, [availableYears])
 
     const quarters = quarterlyRevenue(selectedYear)
     const expenseData = quarterlyExpenses(selectedYear)

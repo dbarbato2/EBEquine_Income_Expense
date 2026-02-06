@@ -28,14 +28,17 @@ function DeductionForm() {
     const handleSubmit = e => {
         e.preventDefault()
         const updated = {...inputState, userid: user}
-        addDeduction(updated)
-        setInputState({
-            year: '',
-            month: '',
-            deductionType: '',
-            deductionDescription: '',
-            deductionAmount: '',
-            deductionRecordNumber: ''
+        addDeduction(updated).then(success => {
+            if (success) {
+                setInputState({
+                    year: '',
+                    month: '',
+                    deductionType: '',
+                    deductionDescription: '',
+                    deductionAmount: '',
+                    deductionRecordNumber: ''
+                })
+            }
         })
     }
 
@@ -68,7 +71,7 @@ function DeductionForm() {
                 />
             </div>
             <div className="selects input-control">
-                <select value={month} name="month" id="month" onChange={handleInput('month')}>
+                <select value={month} name="month" id="month" onChange={handleInput('month')} required>
                     <option value="" disabled>Select Month</option>
                     <option>January</option>
                     <option>February</option>
@@ -85,7 +88,7 @@ function DeductionForm() {
                 </select>
             </div>
             <div className="selects input-control">
-                <select value={deductionType} name="deductionType" id="deductionType" onChange={handleInput('deductionType')}>
+                <select value={deductionType} name="deductionType" id="deductionType" onChange={handleInput('deductionType')} required>
                     <option value="" disabled>Select Deduction Type</option>
                     <option>Mileage</option>
                     <option>Tolls</option>
@@ -185,7 +188,10 @@ const FormStyled = styled.form`
         display: flex;
         justify-content: flex-start;
         select{
-            color: rgba(34, 34, 96, 0.4);
+            color: rgba(34, 34, 96, 0.9);
+            &:invalid{
+                color: rgba(34, 34, 96, 0.4);
+            }
             &:focus, &:active{
                 color: rgba(34, 34, 96, 1);
             }

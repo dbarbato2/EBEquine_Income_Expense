@@ -49,20 +49,33 @@ function ClientForm() {
             }
             // Update the phone number with formatted version
             const updated = {...inputState, phoneNumber: formattedPhone, userid: user}
-            addClient(updated)
+            addClient(updated).then(success => {
+                if (success) {
+                    setInputState({
+                        name: '',
+                        ownerName: '',
+                        barn: '',
+                        address: '',
+                        emailAddress: '',
+                        phoneNumber: ''
+                    })
+                }
+            })
         } else {
             const updated = {...inputState, userid: user}
-            addClient(updated)
+            addClient(updated).then(success => {
+                if (success) {
+                    setInputState({
+                        name: '',
+                        ownerName: '',
+                        barn: '',
+                        address: '',
+                        emailAddress: '',
+                        phoneNumber: ''
+                    })
+                }
+            })
         }
-        
-        setInputState({
-            name: '',
-            ownerName: '',
-            barn: '',
-            address: '',
-            emailAddress: '',
-            phoneNumber: ''
-        })
     }
 
     const handleReset = e => {

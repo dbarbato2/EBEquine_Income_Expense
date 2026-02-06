@@ -32,17 +32,20 @@ function ExpenseForm() {
     const handleSubmit = e => {
         e.preventDefault()
         const updated = {...inputState, userid: user}
-        addExpense(updated)
-        setInputState({
-            date: '',
-            vendor: '',
-            location: '',
-            expenseType: '',
-            expenseDescription: '',
-            amount: '',
-            paymentType: '',
-            businessTrip: false,
-            expenseRecordNumber: ''
+        addExpense(updated).then(success => {
+            if (success) {
+                setInputState({
+                    date: '',
+                    vendor: '',
+                    location: '',
+                    expenseType: '',
+                    expenseDescription: '',
+                    amount: '',
+                    paymentType: '',
+                    businessTrip: false,
+                    expenseRecordNumber: ''
+                })
+            }
         })
     }
 
@@ -132,7 +135,7 @@ function ExpenseForm() {
                 />
             </div>
             <div className="selects input-control">
-                <select value={paymentType} name="paymentType" id="paymentType" onChange={handleInput('paymentType')}>
+                <select value={paymentType} name="paymentType" id="paymentType" onChange={handleInput('paymentType')} required>
                     <option value="" disabled>Select Payment Type</option>
                     <option value="Cash">Cash</option>
                     <option value="Check">Check</option>
@@ -227,7 +230,10 @@ const ExpenseFormStyled = styled.form`
         display: flex;
         justify-content: flex-start;
         select{
-            color: rgba(34, 34, 96, 0.4);
+            color: rgba(34, 34, 96, 0.9);
+            &:invalid{
+                color: rgba(34, 34, 96, 0.4);
+            }
             &:focus, &:active{
                 color: rgba(34, 34, 96, 1);
             }
