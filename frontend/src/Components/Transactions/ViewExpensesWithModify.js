@@ -126,7 +126,6 @@ const ViewExpensesWithModify = () => {
     if (window.confirm('Are you sure you want to delete this expense?')) {
       try {
         await deleteExpense(selectedExpense._id);
-        toast.success('Expense deleted successfully!');
         setSelectedExpense(null);
         setEditedExpense(null);
         setIsEditing(false);

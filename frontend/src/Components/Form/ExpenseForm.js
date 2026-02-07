@@ -14,7 +14,7 @@ function ExpenseForm() {
         date: '',
         vendor: '',
         location: '',
-        expenseType: '',
+        expenseType: 'Airfare',
         expenseDescription: '',
         amount: '',
         paymentType: '',
@@ -31,14 +31,16 @@ function ExpenseForm() {
 
     const handleSubmit = e => {
         e.preventDefault()
-        const updated = {...inputState, userid: user}
+        // Convert date object to ISO string if it exists
+        const dateToSend = date ? new Date(date).toISOString() : ''
+        const updated = {...inputState, date: dateToSend, userid: user}
         addExpense(updated).then(success => {
             if (success) {
                 setInputState({
                     date: '',
                     vendor: '',
                     location: '',
-                    expenseType: '',
+                    expenseType: 'Airfare',
                     expenseDescription: '',
                     amount: '',
                     paymentType: '',
@@ -55,7 +57,7 @@ function ExpenseForm() {
             date: '',
             vendor: '',
             location: '',
-            expenseType: '',
+            expenseType: 'Airfare',
             expenseDescription: '',
             amount: '',
             paymentType: '',

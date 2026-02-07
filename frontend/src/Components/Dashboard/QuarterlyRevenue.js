@@ -52,9 +52,9 @@ function QuarterlyRevenue() {
         }
     }, [availableYears])
 
-    const quarters = quarterlyRevenue(selectedYear)
-    const expenseData = quarterlyExpenses(selectedYear)
-    const deductionData = quarterlyDeductions(selectedYear)
+    const quarters = selectedYear === 'all' ? quarterlyRevenue(null) : quarterlyRevenue(selectedYear)
+    const expenseData = selectedYear === 'all' ? quarterlyExpenses(null) : quarterlyExpenses(selectedYear)
+    const deductionData = selectedYear === 'all' ? quarterlyDeductions(null) : quarterlyDeductions(selectedYear)
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-US', {
@@ -74,13 +74,17 @@ function QuarterlyRevenue() {
                     <select 
                         id="year-select" 
                         value={selectedYear} 
-                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                        onChange={(e) => {
+                            const value = e.target.value
+                            setSelectedYear(value === 'all' ? 'all' : parseInt(value))
+                        }}
                     >
                         {availableYears.map(year => (
                             <option key={year} value={year}>
                                 {year}
                             </option>
                         ))}
+                        <option value="all">All Years</option>
                     </select>
                 </div>
             </div>

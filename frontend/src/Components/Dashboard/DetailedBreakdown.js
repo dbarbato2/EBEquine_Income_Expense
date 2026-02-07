@@ -83,7 +83,7 @@ function DetailedBreakdown() {
                         const year = momentDate.year()
                         const month = momentDate.month() + 1
                         
-                        if (year === selectedYear) {
+                        if (selectedYear === 'all' || year === selectedYear) {
                             const quarter = getQuarter(month)
                             const service = item.Service || 'Unknown'
                             const amount = parseFloat(item['Actual Fees']?.replace(/[$,]/g, '') || 0)
@@ -103,7 +103,7 @@ function DetailedBreakdown() {
                         const year = momentDate.year()
                         const month = momentDate.month() + 1
                         
-                        if (year === selectedYear) {
+                        if (selectedYear === 'all' || year === selectedYear) {
                             const quarter = getQuarter(month)
                             const expenseType = item['Expense Type'] || 'Unknown'
                             const amount = parseFloat(item.Amount?.replace(/[$,]/g, '') || 0)
@@ -118,7 +118,7 @@ function DetailedBreakdown() {
             deductions.forEach(item => {
                 const year = parseInt(item.Year)
                 
-                if (year === selectedYear) {
+                if (selectedYear === 'all' || year === selectedYear) {
                     const quarter = getQuarter(item.Month)
                     const deductionType = item['Deduction Type'] || 'Unknown'
                     const amount = parseFloat(item['Deduction Amount']?.replace(/[$,]/g, '') || 0)
@@ -154,13 +154,17 @@ function DetailedBreakdown() {
                         <select 
                             id="year-select" 
                             value={selectedYear} 
-                            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                            onChange={(e) => {
+                                const value = e.target.value
+                                setSelectedYear(value === 'all' ? 'all' : parseInt(value))
+                            }}
                         >
                             {availableYears.map(year => (
                                 <option key={year} value={year}>
                                     {year}
                                 </option>
                             ))}
+                            <option value="all">All Years</option>
                         </select>
                     </div>
                     <div className="control-group">

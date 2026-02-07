@@ -105,7 +105,6 @@ const ViewClientsWithModify = () => {
     if (window.confirm('Are you sure you want to delete this client?')) {
       try {
         await deleteClient(selectedClient._id);
-        toast.success('Client deleted successfully!');
         setSelectedClient(null);
         setEditedClient(null);
         setIsEditing(false);

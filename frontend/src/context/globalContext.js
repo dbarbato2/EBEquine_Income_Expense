@@ -181,8 +181,15 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const deleteRevenue = async (id) => {
-    await axios.delete(`${BASE_URL}delete-revenue/${id}`);
-    getRevenue();
+    try {
+      await axios.delete(`${BASE_URL}delete-revenue/${id}`);
+      toast.success('Revenue deleted successfully!');
+      await getRevenue();
+    } catch (error) {
+      console.error('Error deleting revenue:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete revenue');
+      throw error;
+    }
   };
 
   const totalRevenue = () => {
@@ -341,8 +348,15 @@ export const GlobalProvider = ({ children }) => {
 }, [user]);
 
   const deleteDeduction = async (id) => {
-    await axios.delete(`${BASE_URL}delete-deduction/${id}`);
-    getDeductions();
+    try {
+      await axios.delete(`${BASE_URL}delete-deduction/${id}`);
+      toast.success('Deduction deleted successfully!');
+      await getDeductions();
+    } catch (error) {
+      console.error('Error deleting deduction:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete deduction');
+      throw error;
+    }
   };
 
   const updateDeduction = async (id, deductionData) => {
@@ -487,6 +501,18 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  const deleteClient = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}delete-client/${id}`);
+      toast.success('Client deleted successfully!');
+      await getClients();
+    } catch (error) {
+      console.error('Error deleting client:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete client');
+      throw error;
+    }
+  };
+
   const totalDeductions = () => {
     let total = 0;
     deductions.forEach((d) => {
@@ -524,8 +550,15 @@ export const GlobalProvider = ({ children }) => {
 }, [user]);
 
   const deleteExpense = async (id) => {
-    await axios.delete(`${BASE_URL}delete-expense/${id}`);
-    getExpenses();
+    try {
+      await axios.delete(`${BASE_URL}delete-expense/${id}`);
+      toast.success('Expense deleted successfully!');
+      await getExpenses();
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete expense');
+      throw error;
+    }
   };
 
   const totalExpenses = () => {
@@ -601,6 +634,7 @@ export const GlobalProvider = ({ children }) => {
       addClient,
       getClients,
       clients,
+      deleteClient,
       searchClients,
       updateClient,
       error,

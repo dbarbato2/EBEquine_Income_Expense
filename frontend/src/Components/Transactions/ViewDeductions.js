@@ -107,7 +107,6 @@ const ViewDeductions = () => {
     if (window.confirm('Are you sure you want to delete this deduction?')) {
       try {
         await deleteDeduction(selectedDeduction._id);
-        toast.success('Deduction deleted successfully!');
         setSelectedDeduction(null);
         setEditedDeduction(null);
         setIsEditing(false);

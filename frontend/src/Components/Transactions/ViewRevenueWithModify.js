@@ -127,7 +127,6 @@ const ViewRevenueWithModify = () => {
     if (window.confirm('Are you sure you want to delete this revenue record?')) {
       try {
         await deleteRevenue(selectedRevenue._id);
-        toast.success('Revenue deleted successfully!');
         setSelectedRevenue(null);
         setEditedRevenue(null);
         setIsEditing(false);
@@ -254,15 +253,12 @@ const ViewRevenueWithModify = () => {
             <div className="form-group">
               <label>Client:</label>
               {isEditing ? (
-                <select 
+                <input 
+                  type="text"
                   value={editedRevenue.Client} 
                   onChange={handleEditInput('Client')}
-                >
-                  <option value="">Select Client</option>
-                  {clients.map(client => (
-                    <option key={client._id} value={client.Name}>{client.Name}</option>
-                  ))}
-                </select>
+                  placeholder="Enter Client Name"
+                />
               ) : (
                 <input type="text" value={selectedRevenue.Client} readOnly />
               )}

@@ -4,8 +4,26 @@ const mongoose = require("mongoose")
 exports.addExpense = async (req, res) => {
     const {date, vendor, location, expenseType, expenseDescription, amount, paymentType, businessTrip, expenseRecordNumber, userid} = req.body
 
+    // Log what we received
+    console.log('=== ADD EXPENSE DEBUG ===');
+    console.log('Date received:', date);
+    console.log('Vendor received:', vendor);
+    console.log('Location received:', location);
+    console.log('Expense Type received:', expenseType);
+
+    // Validation - check if required fields are empty
+    if(!date || !vendor || !location || !expenseType){
+        return res.status(400).json({message: 'Date, Vendor, Location, and Expense Type are required'})
+    }
+
+    // Ensure date is stored as a Date object
+    let dateToStore = date;
+    if (typeof date === 'string') {
+        dateToStore = new Date(date);
+    }
+
     const expense = ExpenseSchema({
-        Date: date,
+        Date: dateToStore,
         'Vendor/Payee': vendor,
         Location: location,
         'Expense Type': expenseType,
@@ -18,9 +36,6 @@ exports.addExpense = async (req, res) => {
     })
 
     try {
-        if(!date || !vendor || !location || !expenseType){
-            return res.status(400).json({message: 'Date, Vendor, Location, and Expense Type are required'})
-        }
         if(amount && Number(amount) <= 0){
             return res.status(400).json({message: 'Amount must be positive number'})
         }
