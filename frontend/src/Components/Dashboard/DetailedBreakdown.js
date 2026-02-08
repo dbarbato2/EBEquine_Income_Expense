@@ -7,6 +7,20 @@ function DetailedBreakdown() {
     const { revenue, expenses, deductions } = useGlobalContext()
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
     const [selectedType, setSelectedType] = useState('expenses')
+    const [, setThemeUpdated] = useState(0)
+
+    // Listen for theme changes and force re-render
+    useEffect(() => {
+        const handleThemeChange = () => {
+            setThemeUpdated(prev => prev + 1)
+        }
+
+        window.addEventListener('themeChange', handleThemeChange)
+        
+        return () => {
+            window.removeEventListener('themeChange', handleThemeChange)
+        }
+    }, [])
 
     // Get available years from all collections
     const availableYears = useMemo(() => {
@@ -214,12 +228,13 @@ function DetailedBreakdown() {
 }
 
 const DetailedBreakdownStyled = styled.div`
-    background: #FCF6F9;
-    border: 2px solid #FFFFFF;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
     border-radius: 20px;
     padding: 2rem;
     margin-top: 2rem;
+    transition: all 0.3s ease;
     
     .header {
         display: flex;
@@ -233,7 +248,7 @@ const DetailedBreakdownStyled = styled.div`
     h2 {
         margin: 0;
         font-size: 1.8rem;
-        color: #222260;
+        color: var(--text-color);
     }
 
     .controls {
@@ -250,27 +265,27 @@ const DetailedBreakdownStyled = styled.div`
 
     .control-group label {
         font-weight: 600;
-        color: #222260;
+        color: var(--text-color);
     }
 
     .control-group select {
         padding: 0.5rem 1rem;
-        border: 1px solid #ddd;
+        border: 1px solid var(--border-color);
         border-radius: 8px;
-        background-color: white;
-        color: #222260;
+        background-color: var(--input-bg);
+        color: var(--input-text);
         font-weight: 500;
         cursor: pointer;
         min-width: 150px;
 
         &:hover {
-            border-color: #bbb;
+            border-color: var(--text-color);
         }
 
         &:focus {
             outline: none;
-            border-color: #999;
-            box-shadow: 0 0 0 2px rgba(34, 34, 96, 0.1);
+            border-color: var(--text-color);
+            box-shadow: 0 0 0 2px var(--hover-bg);
         }
     }
 
@@ -279,14 +294,14 @@ const DetailedBreakdownStyled = styled.div`
         overflow-y: auto;
         max-height: 600px;
         border-radius: 8px;
-        border: 1px solid #e0e0e0;
+        border: 1px solid var(--border-color);
 
         table {
             width: 100%;
             border-collapse: collapse;
 
             thead {
-                background: #f5f5f5;
+                background: var(--hover-bg);
                 position: sticky;
                 top: 0;
             }
@@ -294,39 +309,39 @@ const DetailedBreakdownStyled = styled.div`
             th {
                 padding: 1rem;
                 text-align: left;
-                border-bottom: 1px solid #e0e0e0;
+                border-bottom: 1px solid var(--border-color);
                 font-weight: 600;
-                color: #222260;
-                background: #f5f5f5;
+                color: var(--text-color);
+                background: var(--hover-bg);
                 white-space: nowrap;
             }
 
             td {
                 padding: 1rem;
                 text-align: left;
-                border-bottom: 1px solid #e0e0e0;
-                color: #222260;
+                border-bottom: 1px solid var(--border-color);
+                color: var(--text-color);
                 font-size: 1rem;
             }
 
             td.quarter-label {
                 font-weight: 600;
-                color: #222260;
+                color: var(--text-color);
                 width: 80px;
                 position: sticky;
                 left: 0;
-                background: #fff;
+                background: var(--card-bg);
                 z-index: 1;
             }
 
             td.amount {
                 text-align: right;
                 font-weight: 500;
-                color: #222260;
+                color: var(--text-color);
             }
 
             tbody tr:hover {
-                background: #fff9fc;
+                background: var(--hover-bg);
             }
 
             tbody tr:last-child td {
@@ -338,7 +353,8 @@ const DetailedBreakdownStyled = styled.div`
     .footnote {
         margin-top: 1rem;
         font-size: 0.9rem;
-        color: #666;
+        color: var(--text-color);
+        opacity: 0.7;
         font-style: italic;
     }
 

@@ -29,8 +29,11 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 - User authentication (register, login, logout)
 - Add, edit, and delete revenue
 - Add, edit, and delete expenses
-- View transaction history
-- Responsive charts and graphs to visualize revenue and expenses
+- Add, edit, and delete deductions
+- Add, edit, and delete clients
+- View transaction histories
+- Responsive charts and graphs to visualize revenue, expenses, deductions, and clients
+- Ability to display unpaid invoices and create new invoices for clients
 - Notifications for user actions and errors
 
 ## Technologies Used

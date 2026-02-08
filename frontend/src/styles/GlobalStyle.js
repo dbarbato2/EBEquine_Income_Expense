@@ -16,6 +16,15 @@ export const GlobalStyle = createGlobalStyle`
         --color-grey: #aaa;
         --color-accent: #F56692;
         --color-delete: #FF0000;
+        --bg-color: #f5f5f5;
+        --text-color: #222260;
+        --card-bg: #fcf6f9;
+        --nav-bg: rgba(252, 246, 249, 0.78);
+        --border-color: #ffffff;
+        --input-bg: transparent;
+        --input-text: rgba(34, 34, 96, 0.9);
+        --hover-bg: rgba(34, 34, 96, 0.1);
+        --bg-image: url('/bg.png');
     }
 
     body{
@@ -23,7 +32,8 @@ export const GlobalStyle = createGlobalStyle`
         font-size: clamp(1rem, 1.5vw, 1.2rem);
         overflow: hidden;
         color: rgba(34, 34, 96, .6);
-        
+        background-color: var(--bg-color);
+        transition: background-color 0.3s ease;
     }
 
     h1, h2, h3, h4, h5, h6{

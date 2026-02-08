@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import avatar from '../../img/avatar.png'
-import { signout } from '../../utils/Icons'
+import { signout, settings } from '../../utils/Icons'
 import { menuItems } from '../../utils/menuItems'
 import { useGlobalContext } from '../../context/globalContext'
 
@@ -70,11 +70,21 @@ function Navigation({active, setActive}) {
                     </li>
                 })}
             </ul>
-            <div className="bottom-nav" onClick={handleSignOut}>
-        <span>
-          {signout} Sign Out
-        </span>
-      </div>
+            <div className="bottom-nav-container">
+                <div className="bottom-nav" onClick={handleSignOut}>
+                    <span>
+                        {signout} Sign Out
+                    </span>
+                </div>
+                <div className="bottom-nav" onClick={() => {
+                    setActive(99);
+                    setExpandedMenu(null);
+                }}>
+                    <span>
+                        {settings} Settings
+                    </span>
+                </div>
+            </div>
         </NavStyled>
     )
 }
@@ -209,6 +219,14 @@ const NavStyled = styled.nav`
     &:hover {
       color: black;
     }
+  }
+
+  .bottom-nav-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
   }
 `;
 

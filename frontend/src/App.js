@@ -1,6 +1,11 @@
-import React, {useState, useMemo} from 'react'
+import React, {useState, useMemo, useEffect} from 'react'
 import styled from "styled-components";
 import bg from './img/bg.png'
+import bgWinter from './img/bg_winter.png'
+import bgRainbow from './img/bg_rainbow.png'
+import bgFire from './img/bg_fire.png'
+import bgSpring from './img/bg_spring.png'
+import bgMetallic from './img/bg_metal.png'
 import {MainLayout} from './styles/Layouts'
 import Orb from './Components/Orb/Orb'
 import Navigation from './Components/Navigation/Navigation'
@@ -9,6 +14,7 @@ import Revenue from './Components/Revenue/Revenue'
 import Expenses from './Components/Expenses/Expenses';
 import Deductions from './Components/Deductions/Deductions';
 import Clients from './Components/Clients/Clients';
+import Settings from './Components/Settings/Settings';
 import { GlobalProvider } from './context/globalContext';
 import ViewRevenue from './Components/Transactions/ViewRevenue';
 import ViewExpenses from './Components/Transactions/ViewExpenses';
@@ -26,6 +32,64 @@ import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [active, setActive] = useState(1)
+  const [backgroundImage, setBackgroundImage] = useState(bg)
+
+  // Load background preference on mount
+  useEffect(() => {
+    const savedBackground = localStorage.getItem('background') || 'ebequine'
+    const getBgImage = (bgName) => {
+      switch(bgName) {
+        case 'coolblue': return bgWinter
+        case 'rainbow': return bgRainbow
+        case 'fire': return bgFire
+        case 'spring': return bgSpring
+        case 'metallic': return bgMetallic
+        default: return bg
+      }
+    }
+    setBackgroundImage(getBgImage(savedBackground))
+  }, [])
+
+  // Listen for localStorage changes from other tabs/windows or components
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedBackground = localStorage.getItem('background') || 'ebequine'
+      const getBgImage = (bgName) => {
+        switch(bgName) {
+          case 'coolblue': return bgWinter
+          case 'rainbow': return bgRainbow
+          case 'fire': return bgFire
+          case 'spring': return bgSpring
+          case 'metallic': return bgMetallic
+          default: return bg
+        }
+      }
+      setBackgroundImage(getBgImage(savedBackground))
+    }
+
+    const handleBackgroundChange = (event) => {
+      const background = event.detail?.background || 'ebequine'
+      const getBgImage = (bgName) => {
+        switch(bgName) {
+          case 'coolblue': return bgWinter
+          case 'rainbow': return bgRainbow
+          case 'fire': return bgFire
+          case 'spring': return bgSpring
+          case 'metallic': return bgMetallic
+          default: return bg
+        }
+      }
+      setBackgroundImage(getBgImage(background))
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('backgroundChange', handleBackgroundChange)
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('backgroundChange', handleBackgroundChange)
+    }
+  }, [])
 
   const displayData = () => {
     switch(active){
@@ -65,6 +129,8 @@ function App() {
         return <Clients />
       case 82:
         return <ViewClientsWithModify />
+      case 99:
+        return <Settings />
       default: 
         return <Dashboard />
     }
@@ -76,7 +142,7 @@ function App() {
 
 
   return (
-    <AppStyled bg={bg} className="App">
+    <AppStyled bg={backgroundImage} className="App">
       {orbMemo}
         <BrowserRouter>
         <GlobalProvider>
