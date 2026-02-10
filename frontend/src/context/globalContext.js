@@ -129,7 +129,6 @@ export const GlobalProvider = ({ children }) => {
       return true;
     } catch (err) {
       setError(err.response.data.message);
-      toast.error(err.response.data.message || 'Failed to add revenue');
       return false;
     }
   };
@@ -331,7 +330,6 @@ export const GlobalProvider = ({ children }) => {
       return true;
     } catch (err) {
       setError(err.response.data.message);
-      toast.error(err.response.data.message || 'Failed to add deduction');
       return false;
     }
   };
@@ -529,7 +527,6 @@ export const GlobalProvider = ({ children }) => {
       return true;
     } catch (err) {
       setError(err.response.data.message);
-      toast.error(err.response.data.message || 'Failed to add expense');
       return false;
     }
   };

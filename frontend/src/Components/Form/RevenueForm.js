@@ -26,12 +26,44 @@ function RevenueForm() {
         actualRevenue: '',
         invoiceNumber: ''
     })
+    
+    const [showInvoiceModal, setShowInvoiceModal] = useState(false)
 
     const { date, client, service, quantity, addOnService, serviceLocation, serviceFee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber } = inputState;
 
     const handleInput = name => e => {
         setInputState({...inputState, [name]: e.target.value})
         setError('')
+    }
+
+    const fetchAndPopulateInvoiceNumber = async (invoiceType) => {
+        try {
+            const endpoint = invoiceType === 'individual' 
+                ? 'get-max-individual-invoice' 
+                : 'get-max-monthly-invoice'
+            
+            // console.log('Fetching invoice number for type:', invoiceType, 'endpoint:', endpoint);
+            const response = await fetch(`http://localhost:5001/api/v1/${endpoint}?userid=${user}`);
+            const data = await response.json();
+            // console.log('Response data:', data);
+            
+            if (data.nextInvoiceNumber !== undefined) {
+                // console.log('Setting invoice number to:', data.nextInvoiceNumber);
+                setInputState(prevState => ({
+                    ...prevState,
+                    invoiceNumber: String(data.nextInvoiceNumber)
+                }))
+            } else {
+                // console.log('No nextInvoiceNumber in response');
+            }
+        } catch (error) {
+            console.error('Error fetching max invoice number:', error);
+        }
+    }
+    
+    const handleInvoiceTypeSelect = (invoiceType) => {
+        fetchAndPopulateInvoiceNumber(invoiceType)
+        setShowInvoiceModal(false)
     }
 
     const handleSubmit = e => {
@@ -94,6 +126,7 @@ function RevenueForm() {
                     dateFormat="MM/dd/yyyy"
                     onChange={(date) => {
                         setInputState({...inputState, date: date})
+                        setShowInvoiceModal(true)
                     }}
                 />
             </div>
@@ -218,13 +251,13 @@ function RevenueForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="text" 
                     value={invoiceNumber}
                     name={'invoiceNumber'} 
                     placeholder="Invoice Number"
                     onChange={handleInput('invoiceNumber')}
-                    min="0"
                 />
+                <p className="input-note">Invoice Number populated automatically, but can be edited</p>
             </div>
             <div className="submit-btn">
                 <Button 
@@ -244,6 +277,29 @@ function RevenueForm() {
                     Reset Form
                 </button>
             </div>
+            
+            {showInvoiceModal && (
+                <InvoiceModalOverlay>
+                    <InvoiceModal>
+                        <h3>Select Invoice Type</h3>
+                        <p>What type of invoice would you like to create?</p>
+                        <div className="modal-buttons">
+                            <button 
+                                className="modal-btn individual-btn"
+                                onClick={() => handleInvoiceTypeSelect('individual')}
+                            >
+                                Individual Invoice
+                            </button>
+                            <button 
+                                className="modal-btn monthly-btn"
+                                onClick={() => handleInvoiceTypeSelect('monthly')}
+                            >
+                                Monthly Invoice
+                            </button>
+                        </div>
+                    </InvoiceModal>
+                </InvoiceModalOverlay>
+            )}
         </FormStyled>
     )
 }
@@ -272,6 +328,12 @@ const FormStyled = styled.form`
     .input-control{
         input{
             width: 100%;
+        }
+        .input-note{
+            font-size: 0.85rem;
+            color: rgba(34, 34, 96, 0.6);
+            margin-top: 0.3rem;
+            margin-left: 0.1rem;
         }
     }
 
@@ -318,4 +380,82 @@ const FormStyled = styled.form`
         }
     }
 `;
+
+const InvoiceModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+`;
+
+const InvoiceModal = styled.div`
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    
+    h3 {
+        margin: 0 0 1rem 0;
+        color: rgba(34, 34, 96, 0.9);
+        font-size: 1.5rem;
+    }
+    
+    p {
+        color: rgba(34, 34, 96, 0.6);
+        margin: 0 0 2rem 0;
+        font-size: 0.95rem;
+    }
+    
+    .modal-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        padding: 0.8rem 1.6rem;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.3s ease;
+        box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.12);
+        }
+    }
+    
+    .individual-btn {
+        background: var(--color-green);
+        color: #fff;
+        
+        &:hover {
+            background: #3ddb66;
+        }
+    }
+    
+    .monthly-btn {
+        background: #6c63ff;
+        color: #fff;
+        
+        &:hover {
+            background: #5651d8;
+        }
+    }
+`;
+
 export default RevenueForm
+

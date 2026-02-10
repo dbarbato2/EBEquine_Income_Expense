@@ -40,6 +40,17 @@ exports.addExpense = async (req, res) => {
             return res.status(400).json({message: 'Amount must be positive number'})
         }
 
+        // Check if expense record number is already in use
+        if(expenseRecordNumber) {
+            const existingExpense = await ExpenseSchema.findOne({
+                userid: userid,
+                'Expense Record Number': expenseRecordNumber
+            })
+            if(existingExpense) {
+                return res.status(400).json({message: 'Expense Record Number already in use. Please use a different number.'})
+            }
+        }
+
         await expense.save()
         res.status(200).json({message: 'Expense Added'})
     } catch (error) {
@@ -273,5 +284,55 @@ exports.updateExpense = async (req, res) => {
     } catch (error) {
         console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+}
+
+exports.getMaxExpenseRecordNumber = async (req, res) => {
+    try {
+        let { userid } = req.query
+        
+        if (!userid) {
+            return res.status(400).json({message: 'User ID is required'})
+        }
+        
+        userid = userid.trim()
+        
+        // Get all expense records for the user
+        let expenses = await ExpenseSchema.find({userid: userid})
+        
+        // If no string match found and userid looks like an ObjectId, try ObjectId comparison
+        if (expenses.length === 0 && mongoose.Types.ObjectId.isValid(userid)) {
+            try {
+                const objectId = new mongoose.Types.ObjectId(userid)
+                expenses = await ExpenseSchema.find({userid: objectId})
+            } catch (err) {
+                console.log("ObjectId conversion failed:", err.message)
+            }
+        }
+        
+        // If still no results, try case-insensitive regex search
+        if (expenses.length === 0) {
+            expenses = await ExpenseSchema.find({userid: {$regex: userid, $options: 'i'}})
+        }
+        
+        // Extract numeric expense record numbers and find the max
+        let maxRecordNumber = 0
+        
+        expenses.forEach(expense => {
+            if (expense['Expense Record Number']) {
+                const recordNum = parseInt(expense['Expense Record Number'], 10)
+                if (!isNaN(recordNum) && recordNum > maxRecordNumber) {
+                    maxRecordNumber = recordNum
+                }
+            }
+        })
+        
+        // Return the next expense record number
+        const nextRecordNumber = maxRecordNumber + 1
+        
+        res.status(200).json({ nextRecordNumber: nextRecordNumber })
+    } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
+        res.status(500).json({message: 'Server Error'})
     }
 }

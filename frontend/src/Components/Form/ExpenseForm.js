@@ -29,6 +29,21 @@ function ExpenseForm() {
         setError('')
     }
 
+    const fetchAndPopulateExpenseRecordNumber = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/v1/get-max-expense-record-number?userid=${user}`);
+            const data = await response.json();
+            if (data.nextRecordNumber !== undefined) {
+                setInputState(prevState => ({
+                    ...prevState,
+                    expenseRecordNumber: data.nextRecordNumber.toString()
+                }))
+            }
+        } catch (error) {
+            console.error('Error fetching max expense record number:', error);
+        }
+    }
+
     const handleSubmit = e => {
         e.preventDefault()
         // Convert date object to ISO string if it exists
@@ -79,6 +94,7 @@ function ExpenseForm() {
                     dateFormat="MM/dd/yyyy"
                     onChange={(date) => {
                         setInputState({...inputState, date: date})
+                        fetchAndPopulateExpenseRecordNumber()
                     }}
                 />
             </div>
@@ -166,6 +182,7 @@ function ExpenseForm() {
                     onChange={handleInput('expenseRecordNumber')}
                     min="0"
                 />
+                <p className="input-note">Expense Record Number populated automatically, but can be edited</p>
             </div>
             <div className="submit-btn">
                 <Button 
@@ -213,6 +230,12 @@ const ExpenseFormStyled = styled.form`
     .input-control{
         input{
             width: 100%;
+        }
+        .input-note{
+            font-size: 0.85rem;
+            color: rgba(34, 34, 96, 0.6);
+            margin-top: 0.3rem;
+            margin-left: 0.1rem;
         }
         &.checkbox{
             label{

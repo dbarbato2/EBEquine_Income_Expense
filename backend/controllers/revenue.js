@@ -5,12 +5,12 @@ const mongoose = require("mongoose")
 exports.addRevenue = async (req, res) => {
     const {userid, date, client, service, quantity, addOnService, serviceLocation, serviceFee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber} = req.body
 
-    console.log('=== ADD REVENUE DEBUG ===');
-    console.log('Date received:', date);
-    console.log('Date type:', typeof date);
-    console.log('serviceLocation received:', serviceLocation);
-    console.log('serviceLocation type:', typeof serviceLocation);
-    console.log('serviceLocation value will be:', serviceLocation || undefined);
+    // console.log('=== ADD REVENUE DEBUG ===');
+    // console.log('Date received:', date);
+    // console.log('Date type:', typeof date);
+    // console.log('serviceLocation received:', serviceLocation);
+    // console.log('serviceLocation type:', typeof serviceLocation);
+    // console.log('serviceLocation value will be:', serviceLocation || undefined);
 
     // Ensure date is stored as a Date object
     let dateToStore = date;
@@ -30,7 +30,7 @@ exports.addRevenue = async (req, res) => {
         'Travel Fee': travelFee ? `$${Number(travelFee).toFixed(2)}` : '',
         Discount: discount ? `$${Number(discount).toFixed(2)}` : '',
         'Discount Reason': discountReason,
-        'Payment Type': paymentType || undefined,
+        'Payment Type': paymentType,
         'Transaction Fees': transactionFee ? `$${Number(transactionFee).toFixed(2)}` : '',
         'Actual Fees': actualRevenue ? `$${Number(actualRevenue).toFixed(2)}` : '',
         'Invoice Number': invoiceNumber
@@ -42,6 +42,17 @@ exports.addRevenue = async (req, res) => {
         }
         if(quantity && Number(quantity) <= 0){
             return res.status(400).json({message: 'Quantity must be positive number'})
+        }
+
+        // Check if invoice number is already in use
+        if(invoiceNumber) {
+            const existingRevenue = await RevenueSchema.findOne({
+                userid: userid,
+                'Invoice Number': invoiceNumber
+            })
+            if(existingRevenue) {
+                return res.status(400).json({message: 'Invoice Number already in use. Please use a different number.'})
+            }
         }
 
         await revenue.save()
@@ -280,5 +291,169 @@ exports.updateRevenue = async (req, res) => {
     } catch (error) {
         console.error("CRITICAL BACKEND ERROR:", error);
         res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+}
+
+exports.getMaxInvoiceNumber = async (req, res) => {
+    try {
+        let { userid } = req.query
+        
+        if (!userid) {
+            return res.status(400).json({message: 'User ID is required'})
+        }
+        
+        userid = userid.trim()
+        
+        // Get all revenue records for the user
+        let revenues = await RevenueSchema.find({userid: userid})
+        
+        // If no string match found and userid looks like an ObjectId, try ObjectId comparison
+        if (revenues.length === 0 && mongoose.Types.ObjectId.isValid(userid)) {
+            try {
+                const objectId = new mongoose.Types.ObjectId(userid)
+                revenues = await RevenueSchema.find({userid: objectId})
+            } catch (err) {
+                console.log("ObjectId conversion failed:", err.message)
+            }
+        }
+        
+        // If still no results, try case-insensitive regex search
+        if (revenues.length === 0) {
+            revenues = await RevenueSchema.find({userid: {$regex: userid, $options: 'i'}})
+        }
+        
+        // Extract numeric invoice numbers and find the max
+        let maxInvoiceNumber = 0
+        
+        revenues.forEach(revenue => {
+            if (revenue['Invoice Number']) {
+                const invoiceNum = parseInt(revenue['Invoice Number'], 10)
+                if (!isNaN(invoiceNum) && invoiceNum > maxInvoiceNumber) {
+                    maxInvoiceNumber = invoiceNum
+                }
+            }
+        })
+        
+        // Return the next invoice number
+        const nextInvoiceNumber = maxInvoiceNumber + 1
+        
+        res.status(200).json({ nextInvoiceNumber: nextInvoiceNumber })
+    } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
+        res.status(500).json({message: 'Server Error'})
+    }
+}
+
+exports.getMaxIndividualInvoice = async (req, res) => {
+    try {
+        let { userid } = req.query
+        
+        if (!userid) {
+            return res.status(400).json({message: 'User ID is required'})
+        }
+        
+        userid = userid.trim()
+        
+        // Get all revenue records for the user
+        let revenues = await RevenueSchema.find({userid: userid})
+        
+        // If no string match found and userid looks like an ObjectId, try ObjectId comparison
+        if (revenues.length === 0 && mongoose.Types.ObjectId.isValid(userid)) {
+            try {
+                const objectId = new mongoose.Types.ObjectId(userid)
+                revenues = await RevenueSchema.find({userid: objectId})
+            } catch (err) {
+                console.log("ObjectId conversion failed:", err.message)
+            }
+        }
+        
+        // If still no results, try case-insensitive regex search
+        if (revenues.length === 0) {
+            revenues = await RevenueSchema.find({userid: {$regex: userid, $options: 'i'}})
+        }
+        
+        // Extract numeric invoice numbers and find the max
+        let maxInvoiceNumber = 0
+        
+        revenues.forEach(revenue => {
+            if (revenue['Invoice Number']) {
+                const invoiceNum = parseInt(revenue['Invoice Number'], 10)
+                if (!isNaN(invoiceNum) && invoiceNum > maxInvoiceNumber) {
+                    maxInvoiceNumber = invoiceNum
+                }
+            }
+        })
+        
+        // Return the next invoice number
+        const nextInvoiceNumber = maxInvoiceNumber + 1
+        
+        res.status(200).json({ nextInvoiceNumber: nextInvoiceNumber })
+    } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
+        res.status(500).json({message: 'Server Error'})
+    }
+}
+
+exports.getMaxMonthlyInvoice = async (req, res) => {
+    try {
+        let { userid } = req.query
+        
+        if (!userid) {
+            return res.status(400).json({message: 'User ID is required'})
+        }
+        
+        userid = userid.trim()
+        
+        // Get all revenue records for the user
+        let revenues = await RevenueSchema.find({userid: userid})
+        
+        // If no string match found and userid looks like an ObjectId, try ObjectId comparison
+        if (revenues.length === 0 && mongoose.Types.ObjectId.isValid(userid)) {
+            try {
+                const objectId = new mongoose.Types.ObjectId(userid)
+                revenues = await RevenueSchema.find({userid: objectId})
+            } catch (err) {
+                console.log("ObjectId conversion failed:", err.message)
+            }
+        }
+        
+        // If still no results, try case-insensitive regex search
+        if (revenues.length === 0) {
+            revenues = await RevenueSchema.find({userid: {$regex: userid, $options: 'i'}})
+        }
+        
+        // Extract monthly invoice numbers (non-numeric with letters)
+        let maxMonthlyNumber = 0
+        let monthlyInvoiceSuffix = 'm' // default suffix
+        
+        revenues.forEach(revenue => {
+            if (revenue['Invoice Number']) {
+                const invoiceStr = String(revenue['Invoice Number']).toLowerCase()
+                
+                // Check if it contains letters (monthly invoice)
+                if (/[a-z]/.test(invoiceStr)) {
+                    // Extract numeric part
+                    const numericPart = parseInt(invoiceStr.replace(/[a-z]/g, ''), 10)
+                    
+                    if (!isNaN(numericPart) && numericPart > maxMonthlyNumber) {
+                        maxMonthlyNumber = numericPart
+                    }
+                    
+                    // Extract the letter suffix (get all letters at the end)
+                    const suffixMatch = invoiceStr.match(/[a-z]+$/)
+                    if (suffixMatch) {
+                        monthlyInvoiceSuffix = suffixMatch[0]
+                    }
+                }
+            }
+        })
+        
+        // Return the next monthly invoice number
+        const nextInvoiceNumber = String(maxMonthlyNumber + 1) + monthlyInvoiceSuffix
+        
+        res.status(200).json({ nextInvoiceNumber: nextInvoiceNumber })
+    } catch (error) {
+        console.error("CRITICAL BACKEND ERROR:", error);
+        res.status(500).json({message: 'Server Error'})
     }
 }

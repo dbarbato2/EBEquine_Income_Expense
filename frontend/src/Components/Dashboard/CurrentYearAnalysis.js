@@ -1,26 +1,48 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 
 function CurrentYearAnalysis() {
     const { revenue, expenses, deductions } = useGlobalContext()
 
-    // Get the most recent year from revenue data
-    const currentYear = useMemo(() => {
-        let maxYear = new Date().getFullYear()
+    // Get unique years from all data
+    const availableYears = useMemo(() => {
+        const yearsSet = new Set()
         
         revenue.forEach(item => {
             const dateValue = item.date || item.Date || item.createdAt
             if (dateValue) {
                 const year = new Date(dateValue).getFullYear()
-                if (!isNaN(year) && year > maxYear) {
-                    maxYear = year
+                yearsSet.add(year)
+            }
+        })
+        
+        expenses.forEach(item => {
+            const dateValue = item.date || item.Date || item.createdAt
+            if (dateValue) {
+                const year = new Date(dateValue).getFullYear()
+                yearsSet.add(year)
+            }
+        })
+        
+        deductions.forEach(item => {
+            if (item.Year) {
+                const year = parseInt(item.Year)
+                if (!isNaN(year)) {
+                    yearsSet.add(year)
                 }
             }
         })
         
-        return maxYear
-    }, [revenue])
+        return Array.from(yearsSet).sort((a, b) => b - a)
+    }, [revenue, expenses, deductions])
+
+    // Get the latest year
+    const latestYear = useMemo(() => {
+        return availableYears.length > 0 ? availableYears[0] : new Date().getFullYear()
+    }, [availableYears])
+
+    const [selectedYear, setSelectedYear] = useState(() => String(latestYear))
 
     // Calculate monthly data
     const monthlyData = useMemo(() => {
@@ -28,6 +50,9 @@ function CurrentYearAnalysis() {
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ]
+        
+        // Determine which year to analyze
+        const yearsToAnalyze = [parseInt(selectedYear)]
         
         const data = months.map((month, index) => {
             const monthIndex = index; // 0-based month index
@@ -40,7 +65,7 @@ function CurrentYearAnalysis() {
                 const itemYear = date.getFullYear()
                 const itemMonth = date.getMonth()
                 
-                return itemYear === currentYear && itemMonth === monthIndex
+                return yearsToAnalyze.includes(itemYear) && itemMonth === monthIndex
             })
             
             const monthExpenses = expenses.filter(item => {
@@ -51,7 +76,7 @@ function CurrentYearAnalysis() {
                 const itemYear = date.getFullYear()
                 const itemMonth = date.getMonth()
                 
-                return itemYear === currentYear && itemMonth === monthIndex
+                return yearsToAnalyze.includes(itemYear) && itemMonth === monthIndex
             })
             
             const monthDeductions = deductions.filter(item => {
@@ -65,7 +90,7 @@ function CurrentYearAnalysis() {
                 }
                 const itemMonth = monthMap[item.Month]
                 
-                return itemYear === currentYear && itemMonth === monthIndex
+                return yearsToAnalyze.includes(itemYear) && itemMonth === monthIndex
             })
             
             // Calculate number of massages (Introductory Massage or 1 Hour Massage)
@@ -127,7 +152,7 @@ function CurrentYearAnalysis() {
         })
         
         return data
-    }, [revenue, expenses, deductions, currentYear])
+    }, [revenue, expenses, deductions, selectedYear])
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-US', {
@@ -141,7 +166,22 @@ function CurrentYearAnalysis() {
     return (
         <CurrentYearAnalysisStyled>
             <div className="header">
-                <h2>Current Year Analysis - {currentYear}</h2>
+                <h2>Monthly Analysis</h2>
+                <div className="filter-group">
+                    <label htmlFor="year-filter">Year:</label>
+                    <select 
+                        id="year-filter"
+                        value={selectedYear} 
+                        onChange={(e) => setSelectedYear(e.target.value)}
+                        className="year-dropdown"
+                    >
+                        {availableYears.map(year => (
+                            <option key={year} value={String(year)}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
             <div className="table-wrapper">
                 <table>
@@ -185,11 +225,47 @@ const CurrentYearAnalysisStyled = styled.div`
 
     .header {
         margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
 
         h2 {
             color: var(--text-color);
             margin: 0;
             font-size: 1.4rem;
+        }
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        label {
+            color: var(--text-color);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+    }
+
+    .year-dropdown {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--card-bg);
+        color: var(--text-color);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: border-color 0.3s;
+
+        &:hover {
+            border-color: var(--color-green);
+        }
+
+        &:focus {
+            outline: none;
+            border-color: var(--color-green);
         }
     }
 

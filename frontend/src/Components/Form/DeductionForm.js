@@ -25,6 +25,21 @@ function DeductionForm() {
         setError('')
     }
 
+    const fetchAndPopulateDeductionRecordNumber = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/v1/get-max-deduction-record-number?userid=${user}`);
+            const data = await response.json();
+            if (data.nextRecordNumber !== undefined) {
+                setInputState(prevState => ({
+                    ...prevState,
+                    deductionRecordNumber: data.nextRecordNumber.toString()
+                }))
+            }
+        } catch (error) {
+            console.error('Error fetching max deduction record number:', error);
+        }
+    }
+
     const handleSubmit = e => {
         e.preventDefault()
         const updated = {...inputState, userid: user}
@@ -71,7 +86,12 @@ function DeductionForm() {
                 />
             </div>
             <div className="selects input-control">
-                <select value={month} name="month" id="month" onChange={handleInput('month')} required>
+                <select value={month} name="month" id="month" onChange={(e) => {
+                    handleInput('month')(e);
+                    if (e.target.value) {
+                        fetchAndPopulateDeductionRecordNumber();
+                    }
+                }} required>
                     <option value="" disabled>Select Month</option>
                     <option>January</option>
                     <option>February</option>
@@ -134,6 +154,7 @@ function DeductionForm() {
                     onChange={handleInput('deductionRecordNumber')}
                     min="0"
                 />
+                <p className="input-note">Record Number populated automatically, but can be edited</p>
             </div>
             <div className="submit-btn">
                 <Button 
@@ -181,6 +202,12 @@ const FormStyled = styled.form`
     .input-control{
         input{
             width: 100%;
+        }
+        .input-note{
+            font-size: 0.85rem;
+            color: rgba(34, 34, 96, 0.6);
+            margin-top: 0.3rem;
+            margin-left: 0.1rem;
         }
     }
 

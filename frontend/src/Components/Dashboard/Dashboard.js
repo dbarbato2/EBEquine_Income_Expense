@@ -6,6 +6,7 @@ import { dateFormat } from '../../utils/dateFormat';
 import QuarterlyRevenue from './QuarterlyRevenue';
 import DetailedBreakdown from './DetailedBreakdown';
 import CurrentYearAnalysis from './CurrentYearAnalysis';
+import RevenueByPaymentType from './RevenueByPaymentType';
 
 function Dashboard() {
     const { revenue } = useGlobalContext()
@@ -81,6 +82,7 @@ function Dashboard() {
                 <QuarterlyRevenue />
                 <DetailedBreakdown />
                 <CurrentYearAnalysis />
+                <RevenueByPaymentType />
             </InnerLayout>
         </DashboardStyled>
     )
