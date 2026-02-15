@@ -7,6 +7,9 @@ import QuarterlyRevenue from './QuarterlyRevenue';
 import DetailedBreakdown from './DetailedBreakdown';
 import CurrentYearAnalysis from './CurrentYearAnalysis';
 import RevenueByPaymentType from './RevenueByPaymentType';
+import LocationByMonth from './LocationByMonth';
+import HistoricalRevenue from './HistoricalRevenue';
+import RollingRevenue from './RollingRevenue';
 
 function Dashboard() {
     const { revenue } = useGlobalContext()
@@ -79,10 +82,39 @@ function Dashboard() {
                     </UnpaidInvoicesContainer>
                 )}
 
-                <QuarterlyRevenue />
-                <DetailedBreakdown />
-                <CurrentYearAnalysis />
-                <RevenueByPaymentType />
+                <SectionNavigationStyled>
+                    <nav className="section-nav">
+                        <a href="#quarterly-revenue">Quarterly Summary</a>
+                        <a href="#detailed-breakdown">Quarterly Breakdown</a>
+                        <a href="#current-year-analysis">Monthly Analysis</a>
+                        <a href="#revenue-by-payment">Revenue by Payment Type</a>
+                        <a href="#location-by-month">Location by Month</a>
+                        <a href="#historical-revenue">Historical Revenue</a>
+                        <a href="#rolling-revenue">Rolling 12 Months</a>
+                    </nav>
+                </SectionNavigationStyled>
+
+                <div id="quarterly-revenue">
+                    <QuarterlyRevenue />
+                </div>
+                <div id="detailed-breakdown">
+                    <DetailedBreakdown />
+                </div>
+                <div id="current-year-analysis">
+                    <CurrentYearAnalysis />
+                </div>
+                <div id="revenue-by-payment">
+                    <RevenueByPaymentType />
+                </div>
+                <div id="location-by-month">
+                    <LocationByMonth />
+                </div>
+                <div id="historical-revenue">
+                    <HistoricalRevenue />
+                </div>
+                <div id="rolling-revenue">
+                    <RollingRevenue />
+                </div>
             </InnerLayout>
         </DashboardStyled>
     )
@@ -164,6 +196,39 @@ const UnpaidInvoicesContainer = styled.div`
         color: #228B22;
         font-size: 1.1rem;
         margin: 1rem 0;
+    }
+`;
+
+const SectionNavigationStyled = styled.div`
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+
+    .section-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: var(--hover-bg);
+
+            &:hover {
+                background: var(--text-color);
+                color: var(--card-bg);
+                border-color: var(--text-color);
+            }
+        }
     }
 `;
 

@@ -53,10 +53,12 @@ function RevenueByPaymentType() {
             // Skip items without a payment type
             if (!paymentType) return
             
-            // Filter by selected year
-            const date = new Date(item.Date)
-            const year = date.getFullYear()
-            if (year !== parseInt(selectedYear)) return
+            // Filter by selected year if not 'all'
+            if (selectedYear !== 'all') {
+                const date = new Date(item.Date)
+                const year = date.getFullYear()
+                if (year !== parseInt(selectedYear)) return
+            }
             
             // Normalize the payment type for grouping
             const normalizedPaymentType = formatPaymentType(paymentType)
@@ -129,6 +131,7 @@ function RevenueByPaymentType() {
                                 {year}
                             </option>
                         ))}
+                        <option value="all">All Years</option>
                     </select>
                 </div>
             </div>
@@ -177,7 +180,9 @@ function RevenueByPaymentType() {
                                         },
                                         formatter: (value, context) => {
                                             const label = context.chart.data.labels[context.dataIndex]
-                                            return label + '\n' + value + ' invoices'
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0)
+                                            const percentage = ((value / total) * 100).toFixed(1)
+                                            return label + '\n' + value + ' invoices' + '\n' + percentage + '%'
                                         },
                                         anchor: 'center',
                                         align: 'center'

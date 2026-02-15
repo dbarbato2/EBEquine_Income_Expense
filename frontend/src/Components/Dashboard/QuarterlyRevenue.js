@@ -6,6 +6,12 @@ function QuarterlyRevenue() {
     const { quarterlyRevenue, quarterlyExpenses, quarterlyDeductions, revenue, expenses, deductions } = useGlobalContext()
     const [, setThemeUpdated] = useState(0)
 
+    // Get current date
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear()
+    const currentMonth = currentDate.getMonth()
+    const currentQuarter = Math.floor(currentMonth / 3)
+
     // Listen for theme changes and force re-render
     useEffect(() => {
         const handleThemeChange = () => {
@@ -79,6 +85,17 @@ function QuarterlyRevenue() {
         }).format(amount)
     }
 
+    // Check if a quarter/year is in the future
+    const isFutureQuarter = (year, quarterIndex) => {
+        if (year > currentYear) {
+            return true
+        }
+        if (year === currentYear && quarterIndex > currentQuarter) {
+            return true
+        }
+        return false
+    }
+
     return (
         <QuarterlyRevenueStyled>
             <div className="header">
@@ -115,27 +132,27 @@ function QuarterlyRevenue() {
                 <tbody>
                     <tr>
                         <td>Q1</td>
-                        <td>{formatCurrency(quarters.Q1)}</td>
-                        <td className="expense">{formatCurrency(expenseData.Q1)}</td>
-                        <td className="deduction">{formatCurrency(deductionData.Q1)}</td>
+                        <td>{selectedYear !== 'all' && isFutureQuarter(selectedYear, 0) ? '-' : formatCurrency(quarters.Q1)}</td>
+                        <td className="expense">{selectedYear !== 'all' && isFutureQuarter(selectedYear, 0) ? '-' : formatCurrency(expenseData.Q1)}</td>
+                        <td className="deduction">{selectedYear !== 'all' && isFutureQuarter(selectedYear, 0) ? '-' : formatCurrency(deductionData.Q1)}</td>
                     </tr>
                     <tr>
                         <td>Q2</td>
-                        <td>{formatCurrency(quarters.Q2)}</td>
-                        <td className="expense">{formatCurrency(expenseData.Q2)}</td>
-                        <td className="deduction">{formatCurrency(deductionData.Q2)}</td>
+                        <td>{selectedYear !== 'all' && isFutureQuarter(selectedYear, 1) ? '-' : formatCurrency(quarters.Q2)}</td>
+                        <td className="expense">{selectedYear !== 'all' && isFutureQuarter(selectedYear, 1) ? '-' : formatCurrency(expenseData.Q2)}</td>
+                        <td className="deduction">{selectedYear !== 'all' && isFutureQuarter(selectedYear, 1) ? '-' : formatCurrency(deductionData.Q2)}</td>
                     </tr>
                     <tr>
                         <td>Q3</td>
-                        <td>{formatCurrency(quarters.Q3)}</td>
-                        <td className="expense">{formatCurrency(expenseData.Q3)}</td>
-                        <td className="deduction">{formatCurrency(deductionData.Q3)}</td>
+                        <td>{selectedYear !== 'all' && isFutureQuarter(selectedYear, 2) ? '-' : formatCurrency(quarters.Q3)}</td>
+                        <td className="expense">{selectedYear !== 'all' && isFutureQuarter(selectedYear, 2) ? '-' : formatCurrency(expenseData.Q3)}</td>
+                        <td className="deduction">{selectedYear !== 'all' && isFutureQuarter(selectedYear, 2) ? '-' : formatCurrency(deductionData.Q3)}</td>
                     </tr>
                     <tr>
                         <td>Q4</td>
-                        <td>{formatCurrency(quarters.Q4)}</td>
-                        <td className="expense">{formatCurrency(expenseData.Q4)}</td>
-                        <td className="deduction">{formatCurrency(deductionData.Q4)}</td>
+                        <td>{selectedYear !== 'all' && isFutureQuarter(selectedYear, 3) ? '-' : formatCurrency(quarters.Q4)}</td>
+                        <td className="expense">{selectedYear !== 'all' && isFutureQuarter(selectedYear, 3) ? '-' : formatCurrency(expenseData.Q4)}</td>
+                        <td className="deduction">{selectedYear !== 'all' && isFutureQuarter(selectedYear, 3) ? '-' : formatCurrency(deductionData.Q4)}</td>
                     </tr>
                 </tbody>
             </table>

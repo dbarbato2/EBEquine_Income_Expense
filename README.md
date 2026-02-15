@@ -18,14 +18,12 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 - Upload Client Database to MongoDB
 - Test New User/Register Functionality
 - Load Historical Data for Graphs
-- Add additional cuts of data on Dashboard
 - Ability to download tables and graphs
 - Create Invoice Functionality
 - Create Notes Automatically Functionality
-- Settings option to allow the user to change the avatar and color scheme
 - Ability to select a record right from the full transaction list without searching
 - Fix Revenue Form bugs
-- Monthly Invoice capability
+- Menu for Trip Cost Calculator
 
 ## Features
 - User authentication (register, login, logout)

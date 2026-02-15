@@ -5,6 +5,11 @@ import { useGlobalContext } from '../../context/globalContext';
 function CurrentYearAnalysis() {
     const { revenue, expenses, deductions } = useGlobalContext()
 
+    // Get current date
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear()
+    const currentMonth = currentDate.getMonth()
+
     // Get unique years from all data
     const availableYears = useMemo(() => {
         const yearsSet = new Set()
@@ -44,6 +49,17 @@ function CurrentYearAnalysis() {
 
     const [selectedYear, setSelectedYear] = useState(() => String(latestYear))
 
+    // Check if a month/year is in the future
+    const isFutureMonth = (year, monthIndex) => {
+        if (year > currentYear) {
+            return true
+        }
+        if (year === currentYear && monthIndex > currentMonth) {
+            return true
+        }
+        return false
+    }
+
     // Calculate monthly data
     const monthlyData = useMemo(() => {
         const months = [
@@ -51,8 +67,11 @@ function CurrentYearAnalysis() {
             'July', 'August', 'September', 'October', 'November', 'December'
         ]
         
-        // Determine which year to analyze
-        const yearsToAnalyze = [parseInt(selectedYear)]
+        // Determine which year(s) to analyze
+        let yearsToAnalyze = [parseInt(selectedYear)]
+        if (selectedYear === 'all') {
+            yearsToAnalyze = availableYears
+        }
         
         const data = months.map((month, index) => {
             const monthIndex = index; // 0-based month index
@@ -152,7 +171,7 @@ function CurrentYearAnalysis() {
         })
         
         return data
-    }, [revenue, expenses, deductions, selectedYear])
+    }, [revenue, expenses, deductions, selectedYear, availableYears])
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('en-US', {
@@ -180,6 +199,7 @@ function CurrentYearAnalysis() {
                                 {year}
                             </option>
                         ))}
+                        <option value="all">All Years</option>
                     </select>
                 </div>
             </div>
@@ -200,12 +220,12 @@ function CurrentYearAnalysis() {
                         {monthlyData.map((item, index) => (
                             <tr key={index}>
                                 <td>{item.month}</td>
-                                <td className="number">{item.numberOfMassages}</td>
-                                <td className="currency">{formatCurrency(item.actualRevenue)}</td>
-                                <td className="currency">{formatCurrency(item.totalExpenses)}</td>
-                                <td className="currency">{formatCurrency(item.totalDeductions)}</td>
-                                <td className="currency">{formatCurrency(item.outstandingBalances)}</td>
-                                <td className="currency">{formatCurrency(item.profit)}</td>
+                                <td className="number">{isFutureMonth(parseInt(selectedYear), index) ? '-' : item.numberOfMassages}</td>
+                                <td className="currency">{isFutureMonth(parseInt(selectedYear), index) ? '-' : formatCurrency(item.actualRevenue)}</td>
+                                <td className="currency">{isFutureMonth(parseInt(selectedYear), index) ? '-' : formatCurrency(item.totalExpenses)}</td>
+                                <td className="currency">{isFutureMonth(parseInt(selectedYear), index) ? '-' : formatCurrency(item.totalDeductions)}</td>
+                                <td className="currency">{isFutureMonth(parseInt(selectedYear), index) ? '-' : formatCurrency(item.outstandingBalances)}</td>
+                                <td className="currency">{isFutureMonth(parseInt(selectedYear), index) ? '-' : formatCurrency(item.profit)}</td>
                             </tr>
                         ))}
                     </tbody>

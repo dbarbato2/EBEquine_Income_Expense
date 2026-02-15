@@ -9,6 +9,12 @@ function DetailedBreakdown() {
     const [selectedType, setSelectedType] = useState('expenses')
     const [, setThemeUpdated] = useState(0)
 
+    // Get current date
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear()
+    const currentMonth = currentDate.getMonth()
+    const currentQuarter = Math.floor(currentMonth / 3)
+
     // Listen for theme changes and force re-render
     useEffect(() => {
         const handleThemeChange = () => {
@@ -158,6 +164,17 @@ function DetailedBreakdown() {
         }).format(amount)
     }
 
+    // Check if a quarter/year is in the future
+    const isFutureQuarter = (year, quarterIndex) => {
+        if (year > currentYear) {
+            return true
+        }
+        if (year === currentYear && quarterIndex > currentQuarter) {
+            return true
+        }
+        return false
+    }
+
     return (
         <DetailedBreakdownStyled>
             <div className="header">
@@ -206,14 +223,15 @@ function DetailedBreakdown() {
                         </tr>
                     </thead>
                     <tbody>
-                        {['Q1', 'Q2', 'Q3', 'Q4'].map(quarter => (
+                        {['Q1', 'Q2', 'Q3', 'Q4'].map((quarter, quarterIndex) => (
                             <tr key={quarter}>
                                 <td className="quarter-label">{quarter}</td>
                                 {breakdownData.categories.map(category => {
                                     const amount = breakdownData.data[quarter][category] || 0
+                                    const isFuture = selectedYear !== 'all' && isFutureQuarter(selectedYear, quarterIndex)
                                     return (
                                         <td key={`${quarter}-${category}`} className="amount">
-                                            {formatCurrency(amount)}
+                                            {isFuture ? '-' : formatCurrency(amount)}
                                         </td>
                                     )
                                 })}
