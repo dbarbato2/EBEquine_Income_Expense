@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
-import { InnerLayout } from '../../styles/Layouts';
 
 const ViewDeductionsWithModify = () => {
   const { getDeductions, deductions } = useGlobalContext();
@@ -37,7 +36,7 @@ const ViewDeductionsWithModify = () => {
 
   return (
     <ViewDeductionsWithModifyStyled>
-        <InnerLayout>
+      <div className="content-wrapper">
       <h2>View Deductions</h2>
       <div className="table-wrapper">
       <table>
@@ -65,21 +64,32 @@ const ViewDeductionsWithModify = () => {
         </tbody>
       </table>
       </div>
-      </InnerLayout>
+      </div>
     </ViewDeductionsWithModifyStyled>
   );
 }
 
 const ViewDeductionsWithModifyStyled = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0;
+
+    .content-wrapper {
+      padding: 2rem 1.5rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
 
     h2{
     margin-bottom: 10px}
 
     .table-wrapper {
+      flex: 1;
       overflow-x: auto;
       overflow-y: auto;
-      max-height: 400px;
-      margin-bottom: 2rem;
       border: 1px solid #ddd;
       border-radius: 8px;
     }
@@ -102,12 +112,10 @@ const ViewDeductionsWithModifyStyled = styled.div`
       background: #555;
     }
 
-    th {
-    background-color:blue;
-    }
   table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-bottom: 2rem;
 
     th, td {
@@ -116,20 +124,22 @@ const ViewDeductionsWithModifyStyled = styled.div`
       text-align: left;
     }
 
-    th {
+    thead th {
       background-color: #f2f2f2;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
     }
 
-    tr:nth-child(even) {
+    tbody tr:nth-child(even) {
       background-color: #f9f9f9;
     }
 
-    tr:hover {
+    tbody tr:hover {
       background-color: #f1f1f1;
       cursor: pointer;
     }
-
-
   }
 `;
 

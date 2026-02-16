@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
-import { InnerLayout } from '../../styles/Layouts';
 
 const ViewClients = () => {
   const { getClients, clients } = useGlobalContext();
@@ -17,50 +16,101 @@ const ViewClients = () => {
 
   return (
     <ViewClientsStyled>
-        <InnerLayout>
+      <div className="content-wrapper">
       <h2>Clients</h2>
       <div className="table-wrapper">
       <table>
         <thead>
           <tr>
             <th>Name</th>
-            <th>Owner Name</th>
-            <th>Barn</th>
-            <th>Address</th>
-            <th>Email</th>
             <th>Phone</th>
+            <th>Email</th>
+            <th>Mailing Address</th>
+            <th>Town/State/Zip</th>
+            <th>Barn Address</th>
+            <th>Barn Contact</th>
+            <th>Horse Name</th>
+            <th>Breed Type</th>
+            <th>Age/DOB</th>
+            <th>Gender</th>
+            <th>Color</th>
+            <th>Discipline</th>
+            <th>Often Trained/Ridden</th>
+            <th>Medications</th>
+            <th>Prior Injuries</th>
+            <th>Concerns/Problems</th>
+            <th>Horse Tie</th>
+            <th>Previous Massage</th>
+            <th>Vet Clinic Name</th>
+            <th>Photo/Video</th>
+            <th>Waiver Permission</th>
+            <th>Medical Update</th>
+            <th>Referral Source</th>
+            <th>Peppermint Cubes</th>
+            <th>Additional Info</th>
           </tr>
         </thead>
         <tbody>
-          {clients.map(clients => (
-            <tr key={clients._id} onClick={() => handleRowClick(clients)}>
-              <td>{clients.Name}</td>
-              <td>{clients['Owner Name']}</td>
-              <td>{clients.Barn}</td>
-              <td>{clients.Address}</td>
-              <td>{clients['Email Address']}</td>
-              <td>{clients['Phone Number']}</td>
+          {clients.map(client => (
+            <tr key={client._id} onClick={() => handleRowClick(client)}>
+              <td>{client.Name}</td>
+              <td>{client.PhoneNumber}</td>
+              <td>{client.Email}</td>
+              <td>{client.MailingAddress}</td>
+              <td>{client.TownStateZip}</td>
+              <td>{client.BarnAddress}</td>
+              <td>{client.BarnContact}</td>
+              <td>{client.HorseName}</td>
+              <td>{client.BreedType}</td>
+              <td>{client.Age_DOB}</td>
+              <td>{client.Gender}</td>
+              <td>{client.Color}</td>
+              <td>{client.Discipline}</td>
+              <td>{client.OftenTrainedRidden}</td>
+              <td>{client.Medications}</td>
+              <td>{client.PriorInjuries}</td>
+              <td>{client.ConcernsProblems}</td>
+              <td>{client.HorseTie}</td>
+              <td>{client.PreviousMassage}</td>
+              <td>{client.VetClinicName}</td>
+              <td>{client.PhotoVideo}</td>
+              <td>{client.WaiverPermission}</td>
+              <td>{client.MedicalConditionUpdate}</td>
+              <td>{client.ReferralSource}</td>
+              <td>{client.PeppermintSugarCubes}</td>
+              <td>{client.AdditionalInformation}</td>
           </tr>
           ))}
         </tbody>
       </table>
       </div>
       
-      </InnerLayout>
+      </div>
     </ViewClientsStyled>
   );
 }
 
 const ViewClientsStyled = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0;
+
+    .content-wrapper {
+      padding: 2rem 1.5rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
 
     h2{
     margin-bottom: 10px}
 
     .table-wrapper {
+      flex: 1;
       overflow-x: auto;
       overflow-y: auto;
-      max-height: 400px;
-      margin-bottom: 2rem;
       border: 1px solid #ddd;
       border-radius: 8px;
     }
@@ -83,12 +133,10 @@ const ViewClientsStyled = styled.div`
       background: #555;
     }
 
-    th {
-    background-color:blue;
-    }
   table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-bottom: 2rem;
 
     th, td {
@@ -97,20 +145,22 @@ const ViewClientsStyled = styled.div`
       text-align: left;
     }
 
-    th {
+    thead th {
       background-color: #f2f2f2;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
     }
 
-    tr:nth-child(even) {
+    tbody tr:nth-child(even) {
       background-color: #f9f9f9;
     }
 
-    tr:hover {
+    tbody tr:hover {
       background-color: #f1f1f1;
       cursor: pointer;
     }
-
-
   }
 `;
 

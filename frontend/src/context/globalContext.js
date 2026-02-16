@@ -173,7 +173,6 @@ export const GlobalProvider = ({ children }) => {
       await getClients();
       return true;
     } catch (err) {
-      setError(err.response.data.message);
       toast.error(err.response.data.message || 'Failed to add client');
       return false;
     }
@@ -466,12 +465,15 @@ export const GlobalProvider = ({ children }) => {
   };
 
   // Client search and update
-  const searchClients = async (name, ownerName) => {
+  const searchClients = async (name, phoneNumber, email, barnContact, horseName) => {
     if (!user) return [];
     try {
       let queryParams = `userid=${user}`;
       if (name) queryParams += `&name=${name}`;
-      if (ownerName) queryParams += `&ownerName=${ownerName}`;
+      if (phoneNumber) queryParams += `&phoneNumber=${phoneNumber}`;
+      if (email) queryParams += `&email=${email}`;
+      if (barnContact) queryParams += `&barnContact=${barnContact}`;
+      if (horseName) queryParams += `&horseName=${horseName}`;
       
       const response = await axios.get(`${BASE_URL}search-clients?${queryParams}`);
       return response.data;

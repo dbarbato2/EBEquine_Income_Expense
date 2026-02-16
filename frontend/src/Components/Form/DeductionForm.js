@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import Button from '../Button/Button';
@@ -16,6 +16,11 @@ function DeductionForm() {
         deductionAmount: '',
         deductionRecordNumber: ''
     })
+
+    useEffect(() => {
+        // Clear any previous errors when component mounts
+        setError('')
+    }, [setError])
 
     const { year, month, deductionType, deductionDescription, deductionAmount, deductionRecordNumber } = inputState;
 

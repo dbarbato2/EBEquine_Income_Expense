@@ -1,7 +1,7 @@
 const { addExpense, getExpenses, deleteExpense, searchExpenses, updateExpense, getMaxExpenseRecordNumber } = require('../controllers/expense')
 const { addRevenue, getRevenue, deleteRevenue, searchRevenue, updateRevenue, getMaxInvoiceNumber, getMaxIndividualInvoice, getMaxMonthlyInvoice } = require('../controllers/revenue');
 const { addDeduction, getDeductions, deleteDeduction, searchDeductions, updateDeduction, getMaxDeductionRecordNumber } = require('../controllers/deduction');
-const { addClient, getClients, deleteClient, editClient, searchClients } = require('../controllers/client');
+const { addClient, getClients, deleteClient, editClient, searchClients, addClientFromGoogleSheets } = require('../controllers/client');
 const { checkUser, register, login } = require('../controllers/user');
 
 const router = require('express').Router()
@@ -31,6 +31,7 @@ router.post('/api/v1/add-revenue', addRevenue)
     .get('/api/v1/search-clients', searchClients)
     .delete('/api/v1/delete-client/:id', deleteClient)
     .put('/api/v1/edit-client/:id', editClient)
+    .post('/api/v1/webhook/google-sheets-client', addClientFromGoogleSheets)
     .post('/api/v1/check-user', checkUser)
     .post("/api/v1/register", register)
     .post("/api/v1/login", login);

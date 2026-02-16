@@ -2,20 +2,41 @@ const ClientSchema = require("../models/ClientModel")
 const mongoose = require("mongoose")
 
 exports.addClient = async (req, res) => {
-    const { userid, name, ownerName, barn, address, emailAddress, phoneNumber } = req.body
+    const { userid, Name, Timestamp, PhoneNumber, MailingAddress, TownStateZip, Email, BarnAddress, BarnContact, HorseName, BreedType, Age_DOB, Gender, Color, Discipline, OftenTrainedRidden, Medications, PriorInjuries, ConcernsProblems, HorseTie, PreviousMassage, AdditionalInformation, VetClinicName, PhotoVideo, WaiverPermission, MedicalConditionUpdate, ReferralSource, PeppermintSugarCubes } = req.body
 
     const client = ClientSchema({
         userid,
-        Name: name,
-        'Owner Name': ownerName,
-        Barn: barn,
-        Address: address,
-        'Email Address': emailAddress,
-        'Phone Number': phoneNumber
+        Timestamp,
+        Name,
+        PhoneNumber,
+        MailingAddress,
+        TownStateZip,
+        Email,
+        BarnAddress,
+        BarnContact,
+        HorseName,
+        BreedType,
+        Age_DOB,
+        Gender,
+        Color,
+        Discipline,
+        OftenTrainedRidden,
+        Medications,
+        PriorInjuries,
+        ConcernsProblems,
+        HorseTie,
+        PreviousMassage,
+        AdditionalInformation,
+        VetClinicName,
+        PhotoVideo,
+        WaiverPermission,
+        MedicalConditionUpdate,
+        ReferralSource,
+        PeppermintSugarCubes
     })
 
     try {
-        if (!userid || !name) {
+        if (!userid || !Name) {
             return res.status(400).json({ message: 'User ID and Client Name are required' })
         }
 
@@ -101,7 +122,13 @@ exports.deleteClient = async (req, res) => {
 
 exports.editClient = async (req, res) => {
     const { id } = req.params
-    const { name, ownerName, barn, address, emailAddress, phoneNumber } = req.body
+    const { 
+        name, phoneNumber, email, mailingAddress, townStateZip, barnAddress, 
+        barnContact, horseName, breedType, age_DOB, gender, color, discipline, 
+        oftenTrainedRidden, medications, priorInjuries, concernsProblems, horseTie, 
+        previousMassage, additionalInformation, vetClinicName, photoVideo, 
+        waiverPermission, medicalConditionUpdate, referralSource, peppermintSugarCubes 
+    } = req.body
 
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -112,16 +139,38 @@ exports.editClient = async (req, res) => {
             return res.status(400).json({ message: 'Client Name is required' })
         }
 
+        const updateData = {
+            Name: name,
+            PhoneNumber: phoneNumber,
+            Email: email,
+            MailingAddress: mailingAddress,
+            TownStateZip: townStateZip,
+            BarnAddress: barnAddress,
+            BarnContact: barnContact,
+            HorseName: horseName,
+            BreedType: breedType,
+            Age_DOB: age_DOB,
+            Gender: gender,
+            Color: color,
+            Discipline: discipline,
+            OftenTrainedRidden: oftenTrainedRidden,
+            Medications: medications,
+            PriorInjuries: priorInjuries,
+            ConcernsProblems: concernsProblems,
+            HorseTie: horseTie,
+            PreviousMassage: previousMassage,
+            AdditionalInformation: additionalInformation,
+            VetClinicName: vetClinicName,
+            PhotoVideo: photoVideo,
+            WaiverPermission: waiverPermission,
+            MedicalConditionUpdate: medicalConditionUpdate,
+            ReferralSource: referralSource,
+            PeppermintSugarCubes: peppermintSugarCubes
+        }
+
         const updatedClient = await ClientSchema.findByIdAndUpdate(
             id,
-            { 
-                Name: name,
-                'Owner Name': ownerName,
-                Barn: barn,
-                Address: address,
-                'Email Address': emailAddress,
-                'Phone Number': phoneNumber
-            },
+            updateData,
             { new: true, runValidators: true }
         )
 
@@ -138,7 +187,7 @@ exports.editClient = async (req, res) => {
 
 exports.searchClients = async (req, res) => {
     try {
-        const { userid, name, ownerName } = req.query;
+        const { userid, name, phoneNumber, email, barnContact, horseName } = req.query;
         
         if (!userid) {
             return res.status(400).json({message: 'User ID is required'})
@@ -147,13 +196,21 @@ exports.searchClients = async (req, res) => {
         // Build search criteria
         let searchCriteria = { userid: userid.trim() };
         
-        // Get initial results without fuzzy matching on name/owner
+        // For exact match fields (phone and email), add to search criteria
+        if (phoneNumber) {
+            searchCriteria['Phone Number'] = phoneNumber.trim();
+        }
+        if (email) {
+            searchCriteria['Email Address'] = email.trim();
+        }
+        
+        // Get initial results
         console.log('Initial search criteria:', JSON.stringify(searchCriteria, null, 2));
         let clients = await ClientSchema.find(searchCriteria).sort({ createdAt: -1 });
         
-        // Apply fuzzy matching to name and ownerName if provided
-        if (name || ownerName) {
-            clients = applyFuzzyMatchClients(clients, name, ownerName);
+        // Apply fuzzy matching to name, barnContact, and horseName if provided
+        if (name || barnContact || horseName) {
+            clients = applyFuzzyMatchClients(clients, name, barnContact, horseName);
         }
         
         console.log('Found client records:', clients.length);
@@ -212,8 +269,8 @@ const calculateRelevanceScoreClient = (fieldValue, searchTerm) => {
     return similarity >= 0.6 ? similarity * 70 : 0;
 };
 
-// Apply fuzzy matching and sort by relevance for client names
-const applyFuzzyMatchClients = (clients, name, ownerName) => {
+// Apply fuzzy matching and sort by relevance for client names, barn contact, and horse name
+const applyFuzzyMatchClients = (clients, name, barnContact, horseName) => {
     return clients
         .map(client => {
             let relevanceScore = 0;
@@ -222,12 +279,118 @@ const applyFuzzyMatchClients = (clients, name, ownerName) => {
                 relevanceScore += calculateRelevanceScoreClient(client.Name, name);
             }
             
-            if (ownerName) {
-                relevanceScore += calculateRelevanceScoreClient(client['Owner Name'], ownerName);
+            if (barnContact) {
+                relevanceScore += calculateRelevanceScoreClient(client['Barn Contact'], barnContact);
+            }
+            
+            if (horseName) {
+                relevanceScore += calculateRelevanceScoreClient(client["Horse's Name"], horseName);
             }
             
             return { ...client.toObject(), _relevanceScore: relevanceScore };
         })
         .filter(client => client._relevanceScore > 0)
         .sort((a, b) => b._relevanceScore - a._relevanceScore);
+}
+
+// Webhook endpoint for Google Sheets integration
+// This receives new client data from Google Forms submissions
+exports.addClientFromGoogleSheets = async (req, res) => {
+    console.log('=== Google Sheets Webhook Received ===');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    
+    try {
+        const { 
+            apiKey,
+            userid,
+            Timestamp,
+            Name,
+            PhoneNumber,
+            MailingAddress,
+            TownStateZip,
+            Email,
+            BarnAddress,
+            BarnContact,
+            HorseName,
+            BreedType,
+            Age_DOB,
+            Gender,
+            Color,
+            Discipline,
+            OftenTrainedRidden,
+            Medications,
+            PriorInjuries,
+            ConcernsProblems,
+            HorseTie,
+            PreviousMassage,
+            AdditionalInformation,
+            VetClinicName,
+            PhotoVideo,
+            WaiverPermission,
+            MedicalConditionUpdate,
+            ReferralSource,
+            PeppermintSugarCubes
+        } = req.body;
+
+        // Verify API key for security
+        const expectedApiKey = process.env.GOOGLE_SHEETS_API_KEY || 'your-secret-api-key';
+        if (apiKey !== expectedApiKey) {
+            console.log('Invalid API key provided');
+            return res.status(401).json({ message: 'Unauthorized: Invalid API key' });
+        }
+
+        if (!userid || !Name) {
+            return res.status(400).json({ message: 'User ID and Client Name are required' });
+        }
+
+        // Check if client already exists (by Name and HorseName to avoid duplicates)
+        const existingClient = await ClientSchema.findOne({ 
+            userid: userid,
+            Name: Name,
+            HorseName: HorseName || ''
+        });
+
+        if (existingClient) {
+            console.log('Client already exists, skipping:', Name);
+            return res.status(200).json({ message: 'Client already exists', skipped: true });
+        }
+
+        const client = new ClientSchema({
+            userid,
+            Timestamp: Timestamp || new Date().toISOString(),
+            Name,
+            PhoneNumber,
+            MailingAddress,
+            TownStateZip,
+            Email,
+            BarnAddress,
+            BarnContact,
+            HorseName,
+            BreedType,
+            Age_DOB,
+            Gender,
+            Color,
+            Discipline,
+            OftenTrainedRidden,
+            Medications,
+            PriorInjuries,
+            ConcernsProblems,
+            HorseTie,
+            PreviousMassage,
+            AdditionalInformation,
+            VetClinicName,
+            PhotoVideo,
+            WaiverPermission,
+            MedicalConditionUpdate,
+            ReferralSource,
+            PeppermintSugarCubes
+        });
+
+        await client.save();
+        console.log('Client added successfully from Google Sheets:', Name);
+        res.status(200).json({ message: 'Client Added from Google Sheets', client: { Name, HorseName } });
+    } catch (error) {
+        console.error("Error adding client from Google Sheets:", error);
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
 }

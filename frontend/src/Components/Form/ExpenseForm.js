@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
@@ -21,6 +21,11 @@ function ExpenseForm() {
         businessTrip: false,
         expenseRecordNumber: ''
     })
+
+    useEffect(() => {
+        // Clear any previous errors when component mounts
+        setError('')
+    }, [setError])
 
     const { date, vendor, location, expenseType, expenseDescription, amount, paymentType, businessTrip, expenseRecordNumber } = inputState;
 

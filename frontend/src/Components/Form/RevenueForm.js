@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,6 +26,11 @@ function RevenueForm() {
         actualRevenue: '',
         invoiceNumber: ''
     })
+    
+    useEffect(() => {
+        // Clear any previous errors when component mounts
+        setError('')
+    }, [setError])
     
     const [showInvoiceModal, setShowInvoiceModal] = useState(false)
 

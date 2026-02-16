@@ -101,7 +101,7 @@ function Form() {
             </div>
             <div className="selects input-control">
                 <select value={service} name="service" id="service" onChange={handleInput('service')}>
-                    <option value="Introductory Massager">Introductory Massager</option>
+                    <option value="Introductory Massage">Introductory Massage</option>
                     <option value="1 Hour Massage">1 Hour Massage</option>
                     <option value="Kinesiology Tape">Kinesiology Tape</option>
                     <option value="8 Hours Teaching">8 Hours Teaching</option>

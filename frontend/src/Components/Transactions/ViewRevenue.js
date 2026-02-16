@@ -1,23 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
-import { InnerLayout } from '../../styles/Layouts';
 import { dateFormat } from '../../utils/dateFormat';
+import InvoiceModal from '../Invoice/InvoiceModal';
 
 const ViewRevenue = () => {
-  const { getRevenue, revenue } = useGlobalContext();
+  const { getRevenue, revenue, clients, getClients } = useGlobalContext();
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [selectedRevenue, setSelectedRevenue] = useState(null);
+  const [selectedClient, setSelectedClient] = useState(null);
 
   useEffect(() => {
     getRevenue();
-  }, [getRevenue]);
+    getClients();
+  }, [getRevenue, getClients]);
 
   const handleRowClick = (item) => {
-    alert(JSON.stringify(item, null, 2));
+    setSelectedRevenue(item);
+    // Find matching client data if available
+    const matchingClient = clients.find(c => c.Name === item.Client);
+    setSelectedClient(matchingClient || null);
+    setShowInvoiceModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowInvoiceModal(false);
+    setSelectedRevenue(null);
+    setSelectedClient(null);
   };
 
   return (
     <ViewRevenueStyled>
-        <InnerLayout>
+      <div className="content-wrapper">
       <h2>Revenue</h2>
       <div className="table-wrapper">
       <table>
@@ -70,21 +84,40 @@ const ViewRevenue = () => {
         </tbody>
       </table>
       </div>
-      </InnerLayout>
+      </div>
+      
+      {/* Invoice Modal */}
+      <InvoiceModal 
+        isOpen={showInvoiceModal}
+        onClose={handleCloseModal}
+        revenueData={selectedRevenue}
+        clientData={selectedClient}
+      />
     </ViewRevenueStyled>
   );
 }
 
 const ViewRevenueStyled = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0;
+
+    .content-wrapper {
+      padding: 2rem 1.5rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
 
     h2{
     margin-bottom: 10px}
 
     .table-wrapper {
+      flex: 1;
       overflow-x: auto;
       overflow-y: auto;
-      max-height: 400px;
-      margin-bottom: 2rem;
       border: 1px solid #ddd;
       border-radius: 8px;
     }
@@ -112,7 +145,8 @@ const ViewRevenueStyled = styled.div`
     }
   table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-bottom: 2rem;
 
     th, td {
@@ -121,15 +155,19 @@ const ViewRevenueStyled = styled.div`
       text-align: left;
     }
 
-    th {
+    thead th {
       background-color: #f2f2f2;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
     }
 
-    tr:nth-child(even) {
+    tbody tr:nth-child(even) {
       background-color: #f9f9f9;
     }
 
-    tr:hover {
+    tbody tr:hover {
       background-color: #f1f1f1;
       cursor: pointer;
     }

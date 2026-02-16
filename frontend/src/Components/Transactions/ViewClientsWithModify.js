@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
-import { InnerLayout } from '../../styles/Layouts';
 import { toast } from 'react-hot-toast';
 import Button from '../Button/Button';
 import { edit, trash, plus, x } from '../../utils/Icons';
@@ -10,7 +9,10 @@ const ViewClientsWithModify = () => {
   const { getClients, clients, searchClients, updateClient, deleteClient } = useGlobalContext();
   const [searchCriteria, setSearchCriteria] = useState({
     name: '',
-    ownerName: ''
+    phoneNumber: '',
+    email: '',
+    barnContact: '',
+    horseName: ''
   });
   const [searchResults, setSearchResults] = useState([]);
   const [selectedClient, setSelectedClient] = useState(null);
@@ -28,14 +30,14 @@ const ViewClientsWithModify = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    const { name, ownerName } = searchCriteria;
+    const { name, phoneNumber, email, barnContact, horseName } = searchCriteria;
     
-    if (!name && !ownerName) {
+    if (!name && !phoneNumber && !email && !barnContact && !horseName) {
       toast.error('Please enter at least one search criteria');
       return;
     }
 
-    const results = await searchClients(name, ownerName);
+    const results = await searchClients(name, phoneNumber, email, barnContact, horseName);
     setSearchResults(results);
     setShowSearchResults(true);
     
@@ -79,11 +81,31 @@ const ViewClientsWithModify = () => {
     try {
       const updateData = {
         name: editedClient.Name,
-        ownerName: editedClient['Owner Name'],
-        barn: editedClient.Barn,
-        address: editedClient.Address,
-        emailAddress: editedClient['Email Address'],
-        phoneNumber: editedClient['Phone Number']
+        phoneNumber: editedClient.PhoneNumber,
+        email: editedClient.Email,
+        mailingAddress: editedClient.MailingAddress,
+        townStateZip: editedClient.TownStateZip,
+        barnAddress: editedClient.BarnAddress,
+        barnContact: editedClient.BarnContact,
+        horseName: editedClient.HorseName,
+        breedType: editedClient.BreedType,
+        age_DOB: editedClient.Age_DOB,
+        gender: editedClient.Gender,
+        color: editedClient.Color,
+        discipline: editedClient.Discipline,
+        oftenTrainedRidden: editedClient.OftenTrainedRidden,
+        medications: editedClient.Medications,
+        priorInjuries: editedClient.PriorInjuries,
+        concernsProblems: editedClient.ConcernsProblems,
+        horseTie: editedClient.HorseTie,
+        previousMassage: editedClient.PreviousMassage,
+        additionalInformation: editedClient.AdditionalInformation,
+        vetClinicName: editedClient.VetClinicName,
+        photoVideo: editedClient.PhotoVideo,
+        waiverPermission: editedClient.WaiverPermission,
+        medicalConditionUpdate: editedClient.MedicalConditionUpdate,
+        referralSource: editedClient.ReferralSource,
+        peppermintSugarCubes: editedClient.PeppermintSugarCubes
       };
 
       await updateClient(selectedClient._id, updateData);
@@ -92,8 +114,8 @@ const ViewClientsWithModify = () => {
       
       // Refresh search results if applicable
       if (showSearchResults) {
-        const { name, ownerName } = searchCriteria;
-        const results = await searchClients(name, ownerName);
+        const { name, phoneNumber, email, barnContact, horseName } = searchCriteria;
+        const results = await searchClients(name, phoneNumber, email, barnContact, horseName);
         setSearchResults(results);
       }
     } catch (error) {
@@ -111,8 +133,8 @@ const ViewClientsWithModify = () => {
         
         // Refresh search results if applicable
         if (showSearchResults) {
-          const { name, ownerName } = searchCriteria;
-          const results = await searchClients(name, ownerName);
+          const { name, phoneNumber, email, barnContact, horseName } = searchCriteria;
+          const results = await searchClients(name, phoneNumber, email, barnContact, horseName);
           setSearchResults(results);
         }
       } catch (error) {
@@ -123,7 +145,7 @@ const ViewClientsWithModify = () => {
 
   return (
     <ViewClientsStyled>
-        <InnerLayout>
+      <div className="content-wrapper">
       <h2>Modify/Delete Client</h2>
       
       {/* Search Section */}
@@ -143,10 +165,37 @@ const ViewClientsWithModify = () => {
             <div className="input-control">
               <input 
                 type="text"
-                value={searchCriteria.ownerName}
-                name="ownerName"
-                placeholder="Owner Name"
-                onChange={handleSearchInput('ownerName')}
+                value={searchCriteria.phoneNumber}
+                name="phoneNumber"
+                placeholder="Phone Number"
+                onChange={handleSearchInput('phoneNumber')}
+              />
+            </div>
+            <div className="input-control">
+              <input 
+                type="text"
+                value={searchCriteria.email}
+                name="email"
+                placeholder="Email Address"
+                onChange={handleSearchInput('email')}
+              />
+            </div>
+            <div className="input-control">
+              <input 
+                type="text"
+                value={searchCriteria.barnContact}
+                name="barnContact"
+                placeholder="Barn Contact"
+                onChange={handleSearchInput('barnContact')}
+              />
+            </div>
+            <div className="input-control">
+              <input 
+                type="text"
+                value={searchCriteria.horseName}
+                name="horseName"
+                placeholder="Horse Name"
+                onChange={handleSearchInput('horseName')}
               />
             </div>
             <button type="submit" className="search-btn">Search</button>
@@ -163,9 +212,11 @@ const ViewClientsWithModify = () => {
               <thead>
                 <tr>
                   <th>Client Name</th>
-                  <th>Owner Name</th>
-                  <th>Barn</th>
-                  <th>Phone Number</th>
+                  <th>Phone</th>
+                  <th>Email</th>
+                  <th>Barn Address</th>
+                  <th>Barn Contact</th>
+                  <th>Horse Name</th>
                 </tr>
               </thead>
               <tbody>
@@ -176,9 +227,11 @@ const ViewClientsWithModify = () => {
                     className={selectedClient && selectedClient._id === clientItem._id ? 'selected' : ''}
                   >
                     <td>{clientItem.Name}</td>
-                    <td>{clientItem['Owner Name']}</td>
-                    <td>{clientItem.Barn}</td>
-                    <td>{clientItem['Phone Number']}</td>
+                    <td>{clientItem.PhoneNumber}</td>
+                    <td>{clientItem.Email}</td>
+                    <td>{clientItem.BarnAddress}</td>
+                    <td>{clientItem.BarnContact}</td>
+                    <td>{clientItem.HorseName}</td>
                   </tr>
                 ))}
               </tbody>
@@ -202,48 +255,273 @@ const ViewClientsWithModify = () => {
               />
             </div>
             <div className="form-group">
-              <label>Owner Name:</label>
-              <input 
-                type="text" 
-                value={isEditing ? (editedClient['Owner Name'] || '') : (selectedClient['Owner Name'] || '')} 
-                readOnly={!isEditing}
-                onChange={isEditing ? handleEditInput('Owner Name') : undefined}
-              />
-            </div>
-            <div className="form-group">
-              <label>Barn:</label>
-              <input 
-                type="text" 
-                value={isEditing ? (editedClient.Barn || '') : (selectedClient.Barn || '')} 
-                readOnly={!isEditing}
-                onChange={isEditing ? handleEditInput('Barn') : undefined}
-              />
-            </div>
-            <div className="form-group">
-              <label>Address:</label>
-              <input 
-                type="text" 
-                value={isEditing ? (editedClient.Address || '') : (selectedClient.Address || '')} 
-                readOnly={!isEditing}
-                onChange={isEditing ? handleEditInput('Address') : undefined}
-              />
-            </div>
-            <div className="form-group">
-              <label>Email Address:</label>
-              <input 
-                type="email" 
-                value={isEditing ? (editedClient['Email Address'] || '') : (selectedClient['Email Address'] || '')} 
-                readOnly={!isEditing}
-                onChange={isEditing ? handleEditInput('Email Address') : undefined}
-              />
-            </div>
-            <div className="form-group">
               <label>Phone Number:</label>
               <input 
                 type="tel" 
-                value={isEditing ? (editedClient['Phone Number'] || '') : (selectedClient['Phone Number'] || '')} 
+                value={isEditing ? (editedClient.PhoneNumber || '') : (selectedClient.PhoneNumber || '')} 
                 readOnly={!isEditing}
-                onChange={isEditing ? handleEditInput('Phone Number') : undefined}
+                onChange={isEditing ? handleEditInput('PhoneNumber') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Email:</label>
+              <input 
+                type="email" 
+                value={isEditing ? (editedClient.Email || '') : (selectedClient.Email || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('Email') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Mailing Address:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.MailingAddress || '') : (selectedClient.MailingAddress || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('MailingAddress') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Town/State/Zip:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.TownStateZip || '') : (selectedClient.TownStateZip || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('TownStateZip') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Barn Address:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.BarnAddress || '') : (selectedClient.BarnAddress || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('BarnAddress') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Barn Contact:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.BarnContact || '') : (selectedClient.BarnContact || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('BarnContact') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Horse's Name:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.HorseName || '') : (selectedClient.HorseName || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('HorseName') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Breed Type:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.BreedType || '') : (selectedClient.BreedType || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('BreedType') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Age/DOB:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.Age_DOB || '') : (selectedClient.Age_DOB || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('Age_DOB') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Gender:</label>
+              {isEditing ? (
+                <select 
+                  value={editedClient.Gender || ''} 
+                  onChange={handleEditInput('Gender')}
+                >
+                  <option value="">Select an option</option>
+                  <option value="Mare">Mare</option>
+                  <option value="Stallion">Stallion</option>
+                  <option value="Gelding">Gelding</option>
+                </select>
+              ) : (
+                <input type="text" value={selectedClient.Gender || ''} readOnly />
+              )}
+            </div>
+            <div className="form-group">
+              <label>Color:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.Color || '') : (selectedClient.Color || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('Color') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Discipline:</label>
+              {isEditing ? (
+                <select 
+                  value={editedClient.Discipline || ''} 
+                  onChange={handleEditInput('Discipline')}
+                >
+                  <option value="">Select an option</option>
+                  <option value="Dressage">Dressage</option>
+                  <option value="Hunter/Jumper">Hunter/Jumper</option>
+                  <option value="Western/Western Pleasure/Western Dressage">Western/Western Pleasure/Western Dressage</option>
+                  <option value="Trails">Trails</option>
+                  <option value="Backyard Best Friend">Backyard Best Friend</option>
+                  <option value="Lesson Horse">Lesson Horse</option>
+                  <option value="Eventing">Eventing</option>
+                  <option value="Retired">Retired</option>
+                  <option value="Other">Other</option>
+                </select>
+              ) : (
+                <input type="text" value={selectedClient.Discipline || ''} readOnly />
+              )}
+            </div>
+            <div className="form-group">
+              <label>Often Trained/Ridden:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.OftenTrainedRidden || '') : (selectedClient.OftenTrainedRidden || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('OftenTrainedRidden') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Medications:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.Medications || '') : (selectedClient.Medications || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('Medications') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Prior Injuries:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.PriorInjuries || '') : (selectedClient.PriorInjuries || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('PriorInjuries') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Concerns/Problems:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.ConcernsProblems || '') : (selectedClient.ConcernsProblems || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('ConcernsProblems') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Horse Tie:</label>
+              {isEditing ? (
+                <select 
+                  value={editedClient.HorseTie || ''} 
+                  onChange={handleEditInput('HorseTie')}
+                >
+                  <option value="">Select an option</option>
+                  <option value="Cross">Cross</option>
+                  <option value="Single">Single</option>
+                  <option value="Both Cross and Single">Both Cross and Single</option>
+                  <option value="No">No</option>
+                </select>
+              ) : (
+                <input type="text" value={selectedClient.HorseTie || ''} readOnly />
+              )}
+            </div>
+            <div className="form-group">
+              <label>Previous Massage:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.PreviousMassage || '') : (selectedClient.PreviousMassage || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('PreviousMassage') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Additional Information:</label>
+              <textarea 
+                value={isEditing ? (editedClient.AdditionalInformation || '') : (selectedClient.AdditionalInformation || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('AdditionalInformation') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Vet Clinic Name:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.VetClinicName || '') : (selectedClient.VetClinicName || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('VetClinicName') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Photo/Video:</label>
+              {isEditing ? (
+                <select 
+                  value={editedClient.PhotoVideo || ''} 
+                  onChange={handleEditInput('PhotoVideo')}
+                >
+                  <option value="">Select an option</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              ) : (
+                <input type="text" value={selectedClient.PhotoVideo || ''} readOnly />
+              )}
+            </div>
+            <div className="form-group">
+              <label>Waiver Permission:</label>
+              {isEditing ? (
+                <select 
+                  value={editedClient.WaiverPermission || ''} 
+                  onChange={handleEditInput('WaiverPermission')}
+                >
+                  <option value="">Select an option</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              ) : (
+                <input type="text" value={selectedClient.WaiverPermission || ''} readOnly />
+              )}
+            </div>
+            <div className="form-group">
+              <label>Medical Condition Update:</label>
+              {isEditing ? (
+                <select 
+                  value={editedClient.MedicalConditionUpdate || ''} 
+                  onChange={handleEditInput('MedicalConditionUpdate')}
+                >
+                  <option value="">Select an option</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              ) : (
+                <input type="text" value={selectedClient.MedicalConditionUpdate || ''} readOnly />
+              )}
+            </div>
+            <div className="form-group">
+              <label>Referral Source:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.ReferralSource || '') : (selectedClient.ReferralSource || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('ReferralSource') : undefined}
+              />
+            </div>
+            <div className="form-group">
+              <label>Peppermint Sugar Cubes:</label>
+              <input 
+                type="text" 
+                value={isEditing ? (editedClient.PeppermintSugarCubes || '') : (selectedClient.PeppermintSugarCubes || '')} 
+                readOnly={!isEditing}
+                onChange={isEditing ? handleEditInput('PeppermintSugarCubes') : undefined}
               />
             </div>
           </div>
@@ -302,29 +580,45 @@ const ViewClientsWithModify = () => {
         <thead>
           <tr>
             <th>Client Name</th>
-            <th>Owner Name</th>
-            <th>Barn</th>
-            <th>Phone Number</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Barn Address</th>
+            <th>Barn Contact</th>
+            <th>Horse Name</th>
           </tr>
         </thead>
         <tbody>
           {clients.map(clientItem => (
             <tr key={clientItem._id} onClick={() => handleRowClick(clientItem)}>
               <td>{clientItem.Name}</td>
-              <td>{clientItem['Owner Name']}</td>
-              <td>{clientItem.Barn}</td>
-              <td>{clientItem['Phone Number']}</td>
+              <td>{clientItem.PhoneNumber}</td>
+              <td>{clientItem.Email}</td>
+              <td>{clientItem.BarnAddress}</td>
+              <td>{clientItem['Barn Contact']}</td>
+              <td>{clientItem.HorseName}</td>
             </tr>
           ))}
         </tbody>
       </table>
       </div>
-      </InnerLayout>
+      </div>
     </ViewClientsStyled>
   );
 }
 
 const ViewClientsStyled = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0;
+
+    .content-wrapper {
+      padding: 2rem 1.5rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
 
     h2{
     margin-bottom: 10px}
@@ -481,10 +775,9 @@ const ViewClientsStyled = styled.div`
     }
 
     .table-wrapper {
+      flex: 1;
       overflow-x: auto;
       overflow-y: auto;
-      max-height: 400px;
-      margin-bottom: 2rem;
       border: 1px solid #ddd;
       border-radius: 8px;
     }
@@ -507,12 +800,10 @@ const ViewClientsStyled = styled.div`
       background: #555;
     }
 
-    th {
-    background-color:blue;
-    }
   table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-bottom: 2rem;
 
     th, td {
@@ -521,24 +812,26 @@ const ViewClientsStyled = styled.div`
       text-align: left;
     }
 
-    th {
+    thead th {
       background-color: #f2f2f2;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
     }
 
-    tr:nth-child(even) {
+    tbody tr:nth-child(even) {
       background-color: #f9f9f9;
     }
 
-    tr:hover {
+    tbody tr:hover {
       background-color: #f1f1f1;
       cursor: pointer;
     }
 
-    tr.selected {
+    tbody tr.selected {
       background-color: #d4e8ff;
     }
-
-
   }
 `;
 

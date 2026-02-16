@@ -4,6 +4,7 @@ import { InnerLayout } from '../../styles/Layouts';
 import { useGlobalContext } from '../../context/globalContext';
 import { dateFormat } from '../../utils/dateFormat';
 import QuarterlyRevenue from './QuarterlyRevenue';
+import InvoiceModal from '../Invoice/InvoiceModal';
 import DetailedBreakdown from './DetailedBreakdown';
 import CurrentYearAnalysis from './CurrentYearAnalysis';
 import RevenueByPaymentType from './RevenueByPaymentType';
@@ -12,9 +13,22 @@ import HistoricalRevenue from './HistoricalRevenue';
 import RollingRevenue from './RollingRevenue';
 
 function Dashboard() {
-    const { revenue } = useGlobalContext()
+    const { revenue, clients } = useGlobalContext()
     const [showUnpaidInvoices, setShowUnpaidInvoices] = useState(false)
     const [, setThemeUpdated] = useState(0)
+    const [showInvoiceModal, setShowInvoiceModal] = useState(false)
+    const [selectedRevenue, setSelectedRevenue] = useState(null)
+    const [selectedClient, setSelectedClient] = useState(null)
+
+    // Handle row click to open invoice modal
+    const handleRowClick = (item) => {
+        setSelectedRevenue(item);
+        const matchingClient = clients.find(c => c.Name === item.Client);
+        setSelectedClient(matchingClient || null);
+        setShowInvoiceModal(true);
+        // Scroll to top of page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     // Listen for theme changes and force re-render
     useEffect(() => {
@@ -28,6 +42,23 @@ function Dashboard() {
             window.removeEventListener('themeChange', handleThemeChange)
         }
     }, [])
+
+    // Helper function to safely parse currency values
+    const parseValue = (value) => {
+        if (!value || value === 'N/A' || value === '') return 0
+        const numStr = value.toString().replace('$', '').trim()
+        const num = parseFloat(numStr)
+        return isNaN(num) ? 0 : num
+    }
+
+    // Calculate Balance = Service Fee + Travel Fee - Discount
+    const calculateBalance = (invoice) => {
+        const serviceFee = parseValue(invoice['Service Fee'])
+        const travelFee = parseValue(invoice['Travel Fee'])
+        const discount = parseValue(invoice.Discount)
+        const balance = serviceFee + travelFee - discount
+        return `$${balance.toFixed(2)}`
+    }
 
     // Filter revenue items where Actual Fees is null, empty, or equals 0 (unpaid invoices)
     const unpaidInvoices = revenue.filter(item => {
@@ -62,16 +93,20 @@ function Dashboard() {
                                         <th>Date</th>
                                         <th>Client</th>
                                         <th>Service</th>
+                                        <th>Quantity</th>
                                         <th>Invoice #</th>
+                                        <th>Balance</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {unpaidInvoices.map((invoice, index) => (
-                                        <tr key={index}>
+                                        <tr key={index} onClick={() => handleRowClick(invoice)} style={{cursor: 'pointer'}}>
                                             <td>{dateFormat(invoice.Date)}</td>
                                             <td>{invoice.Client}</td>
                                             <td>{invoice.Service}</td>
+                                            <td>{invoice.Quantity || '1'}</td>
                                             <td>{invoice['Invoice Number'] || 'N/A'}</td>
+                                            <td>{calculateBalance(invoice)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -115,6 +150,17 @@ function Dashboard() {
                 <div id="rolling-revenue">
                     <RollingRevenue />
                 </div>
+
+                <InvoiceModal
+                    isOpen={showInvoiceModal}
+                    revenueData={selectedRevenue}
+                    clientData={selectedClient}
+                    onClose={() => {
+                        setShowInvoiceModal(false);
+                        setSelectedRevenue(null);
+                        setSelectedClient(null);
+                    }}
+                />
             </InnerLayout>
         </DashboardStyled>
     )
