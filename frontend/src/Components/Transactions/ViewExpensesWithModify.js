@@ -67,7 +67,9 @@ const ViewExpensesWithModify = () => {
   };
 
   const handleRowClick = (item) => {
-    alert(JSON.stringify(item, null, 2));
+    setSelectedExpense(item);
+    setEditedExpense(item);
+    setIsEditing(false);
   };
 
   const handleModify = () => {
@@ -439,7 +441,7 @@ const ViewExpensesWithModify = () => {
             const recordB = parseInt(b['Expense Record Number']) || 0;
             return recordB - recordA;
           }).map(expenseItem => (
-            <tr key={expenseItem._id} onClick={() => handleRowClick(expenseItem)}>
+            <tr key={expenseItem._id} onClick={() => handleRowClick(expenseItem)} className={selectedExpense?._id === expenseItem._id ? 'selected' : ''}>
               <td>{dateFormat(expenseItem.Date)}</td>
               <td>{expenseItem['Vendor/Payee']}</td>
               <td>{expenseItem.Location}</td>

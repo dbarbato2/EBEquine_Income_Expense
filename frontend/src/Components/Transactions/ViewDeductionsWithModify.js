@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
 
 const ViewDeductionsWithModify = () => {
   const { getDeductions, deductions } = useGlobalContext();
+  const [selectedDeduction, setSelectedDeduction] = useState(null);
 
   useEffect(() => {
     getDeductions();
   }, [getDeductions]);
 
   const handleRowClick = (item) => {
-    alert(JSON.stringify(item, null, 2));
+    setSelectedDeduction(item);
   };
 
   const monthOrder = {
@@ -52,7 +53,7 @@ const ViewDeductionsWithModify = () => {
         </thead>
         <tbody>
           {sortedDeductions.map(deductions => (
-            <tr key={deductions._id} onClick={() => handleRowClick(deductions)}>
+            <tr key={deductions._id} onClick={() => handleRowClick(deductions)} className={selectedDeduction?._id === deductions._id ? 'selected' : ''}>
               <td>{deductions.Year}</td>
               <td>{deductions.Month}</td>
               <td>{deductions['Deduction Type']}</td>
@@ -139,6 +140,10 @@ const ViewDeductionsWithModifyStyled = styled.div`
     tbody tr:hover {
       background-color: #f1f1f1;
       cursor: pointer;
+    }
+
+    tbody tr.selected {
+      background-color: #d4e8ff;
     }
   }
 `;

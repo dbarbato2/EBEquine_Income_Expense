@@ -60,7 +60,9 @@ const ViewClientsWithModify = () => {
   };
 
   const handleRowClick = (item) => {
-    alert(JSON.stringify(item, null, 2));
+    setSelectedClient(item);
+    setEditedClient(item);
+    setIsEditing(false);
   };
 
   const handleModify = () => {
@@ -589,7 +591,7 @@ const ViewClientsWithModify = () => {
         </thead>
         <tbody>
           {clients.map(clientItem => (
-            <tr key={clientItem._id} onClick={() => handleRowClick(clientItem)}>
+            <tr key={clientItem._id} onClick={() => handleRowClick(clientItem)} className={selectedClient?._id === clientItem._id ? 'selected' : ''}>
               <td>{clientItem.Name}</td>
               <td>{clientItem.PhoneNumber}</td>
               <td>{clientItem.Email}</td>

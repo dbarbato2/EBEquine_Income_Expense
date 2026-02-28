@@ -1,17 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
 import { dateFormat } from '../../utils/dateFormat';
 
 const ViewExpenses = () => {
   const { getExpenses, expenses } = useGlobalContext();
+  const [selectedExpense, setSelectedExpense] = useState(null);
 
   useEffect(() => {
     getExpenses();
   }, [getExpenses]);
 
   const handleRowClick = (item) => {
-    alert(JSON.stringify(item, null, 2));
+    setSelectedExpense(item);
   };
 
   return (
@@ -44,7 +45,7 @@ const ViewExpenses = () => {
             const recordB = parseInt(b['Expense Record Number']) || 0;
             return recordB - recordA;
           }).map(expenses => (
-            <tr key={expenses._id} onClick={() => handleRowClick(expenses)}>
+            <tr key={expenses._id} onClick={() => handleRowClick(expenses)} className={selectedExpense?._id === expenses._id ? 'selected' : ''}>
               <td>{dateFormat(expenses.Date)}</td>
               <td>{expenses['Vendor/Payee']}</td>
               <td>{expenses.Location}</td>
@@ -139,8 +140,9 @@ const ViewExpensesStyled = styled.div`
       cursor: pointer;
     }
 
-
-  }
+    tbody tr.selected {
+      background-color: #d4e8ff;
+    }
 `;
 
 export default ViewExpenses;

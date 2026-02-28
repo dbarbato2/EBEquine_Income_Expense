@@ -1,17 +1,18 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
 
 const ViewClients = () => {
   const { getClients, clients } = useGlobalContext();
+  const [selectedClient, setSelectedClient] = useState(null);
 
   useEffect(() => {
     getClients();
   }, [getClients]);
 
   const handleRowClick = (item) => {
-    alert(JSON.stringify(item, null, 2));
+    setSelectedClient(item);
   };
 
   return (
@@ -52,7 +53,7 @@ const ViewClients = () => {
         </thead>
         <tbody>
           {clients.map(client => (
-            <tr key={client._id} onClick={() => handleRowClick(client)}>
+            <tr key={client._id} onClick={() => handleRowClick(client)} className={selectedClient?._id === client._id ? 'selected' : ''}>
               <td>{client.Name}</td>
               <td>{client.PhoneNumber}</td>
               <td>{client.Email}</td>
@@ -79,7 +80,7 @@ const ViewClients = () => {
               <td>{client.ReferralSource}</td>
               <td>{client.PeppermintSugarCubes}</td>
               <td>{client.AdditionalInformation}</td>
-          </tr>
+            </tr>
           ))}
         </tbody>
       </table>
@@ -160,6 +161,10 @@ const ViewClientsStyled = styled.div`
     tbody tr:hover {
       background-color: #f1f1f1;
       cursor: pointer;
+    }
+
+    tbody tr.selected {
+      background-color: #d4e8ff;
     }
   }
 `;

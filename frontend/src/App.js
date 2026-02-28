@@ -15,6 +15,7 @@ import Expenses from './Components/Expenses/Expenses';
 import Deductions from './Components/Deductions/Deductions';
 import Clients from './Components/Clients/Clients';
 import Settings from './Components/Settings/Settings';
+import TripCostCalculator from './Components/TripCostCalculator/TripCostCalculator';
 import { GlobalProvider } from './context/globalContext';
 import ViewRevenue from './Components/Transactions/ViewRevenue';
 import ViewExpenses from './Components/Transactions/ViewExpenses';
@@ -129,6 +130,8 @@ function App() {
         return <Clients />
       case 82:
         return <ViewClientsWithModify />
+      case 9:
+        return <TripCostCalculator />
       case 99:
         return <Settings />
       default: 

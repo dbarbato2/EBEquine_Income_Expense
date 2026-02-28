@@ -31,3 +31,4 @@ export const tv = <i className="fa-solid fa-tv"></i>
 export const circle = <i className="fa-solid fa-circle-dot"></i>
 export const x = <i className="fa-solid fa-x"></i>
 export const clients = <i className="fa-solid fa-users"></i>
+export const calculator = <i className="fa-solid fa-calculator"></i>

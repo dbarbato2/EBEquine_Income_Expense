@@ -1,4 +1,4 @@
-import {dashboard, expenses, trend, deductions, clients} from '../utils/Icons'
+import {dashboard, expenses, trend, deductions, clients, calculator} from '../utils/Icons'
 
 export const menuItems = [
     {
@@ -98,5 +98,11 @@ export const menuItems = [
                 link: "/dashboard",
             },
         ]
+    },
+    {
+        id: 9,
+        title: "Trip Cost Calculator",
+        icon: calculator,
+        link: "/trip-calculator"
     },
 ]

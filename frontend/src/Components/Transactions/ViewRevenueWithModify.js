@@ -67,7 +67,9 @@ const ViewRevenueWithModify = () => {
   };
 
   const handleRowClick = (item) => {
-    alert(JSON.stringify(item, null, 2));
+    setSelectedRevenue(item);
+    setEditedRevenue(item);
+    setIsEditing(false);
   };
 
   const handleModify = () => {
@@ -458,7 +460,7 @@ const ViewRevenueWithModify = () => {
         </thead>
         <tbody>
           {[...revenue].sort((a, b) => new Date(b.Date) - new Date(a.Date)).map(revenueItem => (
-            <tr key={revenueItem._id} onClick={() => handleRowClick(revenueItem)}>
+            <tr key={revenueItem._id} onClick={() => handleRowClick(revenueItem)} className={selectedRevenue?._id === revenueItem._id ? 'selected' : ''}>
               <td>{dateFormat(revenueItem.Date)}</td>
               <td>{revenueItem.Client}</td>
               <td>{revenueItem.Service}</td>
@@ -479,13 +481,16 @@ const ViewRevenueStyled = styled.div`
     flex-direction: column;
     height: 100vh;
     padding: 0;
+    overflow: hidden;
 
     .content-wrapper {
       padding: 2rem 1.5rem;
       width: 100%;
       display: flex;
       flex-direction: column;
-      height: 100%;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
     }
 
     h2{
@@ -643,11 +648,11 @@ const ViewRevenueStyled = styled.div`
     }
 
     .table-wrapper {
-      flex: 1;
       overflow-x: auto;
       overflow-y: auto;
       border: 1px solid #ddd;
       border-radius: 8px;
+      max-height: 400px;
     }
 
     .table-wrapper::-webkit-scrollbar {

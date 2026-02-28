@@ -59,7 +59,9 @@ const ViewDeductions = () => {
   };
 
   const handleRowClick = (item) => {
-    alert(JSON.stringify(item, null, 2));
+    setSelectedDeduction(item);
+    setEditedDeduction(item);
+    setIsEditing(false);
   };
 
   const handleModify = () => {
@@ -413,7 +415,7 @@ const ViewDeductions = () => {
         </thead>
         <tbody>
           {sortedDeductions.map(deductions => (
-            <tr key={deductions._id} onClick={() => handleRowClick(deductions)}>
+            <tr key={deductions._id} onClick={() => handleRowClick(deductions)} className={selectedDeduction?._id === deductions._id ? 'selected' : ''}>
               <td>{deductions.Year}</td>
               <td>{deductions.Month}</td>
               <td>{deductions['Deduction Type']}</td>
