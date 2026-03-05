@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { plus, x } from '../../utils/Icons';
 
 const TripCostCalculator = () => {
   const [tripDetails, setTripDetails] = useState({
@@ -18,6 +19,8 @@ const TripCostCalculator = () => {
   });
 
   const [expandedTable, setExpandedTable] = useState(null);
+  const [showProfitResult, setShowProfitResult] = useState(false);
+  const [calculatedProfit, setCalculatedProfit] = useState(0);
   const [quarterlyIncome, setQuarterlyIncome] = useState({
     darrel: 225000,
     erin: 50000,
@@ -40,6 +43,7 @@ const TripCostCalculator = () => {
     dinnerMealCost: 25,
     dailyRentalCarCost: 60,
     baggageFePerFlight: 35,
+    flightLength: 2.5,
     tollCost: 6,
     gasCost: 10,
     loganExpressParkingPerDay: 7,
@@ -171,6 +175,192 @@ const TripCostCalculator = () => {
     return Math.round(diffInHours);
   };
 
+  const calculateBreakfastCost = () => {
+    const hotelNights = calculateHotelNights();
+    const departureHour = parseInt(tripDetails.departureTime);
+    
+    if (departureHour >= 12) {
+      // After noon: hotel nights × breakfast cost
+      return hotelNights * assumptions.breakfastMealCost;
+    } else {
+      // Before noon: (hotel nights + 1) × breakfast cost
+      return (hotelNights + 1) * assumptions.breakfastMealCost;
+    }
+  };
+
+  const calculateLunchCost = () => {
+    const hotelNights = calculateHotelNights();
+    const departureHour = parseInt(tripDetails.departureTime);
+    const returnHour = parseInt(tripDetails.returnTime);
+
+    if (departureHour >= 16 && returnHour < 12) {
+      // After 4 PM departure AND before noon return: (hotel nights - 1) × lunch cost
+      return (hotelNights - 1) * assumptions.lunchMealCost;
+    } else if (departureHour >= 16 || returnHour < 12) {
+      // After 4 PM departure OR before noon return: hotel nights × lunch cost
+      return hotelNights * assumptions.lunchMealCost;
+    } else {
+      // Otherwise: (hotel nights + 1) × lunch cost
+      return (hotelNights + 1) * assumptions.lunchMealCost;
+    }
+  };
+
+  const calculateDinnerCost = () => {
+    const hotelNights = calculateHotelNights();
+    const departureHour = parseInt(tripDetails.departureTime);
+    const returnHour = parseInt(tripDetails.returnTime);
+
+    if (departureHour >= 20 && returnHour < 17) {
+      // After 8 PM departure AND before 5 PM return: (hotel nights - 1) × dinner cost
+      return (hotelNights - 1) * assumptions.dinnerMealCost;
+    } else if (departureHour >= 20 || returnHour < 17) {
+      // After 8 PM departure OR before 5 PM return: hotel nights × dinner cost
+      return hotelNights * assumptions.dinnerMealCost;
+    } else {
+      // Otherwise: (hotel nights + 1) × dinner cost
+      return (hotelNights + 1) * assumptions.dinnerMealCost;
+    }
+  };
+
+  const calculateTotalFlightCost = () => {
+    const baggageCost = parseInt(tripDetails.checkedBags) * assumptions.baggageFePerFlight * 2;
+    const basFlightCost = parseFloat(tripDetails.flightCost) || 0;
+    return baggageCost + basFlightCost;
+  };
+
+  const calculateHotelCost = () => {
+    const hotelNights = calculateHotelNights();
+    const costPerNight = parseFloat(tripDetails.hotelCostPerNight) || 0;
+    return hotelNights * costPerNight;
+  };
+
+  const calculateFullRentalCarDays = () => {
+    const tripHours = calculateTripHours();
+    const adjustedHours = tripHours - (assumptions.flightLength * 2);
+    const fullDays = Math.floor(adjustedHours / 24);
+    const remainder = adjustedHours % 24;
+
+    if (remainder > 2.5) {
+      return fullDays;
+    } else {
+      return fullDays + (remainder / 24);
+    }
+  };
+
+  const calculateRentalCarCost = () => {
+    const fullRentalCarDays = calculateFullRentalCarDays();
+    const rentalCost = fullRentalCarDays * assumptions.dailyRentalCarCost;
+    const totalCost = assumptions.tollCost + assumptions.gasCost + rentalCost;
+    return totalCost;
+  };
+
+  const calculateAirportParkingCost = () => {
+    const tripHours = calculateTripHours();
+    const adjustedHours = tripHours + (assumptions.flightLength * 2);
+    const fullDays = Math.floor(adjustedHours / 24);
+    const remainder = adjustedHours % 24;
+    const transportation = tripDetails.airportTransportation;
+
+    if (transportation === "Driving - Economy Lot") {
+      return remainder <= (assumptions.flightLength * 2 + 1) 
+        ? assumptions.airportParkingEconomyPerDay * (fullDays + 0.5)
+        : assumptions.airportParkingEconomyPerDay * (fullDays + 1);
+    } else if (transportation === "Driving - Central Lot") {
+      return remainder <= (assumptions.flightLength * 2 + 1) 
+        ? assumptions.airportParkingCentralPerDay * (fullDays + 0.5)
+        : assumptions.airportParkingCentralPerDay * (fullDays + 1);
+    } else if (transportation === "Driving - Economy Lot (Advance Reservation)") {
+      return remainder <= (assumptions.flightLength * 2 + 1) 
+        ? assumptions.airportParkingReservedEconomyPerDay * (fullDays + 0.5)
+        : assumptions.airportParkingReservedEconomyPerDay * (fullDays + 1);
+    } else {
+      return 0;
+    }
+  };
+
+  const calculateTransportationCost = () => {
+    const transportation = tripDetails.airportTransportation;
+
+    if (transportation === "Logan Express") {
+      const tripHours = calculateTripHours();
+      const parkingDays = Math.ceil((tripHours + (assumptions.flightLength * 2 + 1)) / 24);
+      const parkingCost = parkingDays * assumptions.loganExpressParkingPerDay;
+      const ticketCost = assumptions.loganExpressRoundTripTicket;
+      return parkingCost + ticketCost;
+    } else {
+      return 0;
+    }
+  };
+
+  const calculateEstimatedTripCost = () => {
+    const breakfastCost = calculateBreakfastCost();
+    const lunchCost = calculateLunchCost();
+    const dinnerCost = calculateDinnerCost();
+    const flightCost = calculateTotalFlightCost();
+    const hotelCost = calculateHotelCost();
+    const rentalCarCost = calculateRentalCarCost();
+    const airportParkingCost = calculateAirportParkingCost();
+    const transportationCost = calculateTransportationCost();
+
+    return breakfastCost + lunchCost + dinnerCost + flightCost + hotelCost + rentalCarCost + airportParkingCost + transportationCost;
+  };
+
+  const calculateMarginalTaxRate = () => {
+    if (!tripDetails.returnDate) return 0;
+    
+    const month = tripDetails.returnDate.getMonth() + 1; // getMonth() returns 0-11
+    const quarter = Math.ceil(month / 3); // This gives us 1-4
+    
+    const cumulativeIncome = calculateCumulativeIncome(quarter);
+    const federalEffectiveTaxRate = calculateEffectiveTaxRate(cumulativeIncome);
+    const stateEffectiveTaxRate = 5.0;
+    
+    return federalEffectiveTaxRate + stateEffectiveTaxRate;
+  };
+
+  const calculateEstimatedTaxSavings = () => {
+    const estimatedTripCost = calculateEstimatedTripCost();
+    const marginalTaxRate = calculateMarginalTaxRate();
+    return estimatedTripCost * (marginalTaxRate / 100);
+  };
+
+  const calculateEstimatedTripRevenue = () => {
+    const numberOfHorses = parseInt(tripDetails.numberOfHorses) || 0;
+    const numberOfBarns = parseInt(tripDetails.numberOfBarns) || 0;
+    const massageFeeRevenue = numberOfHorses * assumptions.massageFee;
+    const travelFeeRevenue = numberOfBarns * assumptions.travelFeePerBarn;
+    return massageFeeRevenue + travelFeeRevenue;
+  };
+
+  const calculateTripProfit = () => {
+    const revenue = calculateEstimatedTripRevenue();
+    const savings = calculateEstimatedTaxSavings();
+    const cost = calculateEstimatedTripCost();
+    return revenue + savings - cost;
+  };
+
+  const handleCalculateProfit = () => {
+    setCalculatedProfit(calculateTripProfit());
+    setShowProfitResult(true);
+  };
+
+  const handleResetForm = () => {
+    setTripDetails({
+      hotelCostPerNight: '',
+      flightCost: '',
+      checkedBags: '0',
+      departureDateDate: null,
+      departureTime: '9',
+      returnDate: null,
+      returnTime: '9',
+      airportTransportation: 'Logan Express',
+      numberOfHorses: '',
+      numberOfBarns: ''
+    });
+    setShowProfitResult(false);
+    setCalculatedProfit(0);
+  };
+
   const generateHours = () => {
     return Array.from({ length: 24 }, (_, i) => i);
   };
@@ -190,428 +380,22 @@ const TripCostCalculator = () => {
     <TripCostCalculatorStyled>
       <div className="content-wrapper">
         <h2>Trip Cost Calculator</h2>
-        
-        <div className="table-buttons">
-          <button 
-            className={`btn btn-assumptions ${expandedTable === 'assumptions' ? 'active' : ''}`}
-            onClick={() => toggleTable('assumptions')}
-          >
-            Assumptions
-          </button>
-          <button 
-            className={`btn btn-calculated ${expandedTable === 'calculated' ? 'active' : ''}`}
-            onClick={() => toggleTable('calculated')}
-          >
-            Calculated Trip Details
-          </button>
-          <button 
-            className={`btn btn-federal ${expandedTable === 'federal' ? 'active' : ''}`}
-            onClick={() => toggleTable('federal')}
-          >
-            Federal Tax Rates
-          </button>
-          <button 
-            className={`btn btn-quarterly ${expandedTable === 'quarterly' ? 'active' : ''}`}
-            onClick={() => toggleTable('quarterly')}
-          >
-            Quarterly Income
-          </button>
-        </div>
 
-        {expandedTable === 'assumptions' && (
-          <div className="table-section">
-            <h3>Assumptions</h3>
-            <table>
+        {showProfitResult && (
+          <div className="profit-result-section">
+            <table className="profit-result-table">
               <tbody>
                 <tr>
-                  <td>Breakfast Meal Cost</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.breakfastMealCost}
-                        onChange={handleAssumptionsChange('breakfastMealCost')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Lunch Meal Cost</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.lunchMealCost}
-                        onChange={handleAssumptionsChange('lunchMealCost')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Dinner Meal Cost</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.dinnerMealCost}
-                        onChange={handleAssumptionsChange('dinnerMealCost')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Daily Rental Car Cost (including fees)</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.dailyRentalCarCost}
-                        onChange={handleAssumptionsChange('dailyRentalCarCost')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Baggage Fee (per flight)</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.baggageFePerFlight}
-                        onChange={handleAssumptionsChange('baggageFePerFlight')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Toll Cost</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.tollCost}
-                        onChange={handleAssumptionsChange('tollCost')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Gas Cost</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.gasCost}
-                        onChange={handleAssumptionsChange('gasCost')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Logan Express Costs - Parking (per day)</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.loganExpressParkingPerDay}
-                        onChange={handleAssumptionsChange('loganExpressParkingPerDay')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Logan Express Costs - Round Trip Ticket</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.loganExpressRoundTripTicket}
-                        onChange={handleAssumptionsChange('loganExpressRoundTripTicket')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Airport Parking Costs (per day Reserved Economy)</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.airportParkingReservedEconomyPerDay}
-                        onChange={handleAssumptionsChange('airportParkingReservedEconomyPerDay')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Airport Parking Costs (per day Economy)</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.airportParkingEconomyPerDay}
-                        onChange={handleAssumptionsChange('airportParkingEconomyPerDay')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Airport Parking Costs (per day Central)</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.airportParkingCentralPerDay}
-                        onChange={handleAssumptionsChange('airportParkingCentralPerDay')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Massage Fee</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.massageFee}
-                        onChange={handleAssumptionsChange('massageFee')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Travel Fee (per barn)</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={assumptions.travelFeePerBarn}
-                        onChange={handleAssumptionsChange('travelFeePerBarn')}
-                      />
-                    </div>
-                  </td>
+                  <td><strong>Estimated Trip Profit</strong></td>
+                  <td className="profit-value"><strong>${calculatedProfit.toFixed(2)}</strong></td>
                 </tr>
               </tbody>
             </table>
           </div>
         )}
 
-        {expandedTable === 'calculated' && (
-          <div className="table-section">
-            <h3>Calculated Trip Details</h3>
-            <table>
-              <tbody>
-                <tr>
-                  <td>Number of Hotel Nights</td>
-                  <td className="calculated-value">{calculateHotelNights()}</td>
-                </tr>
-                <tr>
-                  <td>Trip Hours</td>
-                  <td className="calculated-value">{calculateTripHours()}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {expandedTable === 'federal' && (
-          <div className="table-section">
-            <h3>Federal Tax Rates</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Tax Rate</th>
-                  <th>On Taxable Income From...</th>
-                  <th>Up To...</th>
-                </tr>
-              </thead>
-              <tbody>
-                {federalTaxRates.map((rate, index) => (
-                  <tr key={index}>
-                    <td>
-                      <div className="input-wrapper">
-                        <input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          max="100"
-                          value={rate.taxRate}
-                          onChange={handleFederalTaxRateChange(index, 'taxRate')}
-                        />
-                        <span className="percent-symbol">%</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="input-wrapper">
-                        <span className="currency-symbol">$</span>
-                        <input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          value={rate.fromAmount}
-                          onChange={handleFederalTaxRateChange(index, 'fromAmount')}
-                        />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="input-wrapper">
-                        {rate.toAmount === null ? (
-                          <input
-                            type="text"
-                            value="And up"
-                            disabled
-                            style={{ cursor: 'not-allowed', backgroundColor: '#f0f0f0' }}
-                          />
-                        ) : (
-                          <>
-                            <span className="currency-symbol">$</span>
-                            <input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              value={rate.toAmount}
-                              onChange={handleFederalTaxRateChange(index, 'toAmount')}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p className="table-footnote">
-              Data source: <a href="https://www.irs.gov/filing/federal-income-tax-rates-and-brackets" target="_blank" rel="noopener noreferrer">IRS Federal Income Tax Rates and Brackets</a>
-            </p>
-          </div>
-        )}
-
-        {expandedTable === 'quarterly' && (
-          <div className="table-section">
-            <h3>Quarterly Income</h3>
-            <table>
-              <tbody>
-                <tr>
-                  <td>Darrel's Income</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={quarterlyIncome.darrel}
-                        onChange={handleQuarterlyIncomeChange('darrel')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Erin's Income</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={quarterlyIncome.erin}
-                        onChange={handleQuarterlyIncomeChange('erin')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Bonus</td>
-                  <td>
-                    <div className="input-wrapper">
-                      <span className="currency-symbol">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={quarterlyIncome.bonus}
-                        onChange={handleQuarterlyIncomeChange('bonus')}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div className="quarterly-analysis">
-              <h4>Quarterly Analysis</h4>
-              <table className="analysis-table">
-                <thead>
-                  <tr>
-                    <th>Quarter</th>
-                    <th>Cumulative Income</th>
-                    <th>Effective Tax Rate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[1, 2, 3, 4].map((quarter) => {
-                    const cumulativeIncome = calculateCumulativeIncome(quarter);
-                    const effectiveTaxRate = calculateEffectiveTaxRate(cumulativeIncome);
-
-                    return (
-                      <tr key={`q${quarter}`}>
-                        <td>Q{quarter}</td>
-                        <td>${cumulativeIncome.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</td>
-                        <td>{effectiveTaxRate.toFixed(2)}%</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-        
         <div className="form-container">
-          <h3>Trip Details</h3>
+          <h3>Enter Trip Details Below:</h3>
           
           <div className="form-content">
             <div className="form-group">
@@ -753,6 +537,515 @@ const TripCostCalculator = () => {
               />
             </div>
           </div>
+
+          <div className="form-buttons">
+            <button 
+              className="btn btn-submit-green"
+              onClick={handleCalculateProfit}
+            >
+              {plus}
+              Calculate Profit
+            </button>
+            <button 
+              className="btn btn-submit-red"
+              onClick={handleResetForm}
+            >
+              {x}
+              Reset Form
+            </button>
+          </div>
+        </div>
+
+        <div className="calculations-section">
+          <h3>View Calculations and Adjust Assumptions:</h3>
+          <div className="table-buttons">
+            <button 
+              className={`btn btn-assumptions ${expandedTable === 'assumptions' ? 'active' : ''}`}
+              onClick={() => toggleTable('assumptions')}
+            >
+              Assumptions
+            </button>
+            <button 
+              className={`btn btn-calculated ${expandedTable === 'calculated' ? 'active' : ''}`}
+              onClick={() => toggleTable('calculated')}
+            >
+              Calculated Trip Details
+            </button>
+            <button 
+              className={`btn btn-federal ${expandedTable === 'federal' ? 'active' : ''}`}
+              onClick={() => toggleTable('federal')}
+            >
+              Federal Tax Rates
+            </button>
+            <button 
+              className={`btn btn-quarterly ${expandedTable === 'quarterly' ? 'active' : ''}`}
+              onClick={() => toggleTable('quarterly')}
+            >
+              Quarterly Income
+            </button>
+          </div>
+
+          {expandedTable === 'assumptions' && (
+            <div className="table-section">
+              <h3>Assumptions</h3>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Breakfast Meal Cost</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.breakfastMealCost}
+                          onChange={handleAssumptionsChange('breakfastMealCost')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Lunch Meal Cost</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.lunchMealCost}
+                          onChange={handleAssumptionsChange('lunchMealCost')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Dinner Meal Cost</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.dinnerMealCost}
+                          onChange={handleAssumptionsChange('dinnerMealCost')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Daily Rental Car Cost (including fees)</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.dailyRentalCarCost}
+                          onChange={handleAssumptionsChange('dailyRentalCarCost')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Baggage Fee (per flight)</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.baggageFePerFlight}
+                          onChange={handleAssumptionsChange('baggageFePerFlight')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Flight Length (Hours)</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="0"
+                          value={assumptions.flightLength}
+                          onChange={handleAssumptionsChange('flightLength')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Toll Cost</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.tollCost}
+                          onChange={handleAssumptionsChange('tollCost')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Gas Cost</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.gasCost}
+                          onChange={handleAssumptionsChange('gasCost')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Logan Express Costs - Parking (per day)</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.loganExpressParkingPerDay}
+                          onChange={handleAssumptionsChange('loganExpressParkingPerDay')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Logan Express Costs - Round Trip Ticket</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.loganExpressRoundTripTicket}
+                          onChange={handleAssumptionsChange('loganExpressRoundTripTicket')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Airport Parking Costs (per day Reserved Economy)</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.airportParkingReservedEconomyPerDay}
+                          onChange={handleAssumptionsChange('airportParkingReservedEconomyPerDay')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Airport Parking Costs (per day Economy)</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.airportParkingEconomyPerDay}
+                          onChange={handleAssumptionsChange('airportParkingEconomyPerDay')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Airport Parking Costs (per day Central)</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.airportParkingCentralPerDay}
+                          onChange={handleAssumptionsChange('airportParkingCentralPerDay')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Massage Fee</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.massageFee}
+                          onChange={handleAssumptionsChange('massageFee')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Travel Fee (per barn)</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={assumptions.travelFeePerBarn}
+                          onChange={handleAssumptionsChange('travelFeePerBarn')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {expandedTable === 'calculated' && (
+            <div className="table-section">
+              <h3>Calculated Trip Details</h3>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Number of Hotel Nights</td>
+                    <td className="calculated-value">{calculateHotelNights()}</td>
+                  </tr>
+                  <tr>
+                    <td>Trip Hours</td>
+                    <td className="calculated-value">{calculateTripHours()}</td>
+                  </tr>
+                  <tr>
+                    <td>Breakfast Cost</td>
+                    <td className="calculated-value">${calculateBreakfastCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Lunch Cost</td>
+                    <td className="calculated-value">${calculateLunchCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Dinner Cost</td>
+                    <td className="calculated-value">${calculateDinnerCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Flight Cost</td>
+                    <td className="calculated-value">${calculateTotalFlightCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Hotel Cost</td>
+                    <td className="calculated-value">${calculateHotelCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Full Rental Car Days</td>
+                    <td className="calculated-value">{calculateFullRentalCarDays().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Rental Car Cost (incl. Gas & Tolls)</td>
+                    <td className="calculated-value">${calculateRentalCarCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Airport Parking Cost (if applicable)</td>
+                    <td className="calculated-value">${calculateAirportParkingCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Transportation Cost (if applicable)</td>
+                    <td className="calculated-value">${calculateTransportationCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Estimated Trip Cost</td>
+                    <td className="calculated-value">${calculateEstimatedTripCost().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>State Effective Tax Rate</td>
+                    <td className="calculated-value">5.00%</td>
+                  </tr>
+                  <tr>
+                    <td>Marginal Tax Rate (for deductions)</td>
+                    <td className="calculated-value">{calculateMarginalTaxRate().toFixed(2)}%</td>
+                  </tr>
+                  <tr>
+                    <td>Estimated Tax Savings</td>
+                    <td className="calculated-value">${calculateEstimatedTaxSavings().toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Estimated Trip Revenue</td>
+                    <td className="calculated-value">${calculateEstimatedTripRevenue().toFixed(2)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {expandedTable === 'federal' && (
+            <div className="table-section">
+              <h3>Federal Tax Rates</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tax Rate</th>
+                    <th>On Taxable Income From...</th>
+                    <th>Up To...</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {federalTaxRates.map((rate, index) => (
+                    <tr key={index}>
+                      <td>
+                        <div className="input-wrapper">
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            max="100"
+                            value={rate.taxRate}
+                            onChange={handleFederalTaxRateChange(index, 'taxRate')}
+                          />
+                          <span className="percent-symbol">%</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="input-wrapper">
+                          <span className="currency-symbol">$</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={rate.fromAmount}
+                            onChange={handleFederalTaxRateChange(index, 'fromAmount')}
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <div className="input-wrapper">
+                          {rate.toAmount === null ? (
+                            <input
+                              type="text"
+                              value="And up"
+                              disabled
+                              style={{ cursor: 'not-allowed', backgroundColor: '#f0f0f0' }}
+                            />
+                          ) : (
+                            <>
+                              <span className="currency-symbol">$</span>
+                              <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={rate.toAmount}
+                                onChange={handleFederalTaxRateChange(index, 'toAmount')}
+                              />
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="table-footnote">
+                Data source: <a href="https://www.irs.gov/filing/federal-income-tax-rates-and-brackets" target="_blank" rel="noopener noreferrer">IRS Federal Income Tax Rates and Brackets</a>
+              </p>
+            </div>
+          )}
+
+          {expandedTable === 'quarterly' && (
+            <div className="table-section">
+              <h3>Quarterly Income</h3>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Darrel's Income</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={quarterlyIncome.darrel}
+                          onChange={handleQuarterlyIncomeChange('darrel')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Erin's Income</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={quarterlyIncome.erin}
+                          onChange={handleQuarterlyIncomeChange('erin')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Bonus</td>
+                    <td>
+                      <div className="input-wrapper">
+                        <span className="currency-symbol">$</span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={quarterlyIncome.bonus}
+                          onChange={handleQuarterlyIncomeChange('bonus')}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div className="quarterly-analysis">
+                <h4>Quarterly Analysis</h4>
+                <table className="analysis-table">
+                  <thead>
+                    <tr>
+                      <th>Quarter</th>
+                      <th>Cumulative Income</th>
+                      <th>Effective Tax Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[1, 2, 3, 4].map((quarter) => {
+                      const cumulativeIncome = calculateCumulativeIncome(quarter);
+                      const effectiveTaxRate = calculateEffectiveTaxRate(cumulativeIncome);
+
+                      return (
+                        <tr key={`q${quarter}`}>
+                          <td>Q{quarter}</td>
+                          <td>${cumulativeIncome.toLocaleString('en-US', { maximumFractionDigits: 0, minimumFractionDigits: 0 })}</td>
+                          <td>{effectiveTaxRate.toFixed(2)}%</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </TripCostCalculatorStyled>
@@ -1022,6 +1315,149 @@ const TripCostCalculatorStyled = styled.div`
             color: rgba(34, 34, 96, 0.9);
             font-weight: 500;
           }
+        }
+      }
+    }
+  }
+
+  .calculations-section {
+    background: rgba(252, 246, 249, 0.78);
+    border: 2px solid #FFFFFF;
+    backdrop-filter: blur(4.5px);
+    border-radius: 32px;
+    padding: 2rem;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: #283595;
+    }
+
+    .table-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+  }
+
+  .form-container {
+    background: rgba(252, 246, 249, 0.78);
+    border: 2px solid #FFFFFF;
+    backdrop-filter: blur(4.5px);
+    border-radius: 32px;
+    padding: 2rem;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+  }
+
+  .form-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: flex-start;
+
+    button {
+      box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+      &:hover {
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.12);
+      }
+    }
+  }
+
+  .btn-submit-green {
+    background: var(--color-green);
+    color: white;
+    padding: 0.8rem 1.6rem;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--color-green);
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-submit-red {
+    background: #dc3545;
+    color: white;
+    padding: 0.8rem 1.6rem;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #c82333 !important;
+      transform: translateY(-2px);
+    }
+  }
+
+  .profit-result-section {
+    background: rgba(252, 246, 249, 0.78);
+    border: 2px solid #FFFFFF;
+    backdrop-filter: blur(4.5px);
+    border-radius: 32px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+    animation: slideDown 0.3s ease-out;
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .profit-result-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tbody {
+      tr {
+        border-bottom: 1px solid #ddd;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+
+      td {
+        padding: 0.75rem;
+        text-align: left;
+        color: rgba(34, 34, 96, 0.9);
+        font-weight: 600;
+        font-size: 1rem;
+
+        &:first-child {
+          color: #283595;
+        }
+
+        &.profit-value {
+          text-align: right;
+          color: #1abc9c;
+          font-size: 1.1rem;
         }
       }
     }
