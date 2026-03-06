@@ -15,15 +15,16 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 ![Recording2024-07-20061649-ezgif com-optimize](https://github.com/user-attachments/assets/64e35882-fa9c-497c-90ec-802331e0d6f9)
 
 ## Backlog
-- Upload Client Database to MongoDB
 - Test New User/Register Functionality
 - Load Historical Data for Graphs
 - Ability to download tables and graphs
 - Create Invoice Functionality
-- Create Notes Functionality Using AI
-- Menu for Trip Cost Calculator
-- Add a listener to the Google Form so that a new row gets added to the database (/Users/darrelbarbato/Documents/JavascriptPrograms/EBEquine_Income_Expense/google-apps-script/GoogleSheetsWebhook.gs)
 - Fix error of not being able to scroll down to All transactions after Search
+- Update All Data Under Erin's username
+- Publish Site
+After publishing:
+- Add a listener to the Google Form so that a new row gets added to the database (/Users/darrelbarbato/Documents/JavascriptPrograms/EBEquine_Income_Expense/google-apps-script/GoogleSheetsWebhook.gs)
+- Create Notes Functionality Using AI
 
 ## Features
 - User authentication (register, login, logout)
