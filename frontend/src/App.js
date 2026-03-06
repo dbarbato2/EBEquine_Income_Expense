@@ -28,6 +28,8 @@ import ViewClientsWithModify from './Components/Transactions/ViewClientsWithModi
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Register from './Components/User/Register';
 import Login from './Components/User/Login';
+import ForgotPassword from './Components/User/ForgotPassword';
+import ResetPassword from './Components/User/ResetPassword';
 import { ToastContainer } from 'react-toastify';
 
 
@@ -152,6 +154,8 @@ function App() {
           <Routes>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route
               path="/"
               element={

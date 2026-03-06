@@ -2,7 +2,7 @@ const { addExpense, getExpenses, deleteExpense, searchExpenses, updateExpense, g
 const { addRevenue, getRevenue, deleteRevenue, searchRevenue, updateRevenue, getMaxInvoiceNumber, getMaxIndividualInvoice, getMaxMonthlyInvoice } = require('../controllers/revenue');
 const { addDeduction, getDeductions, deleteDeduction, searchDeductions, updateDeduction, getMaxDeductionRecordNumber } = require('../controllers/deduction');
 const { addClient, getClients, deleteClient, editClient, searchClients, addClientFromGoogleSheets } = require('../controllers/client');
-const { checkUser, register, login } = require('../controllers/user');
+const { checkUser, register, login, changePassword, forgotPassword, resetPassword } = require('../controllers/user');
 
 const router = require('express').Router()
 
@@ -34,6 +34,9 @@ router.post('/api/v1/add-revenue', addRevenue)
     .post('/api/v1/webhook/google-sheets-client', addClientFromGoogleSheets)
     .post('/api/v1/check-user', checkUser)
     .post("/api/v1/register", register)
-    .post("/api/v1/login", login);
+    .post("/api/v1/login", login)
+    .post("/api/v1/change-password", changePassword)
+    .post("/api/v1/forgot-password", forgotPassword)
+    .post("/api/v1/reset-password", resetPassword);
 
 module.exports = router

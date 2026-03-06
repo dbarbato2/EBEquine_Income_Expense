@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const ViewRevenueWithModify = () => {
-  const { getRevenue, revenue, searchRevenue, deleteRevenue, updateRevenue, clients, getClients } = useGlobalContext();
+  const { getRevenue, revenue, searchRevenue, deleteRevenue, updateRevenue, getClients } = useGlobalContext();
   const [searchCriteria, setSearchCriteria] = useState({
     date: '',
     client: '',

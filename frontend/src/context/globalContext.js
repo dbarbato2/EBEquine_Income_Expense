@@ -81,6 +81,28 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  // Change user password
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}change-password`,
+        { currentPassword, newPassword },
+        { withCredentials: true }
+      );
+      if (data.status) {
+        toast.success('Password changed successfully!');
+        return { success: true };
+      } else {
+        toast.error(data.message || 'Failed to change password');
+        return { success: false, message: data.message };
+      }
+    } catch (err) {
+      const message = err.response?.data?.message || 'An error occurred';
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
   // Check user authentication status
   const checkUser = useCallback(async (redirectIfNotAuth = true) => {
     try {
@@ -642,6 +664,7 @@ export const GlobalProvider = ({ children }) => {
       user,
       login,
       register,
+      changePassword,
       signOutUser,
       name
     }}>
