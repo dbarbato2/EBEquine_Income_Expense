@@ -1134,8 +1134,8 @@ const TripCostCalculatorStyled = styled.div`
   }
 
   .table-section {
-    background: rgba(252, 246, 249, 0.78);
-    border: 2px solid #FFFFFF;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
     backdrop-filter: blur(4.5px);
     border-radius: 32px;
     padding: 2rem;
@@ -1155,7 +1155,7 @@ const TripCostCalculatorStyled = styled.div`
     }
 
     h3 {
-      color: #283595;
+      color: var(--text-color);
       margin-bottom: 1.5rem;
       font-size: 1.2rem;
     }
@@ -1166,13 +1166,13 @@ const TripCostCalculatorStyled = styled.div`
 
       thead {
         tr {
-          border-bottom: 2px solid #283595;
+          border-bottom: 2px solid var(--text-color);
         }
 
         th {
           padding: 1rem;
           text-align: left;
-          color: #283595;
+          color: var(--text-color);
           font-weight: 700;
           font-size: 0.95rem;
           text-transform: uppercase;
@@ -1181,7 +1181,7 @@ const TripCostCalculatorStyled = styled.div`
       }
 
       tbody tr {
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--border-color);
 
         &:last-child {
           border-bottom: none;
@@ -1191,13 +1191,13 @@ const TripCostCalculatorStyled = styled.div`
       td {
         padding: 1rem;
         text-align: left;
-        color: rgba(34, 34, 96, 0.9);
+        color: var(--text-color);
         font-weight: 500;
 
         &.calculated-value {
-          background-color: rgba(40, 53, 147, 0.05);
+          background-color: var(--hover-bg);
           font-weight: 600;
-          color: #283595;
+          color: var(--text-color);
         }
 
         .input-wrapper {
@@ -1208,14 +1208,14 @@ const TripCostCalculatorStyled = styled.div`
           .currency-symbol {
             position: absolute;
             left: 12px;
-            color: #666;
+            color: var(--input-text);
             font-weight: 600;
           }
 
           .percent-symbol {
             position: absolute;
             right: 12px;
-            color: #666;
+            color: var(--input-text);
             font-weight: 600;
           }
 
@@ -1223,22 +1223,24 @@ const TripCostCalculatorStyled = styled.div`
             padding-left: 28px;
             padding: 0.75rem;
             padding-left: 28px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 0.95rem;
             width: 100%;
             font-family: inherit;
+            background: var(--input-bg);
+            color: var(--input-text);
 
             &:focus {
               outline: none;
-              border-color: #283595;
+              border-color: var(--text-color);
               box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
             }
 
             &:disabled {
-              background-color: #f0f0f0;
+              background-color: var(--hover-bg);
               cursor: not-allowed;
-              color: #666;
+              color: var(--text-color);
             }
           }
 
@@ -1252,7 +1254,8 @@ const TripCostCalculatorStyled = styled.div`
     .table-footnote {
       margin-top: 1.5rem;
       font-size: 0.85rem;
-      color: rgba(34, 34, 96, 0.7);
+      color: var(--text-color);
+      opacity: 0.7;
       font-style: italic;
       text-align: center;
 
@@ -1272,10 +1275,10 @@ const TripCostCalculatorStyled = styled.div`
     .quarterly-analysis {
       margin-top: 2rem;
       padding-top: 2rem;
-      border-top: 2px solid #ddd;
+      border-top: 2px solid var(--border-color);
 
       h4 {
-        color: #283595;
+        color: var(--text-color);
         margin-bottom: 1rem;
         font-size: 1.05rem;
       }
@@ -1286,13 +1289,13 @@ const TripCostCalculatorStyled = styled.div`
 
         thead {
           tr {
-            border-bottom: 2px solid #283595;
+            border-bottom: 2px solid var(--text-color);
           }
 
           th {
             padding: 1rem;
             text-align: left;
-            color: #283595;
+            color: var(--text-color);
             font-weight: 700;
             font-size: 0.95rem;
             text-transform: uppercase;
@@ -1302,7 +1305,7 @@ const TripCostCalculatorStyled = styled.div`
 
         tbody {
           tr {
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid var(--border-color);
 
             &:last-child {
               border-bottom: none;
@@ -1312,7 +1315,7 @@ const TripCostCalculatorStyled = styled.div`
           td {
             padding: 1rem;
             text-align: left;
-            color: rgba(34, 34, 96, 0.9);
+            color: var(--text-color);
             font-weight: 500;
           }
         }
@@ -1321,8 +1324,8 @@ const TripCostCalculatorStyled = styled.div`
   }
 
   .calculations-section {
-    background: rgba(252, 246, 249, 0.78);
-    border: 2px solid #FFFFFF;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
     backdrop-filter: blur(4.5px);
     border-radius: 32px;
     padding: 2rem;
@@ -1333,7 +1336,7 @@ const TripCostCalculatorStyled = styled.div`
     h3 {
       margin-top: 0;
       margin-bottom: 1.5rem;
-      color: #283595;
+      color: var(--text-color);
     }
 
     .table-buttons {
@@ -1344,8 +1347,8 @@ const TripCostCalculatorStyled = styled.div`
   }
 
   .form-container {
-    background: rgba(252, 246, 249, 0.78);
-    border: 2px solid #FFFFFF;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
     backdrop-filter: blur(4.5px);
     border-radius: 32px;
     padding: 2rem;
@@ -1409,8 +1412,8 @@ const TripCostCalculatorStyled = styled.div`
   }
 
   .profit-result-section {
-    background: rgba(252, 246, 249, 0.78);
-    border: 2px solid #FFFFFF;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
     backdrop-filter: blur(4.5px);
     border-radius: 32px;
     padding: 1rem 1.5rem;
@@ -1436,7 +1439,7 @@ const TripCostCalculatorStyled = styled.div`
 
     tbody {
       tr {
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--border-color);
 
         &:last-child {
           border-bottom: none;
@@ -1446,12 +1449,12 @@ const TripCostCalculatorStyled = styled.div`
       td {
         padding: 0.75rem;
         text-align: left;
-        color: rgba(34, 34, 96, 0.9);
+        color: var(--text-color);
         font-weight: 600;
         font-size: 1rem;
 
         &:first-child {
-          color: #283595;
+          color: var(--text-color);
         }
 
         &.profit-value {
@@ -1464,8 +1467,8 @@ const TripCostCalculatorStyled = styled.div`
   }
 
   .form-container {
-    background: rgba(252, 246, 249, 0.78);
-    border: 2px solid #FFFFFF;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
     backdrop-filter: blur(4.5px);
     border-radius: 32px;
     padding: 2rem;
@@ -1473,7 +1476,7 @@ const TripCostCalculatorStyled = styled.div`
   }
 
   .form-container h3 {
-    color: #283595;
+    color: var(--text-color);
     margin-bottom: 1.5rem;
     font-size: 1.2rem;
   }
@@ -1491,20 +1494,22 @@ const TripCostCalculatorStyled = styled.div`
 
     label {
       font-weight: 600;
-      color: rgba(34, 34, 96, 0.9);
+      color: var(--text-color);
       font-size: 0.95rem;
     }
 
     input, select {
       padding: 0.75rem;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       font-size: 0.95rem;
       font-family: inherit;
+      background: var(--input-bg);
+      color: var(--input-text);
       
       &:focus {
         outline: none;
-        border-color: #283595;
+        border-color: var(--text-color);
         box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
       }
     }
@@ -1517,7 +1522,7 @@ const TripCostCalculatorStyled = styled.div`
       .currency-symbol {
         position: absolute;
         left: 12px;
-        color: #666;
+        color: var(--input-text);
         font-weight: 600;
       }
 
@@ -1549,13 +1554,15 @@ const TripCostCalculatorStyled = styled.div`
   .react-datepicker__input-container input {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 0.95rem;
+    background: var(--input-bg);
+    color: var(--input-text);
 
     &:focus {
       outline: none;
-      border-color: #283595;
+      border-color: var(--text-color);
       box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
     }
   }

@@ -628,11 +628,12 @@ const ViewClientsStyled = styled.div`
     h3 {
       margin-top: 1.5rem;
       margin-bottom: 1rem;
+      color: var(--text-color);
     }
 
     .search-section {
-      background: rgba(252, 246, 249, 0.78);
-      border: 2px solid #FFFFFF;
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
       backdrop-filter: blur(4.5px);
       border-radius: 32px;
       padding: 1.5rem;
@@ -660,13 +661,14 @@ const ViewClientsStyled = styled.div`
           border: none;
           padding: .5rem 1rem;
           border-radius: 5px;
-          border: 2px solid #fff;
-          background: transparent;
+          border: 2px solid var(--border-color);
+          background: var(--input-bg);
           resize: none;
           box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-          color: rgba(34, 34, 96, 0.9);
+          color: var(--input-text);
           &::placeholder{
-              color: rgba(34, 34, 96, 0.4);
+              color: var(--input-text);
+              opacity: 0.4;
           }
         }
       }
