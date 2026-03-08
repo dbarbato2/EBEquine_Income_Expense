@@ -37,6 +37,33 @@ function App() {
   const [active, setActive] = useState(1)
   const [backgroundImage, setBackgroundImage] = useState(bg)
 
+  // Apply saved theme on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light'
+    const root = document.documentElement
+    if (savedTheme === 'dark') {
+      root.style.setProperty('--bg-color', '#1a1a2e')
+      root.style.setProperty('--primary-color', '#e0e0e0')
+      root.style.setProperty('--text-color', '#e0e0e0')
+      root.style.setProperty('--card-bg', '#0f1419')
+      root.style.setProperty('--nav-bg', 'rgba(15, 20, 25, 0.95)')
+      root.style.setProperty('--border-color', '#2a3f5f')
+      root.style.setProperty('--input-bg', '#1a2332')
+      root.style.setProperty('--input-text', '#e0e0e0')
+      root.style.setProperty('--hover-bg', 'rgba(255, 255, 255, 0.08)')
+    } else {
+      root.style.setProperty('--bg-color', '#f5f5f5')
+      root.style.setProperty('--primary-color', '#222260')
+      root.style.setProperty('--text-color', '#222260')
+      root.style.setProperty('--card-bg', '#fcf6f9')
+      root.style.setProperty('--nav-bg', 'rgba(252, 246, 249, 0.78)')
+      root.style.setProperty('--border-color', '#ffffff')
+      root.style.setProperty('--input-bg', '#ffffff')
+      root.style.setProperty('--input-text', 'rgba(34, 34, 96, 0.9)')
+      root.style.setProperty('--hover-bg', 'rgba(34, 34, 96, 0.1)')
+    }
+  }, [])
+
   // Load background preference on mount
   useEffect(() => {
     const savedBackground = localStorage.getItem('background') || 'ebequine'
@@ -184,8 +211,8 @@ const AppStyled = styled.div`
   position: relative;
   main{
     flex: 1;
-    background: rgba(252, 246, 249, 0.78);
-    border: 3px solid #FFFFFF;
+    background: var(--nav-bg);
+    border: 3px solid var(--border-color);
     backdrop-filter: blur(4.5px);
     border-radius: 32px;
     overflow-x: hidden;

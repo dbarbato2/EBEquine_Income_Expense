@@ -21,7 +21,7 @@ export const GlobalStyle = createGlobalStyle`
         --card-bg: #fcf6f9;
         --nav-bg: rgba(252, 246, 249, 0.78);
         --border-color: #ffffff;
-        --input-bg: transparent;
+        --input-bg: #ffffff;
         --input-text: rgba(34, 34, 96, 0.9);
         --hover-bg: rgba(34, 34, 96, 0.1);
         --bg-image: url('/bg.png');
@@ -37,7 +37,7 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     h1, h2, h3, h4, h5, h6{
-        color: var(--primary-color);
+        color: var(--text-color);
     }
 
     .error{

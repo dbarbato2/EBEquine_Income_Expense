@@ -321,13 +321,14 @@ const FormStyled = styled.form`
         border: none;
         padding: .5rem 1rem;
         border-radius: 5px;
-        border: 2px solid #fff;
-        background: transparent;
+        border: 2px solid var(--border-color);
+        background: var(--input-bg);
         resize: none;
         box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-        color: rgba(34, 34, 96, 0.9);
+        color: var(--input-text);
         &::placeholder{
-            color: rgba(34, 34, 96, 0.4);
+            color: var(--input-text);
+            opacity: 0.5;
         }
     }
     .input-control{
@@ -336,7 +337,8 @@ const FormStyled = styled.form`
         }
         .input-note{
             font-size: 0.85rem;
-            color: rgba(34, 34, 96, 0.6);
+            color: var(--text-color);
+            opacity: 0.7;
             margin-top: 0.3rem;
             margin-left: 0.1rem;
         }
@@ -346,12 +348,13 @@ const FormStyled = styled.form`
         display: flex;
         justify-content: flex-start;
         select{
-            color: rgba(34, 34, 96, 0.9);
+            color: var(--input-text);
             &:invalid{
-                color: rgba(34, 34, 96, 0.4);
+                color: var(--input-text);
+                opacity: 0.5;
             }
             &:focus, &:active{
-                color: rgba(34, 34, 96, 1);
+                color: var(--input-text);
             }
         }
     }
@@ -400,7 +403,8 @@ const InvoiceModalOverlay = styled.div`
 `;
 
 const InvoiceModal = styled.div`
-    background: white;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     padding: 2rem;
     box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
@@ -410,12 +414,13 @@ const InvoiceModal = styled.div`
     
     h3 {
         margin: 0 0 1rem 0;
-        color: rgba(34, 34, 96, 0.9);
+        color: var(--text-color);
         font-size: 1.5rem;
     }
     
     p {
-        color: rgba(34, 34, 96, 0.6);
+        color: var(--text-color);
+        opacity: 0.7;
         margin: 0 0 2rem 0;
         font-size: 0.95rem;
     }

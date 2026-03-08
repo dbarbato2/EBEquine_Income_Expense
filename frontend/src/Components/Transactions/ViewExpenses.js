@@ -86,7 +86,7 @@ const ViewExpensesStyled = styled.div`
       flex: 1;
       overflow-x: auto;
       overflow-y: auto;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
     }
 
@@ -96,7 +96,7 @@ const ViewExpensesStyled = styled.div`
     }
 
     .table-wrapper::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: var(--hover-bg);
     }
 
     .table-wrapper::-webkit-scrollbar-thumb {
@@ -108,9 +108,6 @@ const ViewExpensesStyled = styled.div`
       background: #555;
     }
 
-    th {
-    background-color:blue;
-    }
   table {
     width: 100%;
     border-collapse: separate;
@@ -118,13 +115,14 @@ const ViewExpensesStyled = styled.div`
     margin-bottom: 2rem;
 
     th, td {
-      border: 1px solid #ddd;
+      border: 1px solid var(--border-color);
       padding: 8px;
       text-align: left;
+      color: var(--text-color);
     }
 
     thead th {
-      background-color: #f2f2f2;
+      background-color: var(--card-bg);
       position: sticky;
       top: 0;
       z-index: 10;
@@ -132,11 +130,11 @@ const ViewExpensesStyled = styled.div`
     }
 
     tbody tr:nth-child(even) {
-      background-color: #f9f9f9;
+      background-color: var(--hover-bg);
     }
 
     tbody tr:hover {
-      background-color: #f1f1f1;
+      background-color: var(--hover-bg);
       cursor: pointer;
     }
 

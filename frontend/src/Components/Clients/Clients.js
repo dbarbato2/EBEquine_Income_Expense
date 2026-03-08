@@ -19,6 +19,14 @@ function Clients() {
 const ClientsStyled = styled.div`
     display: flex;
     overflow: auto;
+    .form-container {
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        backdrop-filter: blur(4.5px);
+        border-radius: 32px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
 `;
 
 export default Clients

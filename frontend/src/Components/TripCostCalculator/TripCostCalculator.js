@@ -1070,7 +1070,7 @@ const TripCostCalculatorStyled = styled.div`
 
   h2 {
     margin-bottom: 1.5rem;
-    color: #283595;
+    color: var(--text-color);
   }
 
   .table-buttons {

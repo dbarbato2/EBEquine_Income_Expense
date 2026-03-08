@@ -41,6 +41,7 @@ function Settings() {
         
         if (selectedTheme === 'dark') {
             root.style.setProperty('--bg-color', '#1a1a2e')
+            root.style.setProperty('--primary-color', '#e0e0e0')
             root.style.setProperty('--text-color', '#e0e0e0')
             root.style.setProperty('--card-bg', '#0f1419')
             root.style.setProperty('--nav-bg', 'rgba(15, 20, 25, 0.95)')
@@ -50,11 +51,12 @@ function Settings() {
             root.style.setProperty('--hover-bg', 'rgba(255, 255, 255, 0.08)')
         } else {
             root.style.setProperty('--bg-color', '#f5f5f5')
+            root.style.setProperty('--primary-color', '#222260')
             root.style.setProperty('--text-color', '#222260')
             root.style.setProperty('--card-bg', '#fcf6f9')
             root.style.setProperty('--nav-bg', 'rgba(252, 246, 249, 0.78)')
             root.style.setProperty('--border-color', '#ffffff')
-            root.style.setProperty('--input-bg', 'transparent')
+            root.style.setProperty('--input-bg', '#ffffff')
             root.style.setProperty('--input-text', 'rgba(34, 34, 96, 0.9)')
             root.style.setProperty('--hover-bg', 'rgba(34, 34, 96, 0.1)')
         }

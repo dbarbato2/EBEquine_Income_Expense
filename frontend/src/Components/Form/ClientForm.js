@@ -259,7 +259,7 @@ function ClientForm() {
                 />
             </div>
             <div className="input-control" style={{ display: 'flex', flexDirection: 'column' }}>
-                <label style={{ marginBottom: '0.5rem' }}>Gender</label>
+                <label style={{ marginBottom: '0.5rem', color: 'var(--text-color)' }}>Gender</label>
                 <select 
                     value={inputState.Gender}
                     name={'Gender'} 
@@ -272,7 +272,7 @@ function ClientForm() {
                 </select>
             </div>
             <div className="input-control" style={{ display: 'flex', flexDirection: 'column' }}>
-                <label style={{ marginBottom: '0.5rem' }}>Discipline</label>
+                <label style={{ marginBottom: '0.5rem', color: 'var(--text-color)' }}>Discipline</label>
                 <select 
                     value={inputState.Discipline}
                     name={'Discipline'} 
@@ -329,7 +329,7 @@ function ClientForm() {
                 />
             </div>
             <div className="input-control" style={{ display: 'flex', flexDirection: 'column' }}>
-                <label style={{ marginBottom: '0.5rem' }}>Will your horse tie?</label>
+                <label style={{ marginBottom: '0.5rem', color: 'var(--text-color)' }}>Will your horse tie?</label>
                 <select 
                     value={inputState.HorseTie}
                     name={'HorseTie'} 
@@ -372,7 +372,7 @@ function ClientForm() {
                 />
             </div>
             <div className="input-control" style={{ display: 'flex', flexDirection: 'column' }}>
-                <label style={{ marginBottom: '0.5rem' }}>May I have your consent to photograph/video your horse for his or her file or EB Equine, LLC business social media?</label>
+                <label style={{ marginBottom: '0.5rem', color: 'var(--text-color)' }}>May I have your consent to photograph/video your horse for his or her file or EB Equine, LLC business social media?</label>
                 <select 
                     value={inputState.PhotoVideo}
                     name={'PhotoVideo'} 
@@ -384,7 +384,7 @@ function ClientForm() {
                 </select>
             </div>
             <div className="input-control" style={{ display: 'flex', flexDirection: 'column' }}>
-                <label style={{ marginBottom: '0.5rem' }}>I understand that massage and kinesiology taping are not replacements for professional veterinary medical care. I am giving Erin Barbato, EB Equine, LLC permission to massage and/or tape my horse.</label>
+                <label style={{ marginBottom: '0.5rem', color: 'var(--text-color)' }}>I understand that massage and kinesiology taping are not replacements for professional veterinary medical care. I am giving Erin Barbato, EB Equine, LLC permission to massage and/or tape my horse.</label>
                 <select 
                     value={inputState.WaiverPermission}
                     name={'WaiverPermission'} 
@@ -396,7 +396,7 @@ function ClientForm() {
                 </select>
             </div>
             <div className="input-control" style={{ display: 'flex', flexDirection: 'column' }}>
-                <label style={{ marginBottom: '0.5rem' }}>I will keep Erin Barbato, of EB Equine, LLC updated should my horse's medical condition change.</label>
+                <label style={{ marginBottom: '0.5rem', color: 'var(--text-color)' }}>I will keep Erin Barbato, of EB Equine, LLC updated should my horse's medical condition change.</label>
                 <select 
                     value={inputState.MedicalConditionUpdate}
                     name={'MedicalConditionUpdate'} 
@@ -470,13 +470,14 @@ const FormStyled = styled.form`
         border: none;
         padding: .5rem 1rem;
         border-radius: 5px;
-        border: 2px solid #fff;
-        background: transparent;
+        border: 2px solid var(--border-color);
+        background: var(--input-bg);
         resize: none;
         box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-        color: rgba(34, 34, 96, 0.9);
+        color: var(--input-text);
         &::placeholder{
-            color: rgba(34, 34, 96, 0.4);
+            color: var(--input-text);
+            opacity: 0.5;
         }
     }
     .input-control{

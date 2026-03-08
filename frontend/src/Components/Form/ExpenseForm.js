@@ -223,13 +223,14 @@ const ExpenseFormStyled = styled.form`
         border: none;
         padding: .5rem 1rem;
         border-radius: 5px;
-        border: 2px solid #fff;
-        background: transparent;
+        border: 2px solid var(--border-color);
+        background: var(--input-bg);
         resize: none;
         box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-        color: rgba(34, 34, 96, 0.9);
+        color: var(--input-text);
         &::placeholder{
-            color: rgba(34, 34, 96, 0.4);
+            color: var(--input-text);
+            opacity: 0.5;
         }
     }
     .input-control{
@@ -238,7 +239,8 @@ const ExpenseFormStyled = styled.form`
         }
         .input-note{
             font-size: 0.85rem;
-            color: rgba(34, 34, 96, 0.6);
+            color: var(--text-color);
+            opacity: 0.7;
             margin-top: 0.3rem;
             margin-left: 0.1rem;
         }
@@ -248,6 +250,7 @@ const ExpenseFormStyled = styled.form`
                 align-items: center;
                 gap: 0.5rem;
                 cursor: pointer;
+                color: var(--text-color);
                 input[type="checkbox"]{
                     width: auto;
                     margin: 0;
@@ -260,12 +263,13 @@ const ExpenseFormStyled = styled.form`
         display: flex;
         justify-content: flex-start;
         select{
-            color: rgba(34, 34, 96, 0.9);
+            color: var(--input-text);
             &:invalid{
-                color: rgba(34, 34, 96, 0.4);
+                color: var(--input-text);
+                opacity: 0.5;
             }
             &:focus, &:active{
-                color: rgba(34, 34, 96, 1);
+                color: var(--input-text);
             }
         }
     }
