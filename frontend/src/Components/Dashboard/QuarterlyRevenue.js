@@ -32,7 +32,7 @@ function QuarterlyRevenue() {
         revenue.forEach(item => {
             const dateValue = item.date || item.Date || item.createdAt
             if (dateValue) {
-                const year = new Date(dateValue).getFullYear()
+                const year = new Date(dateValue).getUTCFullYear()
                 if (!isNaN(year)) {
                     years.add(year)
                 }
@@ -42,7 +42,7 @@ function QuarterlyRevenue() {
         expenses.forEach(item => {
             const dateValue = item.date || item.Date || item.createdAt
             if (dateValue) {
-                const year = new Date(dateValue).getFullYear()
+                const year = new Date(dateValue).getUTCFullYear()
                 if (!isNaN(year)) {
                     years.add(year)
                 }

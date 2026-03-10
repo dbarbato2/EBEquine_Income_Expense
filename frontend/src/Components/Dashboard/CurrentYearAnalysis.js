@@ -17,7 +17,7 @@ function CurrentYearAnalysis() {
         revenue.forEach(item => {
             const dateValue = item.date || item.Date || item.createdAt
             if (dateValue) {
-                const year = new Date(dateValue).getFullYear()
+                const year = new Date(dateValue).getUTCFullYear()
                 yearsSet.add(year)
             }
         })
@@ -25,7 +25,7 @@ function CurrentYearAnalysis() {
         expenses.forEach(item => {
             const dateValue = item.date || item.Date || item.createdAt
             if (dateValue) {
-                const year = new Date(dateValue).getFullYear()
+                const year = new Date(dateValue).getUTCFullYear()
                 yearsSet.add(year)
             }
         })
@@ -81,8 +81,8 @@ function CurrentYearAnalysis() {
                 if (!dateValue) return false
                 
                 const date = new Date(dateValue)
-                const itemYear = date.getFullYear()
-                const itemMonth = date.getMonth()
+                const itemYear = date.getUTCFullYear()
+                const itemMonth = date.getUTCMonth()
                 
                 return yearsToAnalyze.includes(itemYear) && itemMonth === monthIndex
             })
@@ -92,8 +92,8 @@ function CurrentYearAnalysis() {
                 if (!dateValue) return false
                 
                 const date = new Date(dateValue)
-                const itemYear = date.getFullYear()
-                const itemMonth = date.getMonth()
+                const itemYear = date.getUTCFullYear()
+                const itemMonth = date.getUTCMonth()
                 
                 return yearsToAnalyze.includes(itemYear) && itemMonth === monthIndex
             })
@@ -125,21 +125,21 @@ function CurrentYearAnalysis() {
             // Calculate actual revenue
             let actualRevenue = 0
             monthRevenue.forEach(item => {
-                const fees = item['Actual Fees'] ? parseFloat(item['Actual Fees'].toString().replace('$', '').trim()) : 0
+                const fees = item['Actual Fees'] ? parseFloat(item['Actual Fees'].toString().replace('$', '').replace(/,/g, '').trim()) : 0
                 actualRevenue += fees
             })
             
             // Calculate total expenses
             let totalExpenses = 0
             monthExpenses.forEach(item => {
-                const amount = item.Amount ? parseFloat(item.Amount.toString().replace('$', '').trim()) : 0
+                const amount = item.Amount ? parseFloat(item.Amount.toString().replace('$', '').replace(/,/g, '').trim()) : 0
                 totalExpenses += amount
             })
             
             // Calculate total deductions
             let totalDeductions = 0
             monthDeductions.forEach(item => {
-                const amount = item['Deduction Amount'] ? parseFloat(item['Deduction Amount'].toString().replace('$', '').trim()) : 0
+                const amount = item['Deduction Amount'] ? parseFloat(item['Deduction Amount'].toString().replace('$', '').replace(/,/g, '').trim()) : 0
                 totalDeductions += amount
             })
             
@@ -148,12 +148,12 @@ function CurrentYearAnalysis() {
             monthRevenue.forEach(item => {
                 const actualFees = item['Actual Fees']
                 // Check if Actual Fees is 0, null, or empty
-                const isUnpaid = !actualFees || actualFees === '' || parseFloat(actualFees.toString().replace('$', '').trim()) === 0
+                const isUnpaid = !actualFees || actualFees === '' || parseFloat(actualFees.toString().replace('$', '').replace(/,/g, '').trim()) === 0
                 
                 if (isUnpaid) {
-                    const serviceFee = item['Service Fee'] ? parseFloat(item['Service Fee'].toString().replace('$', '').trim()) : 0
-                    const travelFee = item['Travel Fee'] ? parseFloat(item['Travel Fee'].toString().replace('$', '').trim()) : 0
-                    const discount = item.Discount ? parseFloat(item.Discount.toString().replace('$', '').trim()) : 0
+                    const serviceFee = item['Service Fee'] ? parseFloat(item['Service Fee'].toString().replace('$', '').replace(/,/g, '').trim()) : 0
+                    const travelFee = item['Travel Fee'] ? parseFloat(item['Travel Fee'].toString().replace('$', '').replace(/,/g, '').trim()) : 0
+                    const discount = item.Discount ? parseFloat(item.Discount.toString().replace('$', '').replace(/,/g, '').trim()) : 0
                     
                     outstandingBalances += (serviceFee + travelFee - discount)
                 }

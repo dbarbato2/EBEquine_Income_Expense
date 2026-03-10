@@ -20,15 +20,17 @@ function LocationByMonth() {
         const yearsSet = new Set()
         
         revenue.forEach(item => {
-            if (item.Date) {
-                const year = new Date(item.Date).getFullYear()
+            const dateValue = item.Date || item.date || item.createdAt
+            if (dateValue) {
+                const year = new Date(dateValue).getUTCFullYear()
                 yearsSet.add(year)
             }
         })
         
         expenses.forEach(item => {
-            if (item.Date) {
-                const year = new Date(item.Date).getFullYear()
+            const dateValue = item.Date || item.date || item.createdAt
+            if (dateValue) {
+                const year = new Date(dateValue).getUTCFullYear()
                 yearsSet.add(year)
             }
         })
@@ -76,12 +78,12 @@ function LocationByMonth() {
             const locationMap = {}
             
             revenue.forEach(item => {
-                const dateValue = item.Date
+                const dateValue = item.Date || item.date || item.createdAt
                 if (!dateValue) return
                 
                 const date = new Date(dateValue)
-                const year = date.getFullYear()
-                const month = date.getMonth()
+                const year = date.getUTCFullYear()
+                const month = date.getUTCMonth()
                 
                 // Filter by selected year
                 const yearToCheck = selectedYear === 'all' ? null : parseInt(selectedYear)
@@ -89,7 +91,7 @@ function LocationByMonth() {
                 
                 const location = item['Service Location'] || 'Unknown'
                 const monthName = months[month]
-                let actualFees = item['Actual Fees'] ? parseFloat(item['Actual Fees'].toString().replace(/\$/g, '').trim()) : 0
+                let actualFees = item['Actual Fees'] ? parseFloat(item['Actual Fees'].toString().replace(/\$/g, '').replace(/,/g, '').trim()) : 0
                 actualFees = isNaN(actualFees) ? 0 : actualFees
                 
                 if (!locationMap[location]) {
@@ -112,12 +114,12 @@ function LocationByMonth() {
             const stateMap = {}
             
             expenses.forEach(item => {
-                const dateValue = item.Date
+                const dateValue = item.Date || item.date || item.createdAt
                 if (!dateValue) return
                 
                 const date = new Date(dateValue)
-                const year = date.getFullYear()
-                const month = date.getMonth()
+                const year = date.getUTCFullYear()
+                const month = date.getUTCMonth()
                 
                 // Filter by selected year
                 const yearToCheck = selectedYear === 'all' ? null : parseInt(selectedYear)
@@ -126,7 +128,7 @@ function LocationByMonth() {
                 const location = item.Location || ''
                 const state = location.slice(-2).toUpperCase() || 'Unknown'
                 const monthName = months[month]
-                let amount = item.Amount ? parseFloat(item.Amount.toString().replace(/\$/g, '').trim()) : 0
+                let amount = item.Amount ? parseFloat(item.Amount.toString().replace(/\$/g, '').replace(/,/g, '').trim()) : 0
                 amount = isNaN(amount) ? 0 : amount
                 
                 if (!stateMap[state]) {

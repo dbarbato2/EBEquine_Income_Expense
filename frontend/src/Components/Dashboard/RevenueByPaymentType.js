@@ -14,9 +14,9 @@ function RevenueByPaymentType() {
     const availableYears = useMemo(() => {
         const yearsSet = new Set()
         revenue.forEach(item => {
-            if (item.Date) {
-                const date = new Date(item.Date)
-                const year = date.getFullYear()
+            const dateValue = item.Date || item.date || item.createdAt
+            if (dateValue) {
+                const year = new Date(dateValue).getUTCFullYear()
                 yearsSet.add(year)
             }
         })
@@ -55,8 +55,8 @@ function RevenueByPaymentType() {
             
             // Filter by selected year if not 'all'
             if (selectedYear !== 'all') {
-                const date = new Date(item.Date)
-                const year = date.getFullYear()
+                const dateValue = item.Date || item.date || item.createdAt
+                const year = new Date(dateValue).getUTCFullYear()
                 if (year !== parseInt(selectedYear)) return
             }
             
@@ -76,8 +76,8 @@ function RevenueByPaymentType() {
 
             // Add actual fees to actual revenue
             let actualFees = item['Actual Fees'] || '0'
-            // Remove $ and convert to number
-            actualFees = parseFloat(String(actualFees).replace(/\$/g, '').trim())
+            // Remove $ and commas, then convert to number
+            actualFees = parseFloat(String(actualFees).replace(/\$/g, '').replace(/,/g, '').trim())
             if (!isNaN(actualFees)) {
                 paymentMap[normalizedPaymentType].actualRevenue += actualFees
             }

@@ -243,12 +243,12 @@ export const GlobalProvider = ({ children }) => {
       
       if (dateValue && item['Actual Fees']) {
         const date = new Date(dateValue);
-        if (year && date.getFullYear() !== year) return; // Filter by year if provided
-        const month = date.getMonth(); // 0-11
+        if (year && date.getUTCFullYear() !== year) return; // Filter by year if provided
+        const month = date.getUTCMonth(); // 0-11, use UTC to avoid timezone day-shift
         const quarterKey = getQuarter(month);
-        
-        // Parse the Actual Fees field (comes as string like "$107.81")
-        const valueStr = item['Actual Fees'].toString().replace('$', '').trim();
+
+        // Parse the Actual Fees field (comes as string like "$1,234.56" or "$107.81")
+        const valueStr = item['Actual Fees'].toString().replace('$', '').replace(/,/g, '').trim();
         const amount = parseFloat(valueStr);
         
         if (!isNaN(amount) && amount > 0) {
@@ -281,12 +281,12 @@ export const GlobalProvider = ({ children }) => {
       
       if (dateValue && item.Amount) {
         const date = new Date(dateValue);
-        if (year && date.getFullYear() !== year) return; // Filter by year if provided
-        const month = date.getMonth(); // 0-11
+        if (year && date.getUTCFullYear() !== year) return; // Filter by year if provided
+        const month = date.getUTCMonth(); // 0-11, use UTC to avoid timezone day-shift
         const quarterKey = getQuarter(month);
         
-        // Parse the amount field (comes as string or number)
-        const valueStr = item.Amount.toString().replace('$', '').trim();
+        // Parse the amount field (comes as string like "$1,234.56" or number)
+        const valueStr = item.Amount.toString().replace('$', '').replace(/,/g, '').trim();
         const amount = parseFloat(valueStr);
         
         if (!isNaN(amount) && amount > 0) {
@@ -329,8 +329,8 @@ export const GlobalProvider = ({ children }) => {
         if (monthNum !== undefined && monthNum >= 0 && monthNum <= 11) {
           const quarterKey = getQuarter(monthNum);
           
-          // Parse the Deduction Amount field (comes as string or number)
-          const valueStr = item['Deduction Amount'].toString().replace('$', '').trim();
+          // Parse the Deduction Amount field (comes as string like "$1,234.56" or number)
+          const valueStr = item['Deduction Amount'].toString().replace('$', '').replace(/,/g, '').trim();
           const amount = parseFloat(valueStr);
           
           if (!isNaN(amount) && amount > 0) {

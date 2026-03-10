@@ -31,15 +31,15 @@ function RollingRevenue() {
         const monthlyRevenue = {}
 
         revenue.forEach(item => {
-            const dateValue = item.Date
+            const dateValue = item.Date || item.date || item.createdAt
             if (!dateValue) return
             
             const date = new Date(dateValue)
-            const year = date.getFullYear()
-            const month = date.getMonth()
+            const year = date.getUTCFullYear()
+            const month = date.getUTCMonth()
             const monthName = months[month]
             
-            let actualFees = item['Actual Fees'] ? parseFloat(item['Actual Fees'].toString().replace(/\$/g, '').trim()) : 0
+            let actualFees = item['Actual Fees'] ? parseFloat(item['Actual Fees'].toString().replace(/\$/g, '').replace(/,/g, '').trim()) : 0
             actualFees = isNaN(actualFees) ? 0 : actualFees
             
             const key = `${year}-${month}`
