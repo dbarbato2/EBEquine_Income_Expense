@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
+import { downloadChartPNG } from '../../utils/downloadUtils';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { Line } from 'react-chartjs-2'
@@ -37,7 +38,6 @@ function RollingRevenue() {
             const date = new Date(dateValue)
             const year = date.getUTCFullYear()
             const month = date.getUTCMonth()
-            const monthName = months[month]
             
             let actualFees = item['Actual Fees'] ? parseFloat(item['Actual Fees'].toString().replace(/\$/g, '').replace(/,/g, '').trim()) : 0
             actualFees = isNaN(actualFees) ? 0 : actualFees
@@ -167,15 +167,28 @@ function RollingRevenue() {
         }
     }
 
+    const chartRef = useRef(null)
+
+    const handleDownloadPNG = () => {
+        downloadChartPNG(chartRef, 'Revenue - Rolling 12 Months', 'Revenue - Rolling 12 Months')
+    }
+
     return (
         <RollingRevenueStyled>
             <div className="header">
                 <h3>Revenue - Rolling 12 Months</h3>
             </div>
+            <button className="download-btn" onClick={handleDownloadPNG} title="Download PNG">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </button>
 
             {rollingData.data.length > 0 ? (
                 <div className="chart-wrapper">
-                    <Line data={chartData} options={chartOptions} />
+                    <Line ref={chartRef} data={chartData} options={chartOptions} />
                 </div>
             ) : (
                 <p className="no-data">No revenue data available</p>
@@ -185,6 +198,7 @@ function RollingRevenue() {
 }
 
 const RollingRevenueStyled = styled.div`
+    position: relative;
     background: var(--card-bg);
     border: 2px solid var(--border-color);
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -199,6 +213,31 @@ const RollingRevenueStyled = styled.div`
             color: var(--text-color);
             margin: 0;
             font-size: 1.3rem;
+        }
+    }
+
+    .download-btn {
+        position: absolute;
+        top: 1.5rem;
+        right: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--input-bg);
+        color: var(--text-color);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+        &:hover {
+            background: var(--hover-bg);
+        }
+        svg {
+            display: block;
         }
     }
 

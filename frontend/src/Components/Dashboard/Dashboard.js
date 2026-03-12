@@ -5,6 +5,7 @@ import { useGlobalContext } from '../../context/globalContext';
 import { dateFormat } from '../../utils/dateFormat';
 import QuarterlyRevenue from './QuarterlyRevenue';
 import InvoiceModal from '../Invoice/InvoiceModal';
+import TaxReportModal from '../Invoice/TaxReportModal';
 import DetailedBreakdown from './DetailedBreakdown';
 import CurrentYearAnalysis from './CurrentYearAnalysis';
 import RevenueByPaymentType from './RevenueByPaymentType';
@@ -15,6 +16,7 @@ import RollingRevenue from './RollingRevenue';
 function Dashboard() {
     const { revenue, clients } = useGlobalContext()
     const [showUnpaidInvoices, setShowUnpaidInvoices] = useState(false)
+    const [showTaxReportModal, setShowTaxReportModal] = useState(false)
     const [, setThemeUpdated] = useState(0)
     const [showInvoiceModal, setShowInvoiceModal] = useState(false)
     const [selectedRevenue, setSelectedRevenue] = useState(null)
@@ -80,6 +82,12 @@ function Dashboard() {
                         onClick={() => setShowUnpaidInvoices(!showUnpaidInvoices)}
                     >
                         {showUnpaidInvoices ? 'Hide' : 'Show'} Unpaid Invoices ({unpaidInvoices.length})
+                    </button>
+                    <button
+                        className="tax-btn"
+                        onClick={() => setShowTaxReportModal(true)}
+                    >
+                        Download Transactions for Taxes
                     </button>
                 </div>
 
@@ -161,6 +169,10 @@ function Dashboard() {
                         setSelectedClient(null);
                     }}
                 />
+                <TaxReportModal
+                    isOpen={showTaxReportModal}
+                    onClose={() => setShowTaxReportModal(false)}
+                />
             </InnerLayout>
         </DashboardStyled>
     )
@@ -168,6 +180,10 @@ function Dashboard() {
 
 const DashboardStyled = styled.div`
     .dashboard-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
         margin-bottom: 2rem;
     }
 
@@ -185,6 +201,23 @@ const DashboardStyled = styled.div`
 
         &:hover {
             background: #c82333;
+        }
+    }
+
+    .tax-btn {
+        padding: 0.8rem 1.6rem;
+        border-radius: 8px;
+        background: #0d6e4e;
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+        box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+        transition: background 0.3s ease;
+
+        &:hover {
+            background: #065f46;
         }
     }
 `;

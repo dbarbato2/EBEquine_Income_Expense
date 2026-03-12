@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
+import { downloadCSV } from '../../utils/downloadUtils';
 
 function CurrentYearAnalysis() {
     const { revenue, expenses, deductions } = useGlobalContext()
@@ -42,12 +43,14 @@ function CurrentYearAnalysis() {
         return Array.from(yearsSet).sort((a, b) => b - a)
     }, [revenue, expenses, deductions])
 
-    // Get the latest year
-    const latestYear = useMemo(() => {
-        return availableYears.length > 0 ? availableYears[0] : new Date().getFullYear()
-    }, [availableYears])
+    const [selectedYear, setSelectedYear] = useState(String(new Date().getFullYear()))
 
-    const [selectedYear, setSelectedYear] = useState(() => String(latestYear))
+    // Update selectedYear to the most recent year once data loads
+    useEffect(() => {
+        if (availableYears.length > 0) {
+            setSelectedYear(String(availableYears[0]))
+        }
+    }, [availableYears])
 
     // Check if a month/year is in the future
     const isFutureMonth = (year, monthIndex) => {
@@ -104,7 +107,7 @@ function CurrentYearAnalysis() {
                 const monthMap = {
                     'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
                     'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11,
-                    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+                    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Jun': 5,
                     'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
                 }
                 const itemMonth = monthMap[item.Month]
@@ -125,21 +128,21 @@ function CurrentYearAnalysis() {
             // Calculate actual revenue
             let actualRevenue = 0
             monthRevenue.forEach(item => {
-                const fees = item['Actual Fees'] ? parseFloat(item['Actual Fees'].toString().replace('$', '').replace(/,/g, '').trim()) : 0
+                const fees = parseFloat((item['Actual Fees'] || '0').toString().replace('$', '').replace(/,/g, '').trim()) || 0
                 actualRevenue += fees
             })
             
             // Calculate total expenses
             let totalExpenses = 0
             monthExpenses.forEach(item => {
-                const amount = item.Amount ? parseFloat(item.Amount.toString().replace('$', '').replace(/,/g, '').trim()) : 0
+                const amount = parseFloat((item.Amount || '0').toString().replace('$', '').replace(/,/g, '').trim()) || 0
                 totalExpenses += amount
             })
             
             // Calculate total deductions
             let totalDeductions = 0
             monthDeductions.forEach(item => {
-                const amount = item['Deduction Amount'] ? parseFloat(item['Deduction Amount'].toString().replace('$', '').replace(/,/g, '').trim()) : 0
+                const amount = parseFloat((item['Deduction Amount'] || '0').toString().replace('$', '').replace(/,/g, '').trim()) || 0
                 totalDeductions += amount
             })
             
@@ -148,12 +151,13 @@ function CurrentYearAnalysis() {
             monthRevenue.forEach(item => {
                 const actualFees = item['Actual Fees']
                 // Check if Actual Fees is 0, null, or empty
-                const isUnpaid = !actualFees || actualFees === '' || parseFloat(actualFees.toString().replace('$', '').replace(/,/g, '').trim()) === 0
+                const parsedFees = parseFloat((actualFees || '0').toString().replace('$', '').replace(/,/g, '').trim()) || 0
+                const isUnpaid = parsedFees === 0
                 
                 if (isUnpaid) {
-                    const serviceFee = item['Service Fee'] ? parseFloat(item['Service Fee'].toString().replace('$', '').replace(/,/g, '').trim()) : 0
-                    const travelFee = item['Travel Fee'] ? parseFloat(item['Travel Fee'].toString().replace('$', '').replace(/,/g, '').trim()) : 0
-                    const discount = item.Discount ? parseFloat(item.Discount.toString().replace('$', '').replace(/,/g, '').trim()) : 0
+                    const serviceFee = parseFloat((item['Service Fee'] || '0').toString().replace('$', '').replace(/,/g, '').trim()) || 0
+                    const travelFee = parseFloat((item['Travel Fee'] || '0').toString().replace('$', '').replace(/,/g, '').trim()) || 0
+                    const discount = parseFloat((item.Discount || '0').toString().replace('$', '').replace(/,/g, '').trim()) || 0
                     
                     outstandingBalances += (serviceFee + travelFee - discount)
                 }
@@ -182,6 +186,20 @@ function CurrentYearAnalysis() {
         }).format(amount)
     }
 
+    const handleDownloadCSV = () => {
+        const rows = monthlyData.map(d => ({
+            Month: d.month,
+            'Number of Massages': d.numberOfMassages,
+            'Actual Revenue': formatCurrency(d.actualRevenue),
+            'Total Expenses': formatCurrency(d.totalExpenses),
+            'Total Deductions': formatCurrency(d.totalDeductions),
+            'Outstanding Balances': formatCurrency(d.outstandingBalances),
+            'Profit': formatCurrency(d.profit)
+        }))
+        const filename = selectedYear === 'all' ? 'Monthly Analysis' : `Monthly Analysis - ${selectedYear}`
+        downloadCSV(rows, filename)
+    }
+
     return (
         <CurrentYearAnalysisStyled>
             <div className="header">
@@ -201,6 +219,13 @@ function CurrentYearAnalysis() {
                         ))}
                         <option value="all">All Years</option>
                     </select>
+                    <button className="download-btn" onClick={handleDownloadCSV} title="Download CSV">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div className="table-wrapper">
@@ -236,6 +261,7 @@ function CurrentYearAnalysis() {
 }
 
 const CurrentYearAnalysisStyled = styled.div`
+    position: relative;
     margin-top: 3rem;
     background: var(--card-bg);
     border: 2px solid var(--border-color);
@@ -266,6 +292,28 @@ const CurrentYearAnalysisStyled = styled.div`
             color: var(--text-color);
             font-weight: 500;
             white-space: nowrap;
+        }
+    }
+
+    .download-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--input-bg);
+        color: var(--text-color);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+        &:hover {
+            background: var(--hover-bg);
+        }
+        svg {
+            display: block;
         }
     }
 

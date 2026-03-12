@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { Line } from 'react-chartjs-2'
+import { downloadCSV, downloadChartPNG } from '../../utils/downloadUtils';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ChartDataLabels)
 
@@ -185,10 +186,55 @@ function HistoricalRevenue() {
         }
     }
 
+    const chartRef = useRef(null)
+
+    const [showDownloadMenu, setShowDownloadMenu] = useState(false)
+    const downloadMenuRef = useRef(null)
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (downloadMenuRef.current && !downloadMenuRef.current.contains(e.target)) {
+                setShowDownloadMenu(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
+    const handleDownloadCSV = () => {
+        const rows = tableData.years.map(year => {
+            const row = { Year: year }
+            tableData.months.forEach(m => {
+                row[m] = formatCurrency(tableData.data[year][m] || 0)
+            })
+            return row
+        })
+        downloadCSV(rows, 'Historical Revenue')
+    }
+
+    const handleDownloadPNG = () => {
+        downloadChartPNG(chartRef, 'Historical Revenue', 'Historical Revenue')
+    }
+
     return (
         <HistoricalRevenueStyled>
             <div className="header">
                 <h3>Historical Revenue</h3>
+            </div>
+            <div className="download-wrapper" ref={downloadMenuRef}>
+                <button className="download-btn" onClick={() => setShowDownloadMenu(m => !m)} title="Download">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                </button>
+                {showDownloadMenu && (
+                    <div className="download-menu">
+                        <button className="download-menu-item" onClick={() => { handleDownloadCSV(); setShowDownloadMenu(false) }}>Download CSV</button>
+                        <button className="download-menu-item" onClick={() => { handleDownloadPNG(); setShowDownloadMenu(false) }}>Download PNG</button>
+                    </div>
+                )}
             </div>
             
             {tableData.years.length > 0 ? (
@@ -276,7 +322,7 @@ function HistoricalRevenue() {
 
                     <div className="chart-wrapper">
                         <h4>Monthly Revenue By Year</h4>
-                        <Line data={chartData} options={chartOptions} />
+                        <Line ref={chartRef} data={chartData} options={chartOptions} />
                     </div>
                 </>
             ) : (
@@ -287,6 +333,7 @@ function HistoricalRevenue() {
 }
 
 const HistoricalRevenueStyled = styled.div`
+    position: relative;
     background: var(--card-bg);
     border: 2px solid var(--border-color);
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -301,6 +348,64 @@ const HistoricalRevenueStyled = styled.div`
             color: var(--text-color);
             margin: 0;
             font-size: 1.3rem;
+        }
+    }
+
+    .download-wrapper {
+        position: absolute;
+        top: 1.5rem;
+        right: 2rem;
+    }
+
+    .download-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--input-bg);
+        color: var(--text-color);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+        &:hover {
+            background: var(--hover-bg);
+        }
+        svg {
+            display: block;
+        }
+    }
+
+    .download-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 4px);
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        z-index: 100;
+        overflow: hidden;
+        min-width: 140px;
+    }
+
+    .download-menu-item {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        background: transparent;
+        border: none;
+        text-align: left;
+        color: var(--text-color);
+        font-size: 0.85rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.15s ease;
+        &:hover {
+            background: var(--hover-bg);
         }
     }
 

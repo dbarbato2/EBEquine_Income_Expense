@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import moment from 'moment'
 import { useGlobalContext } from '../../context/globalContext';
+import { downloadCSV } from '../../utils/downloadUtils';
 
 function DetailedBreakdown() {
     const { revenue, expenses, deductions } = useGlobalContext()
@@ -175,6 +176,22 @@ function DetailedBreakdown() {
         return false
     }
 
+    const handleDownloadCSV = () => {
+        const rows = breakdownData.categories.map(cat => {
+            const row = { Category: cat }
+            ;['Q1', 'Q2', 'Q3', 'Q4'].forEach(q => {
+                row[q] = formatCurrency(breakdownData.data[q][cat] || 0)
+            })
+            row['Total'] = formatCurrency(
+                ['Q1', 'Q2', 'Q3', 'Q4'].reduce((sum, q) => sum + (breakdownData.data[q][cat] || 0), 0)
+            )
+            return row
+        })
+        const typeLabel = selectedType.charAt(0).toUpperCase() + selectedType.slice(1)
+        const filename = selectedYear === 'all' ? `Quarterly Breakdown - ${typeLabel}` : `Quarterly Breakdown - ${typeLabel} - ${selectedYear}`
+        downloadCSV(rows, filename)
+    }
+
     return (
         <DetailedBreakdownStyled>
             <div className="header">
@@ -210,6 +227,13 @@ function DetailedBreakdown() {
                             <option value="deductions">Deductions</option>
                         </select>
                     </div>
+                    <button className="download-btn" onClick={handleDownloadCSV} title="Download CSV">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div className="table-wrapper">
@@ -246,6 +270,7 @@ function DetailedBreakdown() {
 }
 
 const DetailedBreakdownStyled = styled.div`
+    position: relative;
     background: var(--card-bg);
     border: 2px solid var(--border-color);
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -273,6 +298,28 @@ const DetailedBreakdownStyled = styled.div`
         display: flex;
         gap: 1.5rem;
         align-items: center;
+    }
+
+    .download-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--input-bg);
+        color: var(--text-color);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+        &:hover {
+            background: var(--hover-bg);
+        }
+        svg {
+            display: block;
+        }
     }
 
     .control-group {

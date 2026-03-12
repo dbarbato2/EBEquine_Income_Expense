@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
+import { downloadCSV } from '../../utils/downloadUtils';
 
 function QuarterlyRevenue() {
     const { quarterlyRevenue, quarterlyExpenses, quarterlyDeductions, revenue, expenses, deductions } = useGlobalContext()
@@ -96,6 +97,17 @@ function QuarterlyRevenue() {
         return false
     }
 
+    const handleDownloadCSV = () => {
+        const rows = ['Q1', 'Q2', 'Q3', 'Q4'].map(q => ({
+            Quarter: q,
+            'Total Revenue': formatCurrency(quarters[q]),
+            'Total Expenses': formatCurrency(expenseData[q]),
+            'Total Deductions': formatCurrency(deductionData[q])
+        }))
+        const filename = selectedYear === 'all' ? 'Quarterly Summary' : `Quarterly Summary - ${selectedYear}`
+        downloadCSV(rows, filename)
+    }
+
     return (
         <QuarterlyRevenueStyled>
             <div className="header">
@@ -117,6 +129,13 @@ function QuarterlyRevenue() {
                         ))}
                         <option value="all">All Years</option>
                     </select>
+                    <button className="download-btn" onClick={handleDownloadCSV} title="Download CSV">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div className="table-wrapper">
@@ -163,6 +182,7 @@ function QuarterlyRevenue() {
 }
 
 const QuarterlyRevenueStyled = styled.div`
+    position: relative;
     background: var(--card-bg);
     border: 2px solid var(--border-color);
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -192,6 +212,28 @@ const QuarterlyRevenueStyled = styled.div`
     .year-selector label {
         font-weight: 600;
         color: var(--text-color);
+    }
+
+    .download-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--input-bg);
+        color: var(--text-color);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+        &:hover {
+            background: var(--hover-bg);
+        }
+        svg {
+            display: block;
+        }
     }
 
     .year-selector select {

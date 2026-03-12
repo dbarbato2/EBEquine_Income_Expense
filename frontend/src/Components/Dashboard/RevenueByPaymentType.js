@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { Chart as ChartJs, ArcElement, Tooltip, Legend } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { Pie } from 'react-chartjs-2'
 import { useGlobalContext } from '../../context/globalContext';
+import { downloadCSV, downloadChartPNG } from '../../utils/downloadUtils';
 
 ChartJs.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 
@@ -23,12 +24,14 @@ function RevenueByPaymentType() {
         return Array.from(yearsSet).sort((a, b) => b - a)
     }, [revenue])
 
-    // Get the latest year
-    const latestYear = useMemo(() => {
-        return availableYears.length > 0 ? availableYears[0] : new Date().getFullYear()
-    }, [availableYears])
+    const [selectedYear, setSelectedYear] = useState(String(new Date().getFullYear()))
 
-    const [selectedYear, setSelectedYear] = useState(() => String(latestYear))
+    // Update selectedYear to the most recent year once data loads
+    useEffect(() => {
+        if (availableYears.length > 0) {
+            setSelectedYear(String(availableYears[0]))
+        }
+    }, [availableYears])
 
     // Format payment type display
     const formatPaymentType = (paymentType) => {
@@ -114,6 +117,36 @@ function RevenueByPaymentType() {
         }
     }, [paymentTypeData])
 
+    const chartRef = useRef(null)
+
+    const [showDownloadMenu, setShowDownloadMenu] = useState(false)
+    const downloadMenuRef = useRef(null)
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (downloadMenuRef.current && !downloadMenuRef.current.contains(e.target)) {
+                setShowDownloadMenu(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
+    const handleDownloadCSV = () => {
+        const rows = paymentTypeData.map(d => ({
+            'Payment Type': formatPaymentType(d.paymentType),
+            'Invoice Count': d.invoiceCount,
+            'Actual Revenue': formatCurrency(d.actualRevenue)
+        }))
+        const filename = selectedYear === 'all' ? 'Revenue By Payment Type' : `Revenue By Payment Type - ${selectedYear}`
+        downloadCSV(rows, filename)
+    }
+
+    const handleDownloadPNG = () => {
+        const title = selectedYear === 'all' ? 'Revenue By Payment Type' : `Revenue By Payment Type - ${selectedYear}`
+        downloadChartPNG(chartRef, title, title)
+    }
+
     return (
         <RevenueByPaymentTypeStyled>
             <div className="header-with-filter">
@@ -133,6 +166,21 @@ function RevenueByPaymentType() {
                         ))}
                         <option value="all">All Years</option>
                     </select>
+                    <div className="download-wrapper" ref={downloadMenuRef}>
+                        <button className="download-btn" onClick={() => setShowDownloadMenu(m => !m)} title="Download">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                        </button>
+                        {showDownloadMenu && (
+                            <div className="download-menu">
+                                <button className="download-menu-item" onClick={() => { handleDownloadCSV(); setShowDownloadMenu(false) }}>Download CSV</button>
+                                <button className="download-menu-item" onClick={() => { handleDownloadPNG(); setShowDownloadMenu(false) }}>Download PNG</button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
             {paymentTypeData.length > 0 ? (
@@ -157,6 +205,7 @@ function RevenueByPaymentType() {
                     </table>
                     <div className="pie-chart-container">
                         <Pie 
+                            ref={chartRef}
                             data={pieChartData} 
                             options={{
                                 responsive: true,
@@ -182,7 +231,7 @@ function RevenueByPaymentType() {
                                             const label = context.chart.data.labels[context.dataIndex]
                                             const total = context.dataset.data.reduce((a, b) => a + b, 0)
                                             const percentage = ((value / total) * 100).toFixed(1)
-                                            return label + '\n' + value + ' invoices' + '\n' + percentage + '%'
+                                            return `${label}\n${value} invoices\n${percentage}%`
                                         },
                                         anchor: 'center',
                                         align: 'center'
@@ -200,6 +249,7 @@ function RevenueByPaymentType() {
 }
 
 const RevenueByPaymentTypeStyled = styled.div`
+    position: relative;
     background: var(--card-bg);
     border: 2px solid var(--border-color);
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -230,6 +280,62 @@ const RevenueByPaymentTypeStyled = styled.div`
             color: var(--text-color);
             font-weight: 500;
             white-space: nowrap;
+        }
+    }
+
+    .download-wrapper {
+        position: relative;
+    }
+
+    .download-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--input-bg);
+        color: var(--text-color);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s ease;
+        &:hover {
+            background: var(--hover-bg);
+        }
+        svg {
+            display: block;
+        }
+    }
+
+    .download-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 4px);
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        z-index: 100;
+        overflow: hidden;
+        min-width: 140px;
+    }
+
+    .download-menu-item {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        background: transparent;
+        border: none;
+        text-align: left;
+        color: var(--text-color);
+        font-size: 0.85rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.15s ease;
+        &:hover {
+            background: var(--hover-bg);
         }
     }
 
