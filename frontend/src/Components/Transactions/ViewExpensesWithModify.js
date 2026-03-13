@@ -461,7 +461,7 @@ const ViewExpensesWithModify = () => {
 const ViewExpensesStyled = styled.div`
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 0;
     padding: 0;
 
     .content-wrapper {
@@ -469,7 +469,6 @@ const ViewExpensesStyled = styled.div`
       width: 100%;
       display: flex;
       flex-direction: column;
-      height: 100%;
     }
 
     h2{
@@ -550,8 +549,8 @@ const ViewExpensesStyled = styled.div`
     }
 
     .expense-form {
-      background: rgba(252, 246, 249, 0.78);
-      border: 2px solid #FFFFFF;
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
       backdrop-filter: blur(4.5px);
       border-radius: 32px;
       padding: 1.5rem;
@@ -571,7 +570,7 @@ const ViewExpensesStyled = styled.div`
 
         label {
           font-weight: 600;
-          color: rgba(34, 34, 96, 0.9);
+          color: var(--text-color);
         }
 
         input, select {
@@ -581,10 +580,10 @@ const ViewExpensesStyled = styled.div`
           border: none;
           padding: .5rem 1rem;
           border-radius: 5px;
-          border: 2px solid #fff;
-          background: transparent;
+          border: 2px solid var(--border-color);
+          background: var(--input-bg);
           box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-          color: rgba(34, 34, 96, 0.9);
+          color: var(--input-text);
         }
 
         select {
@@ -634,11 +633,11 @@ const ViewExpensesStyled = styled.div`
     }
 
     .table-wrapper {
-      flex: 1;
       overflow-x: auto;
       overflow-y: auto;
       border: 1px solid var(--border-color);
       border-radius: 8px;
+      max-height: 400px;
     }
 
     .table-wrapper::-webkit-scrollbar {

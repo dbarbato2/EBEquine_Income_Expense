@@ -38,7 +38,7 @@ const ViewDeductionsWithModify = () => {
   return (
     <ViewDeductionsWithModifyStyled>
       <div className="content-wrapper">
-      <h2>View Deductions</h2>
+      <h2>Deductions</h2>
       <div className="table-wrapper">
       <table>
         <thead>

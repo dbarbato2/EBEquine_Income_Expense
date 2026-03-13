@@ -479,18 +479,14 @@ const ViewRevenueWithModify = () => {
 const ViewRevenueStyled = styled.div`
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 0;
     padding: 0;
-    overflow: hidden;
 
     .content-wrapper {
       padding: 2rem 1.5rem;
       width: 100%;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
-      flex: 1;
-      min-height: 0;
     }
 
     h2{

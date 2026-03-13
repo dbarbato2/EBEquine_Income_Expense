@@ -604,7 +604,7 @@ const ViewDeductionsStyled = styled.div`
     }
 
     .table-wrapper {
-      flex: 1;
+      min-height: 300px;
       overflow-x: auto;
       overflow-y: auto;
       border: 1px solid var(--border-color);
@@ -612,7 +612,7 @@ const ViewDeductionsStyled = styled.div`
     }
 
     .search-results .table-wrapper {
-      flex: none;
+      min-height: unset;
       max-height: 30vh;
     }
 
