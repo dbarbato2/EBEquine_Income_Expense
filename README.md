@@ -1,12 +1,11 @@
 # EB Equine Income and Expense Tracker
 
-An Expense Tracker application designed for EB Equine built with React, Node.js, Express, and MongoDB to help users manage their revenue and expenses efficiently.
+An Expense Tracker application designed for EB Equine built with React, Node.js, Express, and MongoDB to help users manage their revenue, expenses, tax deductions and clients efficiently.
 
 ## Table of Contents
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
-- [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Contributing](#contributing)
 - [License](#license)
@@ -16,7 +15,6 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 
 ## Backlog
 - Create Invoice Functionality
-- Fix error of not being able to scroll down to All transactions after Search
 - Update All Recent Data Under Erin's username
 - Publish Site
 After publishing:
@@ -26,13 +24,18 @@ After publishing:
 
 ## Features
 - User authentication (register, login, logout)
-- Add, edit, and delete revenue
-- Add, edit, and delete expenses
-- Add, edit, and delete deductions
-- Add, edit, and delete clients
+- Adjust Settings for a user including switching between light and dark mode
+- Add, edit, and delete revenue including fuzzy search capabilities to find specific transactions
+- Add, edit, and delete expenses including fuzzy search capabilities to find specific transactions
+- Add, edit, and delete deductions including fuzzy search capabilities to find specific transactions
+- Add, edit, and delete clients including fuzzy search capabilities to find specific transactions
+- Automatically adds clients to the database when one fills out the Google Form
 - View transaction histories
+- For revenue transactions, crerate an editable invoice to display or print
 - Comprehensive charts and graphs to visualize revenue, expenses, deductions, and clients
-- Ability to display unpaid invoices and create new invoices for clients
+- Download all charts as .csv files and all graphs as .png files
+- Ability to display unpaid invoices and create new invoices for clients from that list
+- Button to create pdf file for any given historical month of all transactions for tax purposes
 - Notifications for user actions and errors
 
 ## Technologies Used
@@ -101,10 +104,6 @@ After publishing:
    yarn dev
 ```
 
-## Usage
-1. Register a new account or log in with an existing account.
-2. Add, edit, and delete revenue, expenses, deductions, and clients.
-3. View the transaction history and visualizations on the dashboard.
 
 ## API Endpoints
 ### Auth

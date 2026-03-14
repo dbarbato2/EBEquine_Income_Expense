@@ -60,6 +60,14 @@ const ViewExpensesWithModify = () => {
     }
   };
 
+  const handleResetSearch = () => {
+    setSearchCriteria({ date: '', vendor: '', expenseType: '', location: '', recordNumber: '' });
+    setSearchResults([]);
+    setShowSearchResults(false);
+    setSelectedExpense(null);
+    setIsEditing(false);
+  };
+
   const handleResultClick = (expenseItem) => {
     setSelectedExpense(expenseItem);
     setEditedExpense(expenseItem);
@@ -210,12 +218,13 @@ const ViewExpensesWithModify = () => {
               />
             </div>
             <button type="submit" className="search-btn">Search</button>
+            <button type="button" className="reset-btn" onClick={handleResetSearch}>Reset Form</button>
           </div>
         </form>
       </div>
 
       {/* Search Results */}
-      {showSearchResults && searchResults.length > 1 && (
+      {showSearchResults && searchResults.length >= 1 && (
         <div className="search-results">
           <h3>Search Results ({searchResults.length} found)</h3>
           <div className="table-wrapper">
@@ -522,11 +531,10 @@ const ViewExpensesStyled = styled.div`
         }
       }
 
-      .search-btn {
+      .search-btn, .reset-btn {
         padding: .8rem 1.6rem;
         border-radius: 30px;
         border: none;
-        background: #222260;
         color: #fff;
         font-size: inherit;
         font-family: inherit;
@@ -537,7 +545,17 @@ const ViewExpensesStyled = styled.div`
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        
+      }
+
+      .search-btn {
+        background: #222260;
+        &:hover {
+          filter: brightness(0.75);
+        }
+      }
+
+      .reset-btn {
+        background: #c0392b;
         &:hover {
           filter: brightness(0.75);
         }

@@ -196,12 +196,17 @@ exports.searchClients = async (req, res) => {
         // Build search criteria
         let searchCriteria = { userid: userid.trim() };
         
-        // For exact match fields (phone and email), add to search criteria
+        // For phone and email, use case-insensitive regex so partial matches work
         if (phoneNumber) {
-            searchCriteria['Phone Number'] = phoneNumber.trim();
+            // Strip all non-digit characters from the input, then build a regex
+            // that allows optional dashes between digits — matches both
+            // '1234567890' and '123-456-7890' against whatever format is stored.
+            const digitsOnly = phoneNumber.trim().replace(/\D/g, '');
+            const phoneRegex = digitsOnly.split('').join('-?');
+            searchCriteria.PhoneNumber = { $regex: phoneRegex, $options: 'i' };
         }
         if (email) {
-            searchCriteria['Email Address'] = email.trim();
+            searchCriteria.Email = { $regex: email.trim(), $options: 'i' };
         }
         
         // Get initial results
@@ -280,11 +285,11 @@ const applyFuzzyMatchClients = (clients, name, barnContact, horseName) => {
             }
             
             if (barnContact) {
-                relevanceScore += calculateRelevanceScoreClient(client['Barn Contact'], barnContact);
+                relevanceScore += calculateRelevanceScoreClient(client.BarnContact, barnContact);
             }
             
             if (horseName) {
-                relevanceScore += calculateRelevanceScoreClient(client["Horse's Name"], horseName);
+                relevanceScore += calculateRelevanceScoreClient(client.HorseName, horseName);
             }
             
             return { ...client.toObject(), _relevanceScore: relevanceScore };

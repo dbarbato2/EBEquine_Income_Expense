@@ -130,45 +130,58 @@ exports.searchExpenses = async (req, res) => {
             return res.status(400).json({message: 'User ID is required'})
         }
         
-        // Build search criteria
-        let searchCriteria = { userid: userid.trim() };
-        
+        const trimmedUserid = userid.trim();
+
+        // Fetch ALL expenses for the user using multi-strategy userid matching (same as getExpenses)
+        let allExpenses = await ExpenseSchema.find({ userid: trimmedUserid }).sort({ createdAt: -1 });
+
+        if (allExpenses.length === 0 && mongoose.Types.ObjectId.isValid(trimmedUserid)) {
+            try {
+                const objectId = new mongoose.Types.ObjectId(trimmedUserid);
+                allExpenses = await ExpenseSchema.find({ userid: objectId }).sort({ createdAt: -1 });
+            } catch (err) {
+                // ObjectId conversion failed, continue
+            }
+        }
+
+        if (allExpenses.length === 0) {
+            allExpenses = await ExpenseSchema.find({ userid: { $regex: trimmedUserid, $options: 'i' } }).sort({ createdAt: -1 });
+        }
+
+        // Filter in JavaScript to avoid Mongoose query issues with spaced field names
+        let expenses = allExpenses;
+
         if (date) {
-            // Match entire day - create range from start to end of day
             const dateObj = new Date(date);
             const year = dateObj.getUTCFullYear();
             const month = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
             const day = String(dateObj.getUTCDate()).padStart(2, '0');
             const dateString = `${year}-${month}-${day}`;
-            
             const startOfDay = new Date(`${dateString}T00:00:00Z`);
             const endOfDay = new Date(`${dateString}T23:59:59.999Z`);
-            
-            searchCriteria.Date = {
-                $gte: startOfDay,
-                $lte: endOfDay
-            };
+            expenses = expenses.filter(e => {
+                const d = new Date(e.Date);
+                return d >= startOfDay && d <= endOfDay;
+            });
         }
-        
+
         if (expenseType) {
-            searchCriteria['Expense Type'] = expenseType;
+            expenses = expenses.filter(e => e['Expense Type'] === expenseType);
         }
-        
-        // Exact match for record number
+
         if (recordNumber) {
-            searchCriteria['Expense Record Number'] = Number(recordNumber);
+            const num = Number(recordNumber);
+            expenses = expenses.filter(e =>
+                e['Expense Record Number'] === num ||
+                String(e['Expense Record Number']) === String(recordNumber)
+            );
         }
-        
-        // Build initial query without vendor and location (we'll do fuzzy matching on results)
-        console.log('Initial search criteria:', JSON.stringify(searchCriteria, null, 2));
-        let expenses = await ExpenseSchema.find(searchCriteria).sort({ createdAt: -1 });
-        
+
         // Apply fuzzy matching to vendor and location if provided
         if (vendor || location) {
             expenses = applyFuzzyMatch(expenses, vendor, location);
         }
-        
-        console.log('Found expense records:', expenses.length);
+
         res.status(200).json(expenses);
     } catch (error) {
         console.error("CRITICAL BACKEND ERROR:", error);

@@ -112,28 +112,45 @@ exports.searchDeductions = async (req, res) => {
         if (!userid) {
             return res.status(400).json({message: 'User ID is required'})
         }
-        
-        // Build search criteria
-        const searchCriteria = { userid: userid.trim() };
-        
+
+        const trimmedUserid = userid.trim();
+
+        // Fetch ALL deductions for the user (same multi-strategy as getDeductions)
+        let allDeductions = await DeductionSchema.find({ userid: trimmedUserid }).sort({ createdAt: -1 });
+
+        if (allDeductions.length === 0 && mongoose.Types.ObjectId.isValid(trimmedUserid)) {
+            try {
+                const objectId = new mongoose.Types.ObjectId(trimmedUserid);
+                allDeductions = await DeductionSchema.find({ userid: objectId }).sort({ createdAt: -1 });
+            } catch (err) {
+                // ObjectId conversion failed, continue
+            }
+        }
+
+        if (allDeductions.length === 0) {
+            allDeductions = await DeductionSchema.find({ userid: { $regex: trimmedUserid, $options: 'i' } }).sort({ createdAt: -1 });
+        }
+
+        // Filter in JavaScript to avoid Mongoose query issues with spaced field names
+        let deductions = allDeductions;
+
         if (year) {
-            searchCriteria.Year = Number(year);
+            deductions = deductions.filter(d => d.Year === Number(year));
         }
-        
         if (month) {
-            searchCriteria.Month = month;
+            deductions = deductions.filter(d => d.Month === month);
         }
-        
         if (deductionType) {
-            searchCriteria['Deduction Type'] = deductionType;
+            deductions = deductions.filter(d => d['Deduction Type'] === deductionType);
         }
-        
-        // Exact match for record number
         if (recordNumber) {
-            searchCriteria['Deduction Record Number'] = Number(recordNumber);
+            const num = Number(recordNumber);
+            deductions = deductions.filter(d =>
+                d['Deduction Record Number'] === num ||
+                String(d['Deduction Record Number']) === String(recordNumber)
+            );
         }
-        
-        const deductions = await DeductionSchema.find(searchCriteria).sort({ createdAt: -1 });
+
         res.status(200).json(deductions);
     } catch (error) {
         console.error("CRITICAL BACKEND ERROR:", error);

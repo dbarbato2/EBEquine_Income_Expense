@@ -25,7 +25,7 @@ export const menuItems = [
             },
             {
                 id: 50,
-                title: "View Transactions",
+                title: "View Transactions/Create Invoices",
                 link: "/dashboard",
             },
         ]

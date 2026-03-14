@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../../context/globalContext';
 import styled from 'styled-components';
 import { dateFormat } from '../../utils/dateFormat';
+import { findClientByHorseName } from '../../utils/clientMatch';
 import InvoiceModal from '../Invoice/InvoiceModal';
 
 const ViewRevenue = () => {
@@ -17,8 +18,8 @@ const ViewRevenue = () => {
 
   const handleRowClick = (item) => {
     setSelectedRevenue(item);
-    // Find matching client data if available
-    const matchingClient = clients.find(c => c.Name === item.Client);
+    // Match revenue Client field (horse name) against HorseName in Clients table
+    const matchingClient = findClientByHorseName(clients, item.Client);
     setSelectedClient(matchingClient || null);
     setShowInvoiceModal(true);
   };

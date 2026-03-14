@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { InnerLayout } from '../../styles/Layouts';
 import { useGlobalContext } from '../../context/globalContext';
 import { dateFormat } from '../../utils/dateFormat';
+import { findClientByHorseName } from '../../utils/clientMatch';
 import QuarterlyRevenue from './QuarterlyRevenue';
 import InvoiceModal from '../Invoice/InvoiceModal';
 import TaxReportModal from '../Invoice/TaxReportModal';
@@ -25,7 +26,8 @@ function Dashboard() {
     // Handle row click to open invoice modal
     const handleRowClick = (item) => {
         setSelectedRevenue(item);
-        const matchingClient = clients.find(c => c.Name === item.Client);
+        // Match revenue Client field (horse name) against HorseName in Clients table
+        const matchingClient = findClientByHorseName(clients, item.Client);
         setSelectedClient(matchingClient || null);
         setShowInvoiceModal(true);
         // Scroll to top of page

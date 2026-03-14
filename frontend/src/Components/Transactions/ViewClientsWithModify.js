@@ -53,6 +53,14 @@ const ViewClientsWithModify = () => {
     }
   };
 
+  const handleResetSearch = () => {
+    setSearchCriteria({ name: '', phoneNumber: '', email: '', barnContact: '', horseName: '' });
+    setSearchResults([]);
+    setShowSearchResults(false);
+    setSelectedClient(null);
+    setIsEditing(false);
+  };
+
   const handleResultClick = (clientItem) => {
     setSelectedClient(clientItem);
     setEditedClient(clientItem);
@@ -201,12 +209,13 @@ const ViewClientsWithModify = () => {
               />
             </div>
             <button type="submit" className="search-btn">Search</button>
+            <button type="button" className="reset-btn" onClick={handleResetSearch}>Reset Form</button>
           </div>
         </form>
       </div>
 
       {/* Search Results */}
-      {showSearchResults && searchResults.length > 1 && (
+      {showSearchResults && searchResults.length >= 1 && (
         <div className="search-results">
           <h3>Search Results ({searchResults.length} found)</h3>
           <div className="table-wrapper">
@@ -672,11 +681,10 @@ const ViewClientsStyled = styled.div`
         }
       }
 
-      .search-btn {
+      .search-btn, .reset-btn {
         padding: .8rem 1.6rem;
         border-radius: 30px;
         border: none;
-        background: #222260;
         color: #fff;
         font-size: inherit;
         font-family: inherit;
@@ -687,7 +695,17 @@ const ViewClientsStyled = styled.div`
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        
+      }
+
+      .search-btn {
+        background: #222260;
+        &:hover {
+          filter: brightness(0.75);
+        }
+      }
+
+      .reset-btn {
+        background: #c0392b;
         &:hover {
           filter: brightness(0.75);
         }
