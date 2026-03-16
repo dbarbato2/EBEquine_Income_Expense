@@ -9,6 +9,6 @@
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "build": "npm run build --prefix frontend",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d frontend/build"
+    "deploy": "gh-pages -d frontend/build --nojekyll"
   }
 }
