@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/EBEquine_Income_Expense/static/css/main.a23cfe0f.css",
+    "main.js": "/EBEquine_Income_Expense/static/js/main.9a3c5c2e.js",
+    "static/js/239.e39fb35b.chunk.js": "/EBEquine_Income_Expense/static/js/239.e39fb35b.chunk.js",
+    "static/js/977.240addac.chunk.js": "/EBEquine_Income_Expense/static/js/977.240addac.chunk.js",
+    "static/js/455.17dfdb39.chunk.js": "/EBEquine_Income_Expense/static/js/455.17dfdb39.chunk.js",
+    "static/media/avatar.png": "/EBEquine_Income_Expense/static/media/avatar.fa272b88ae18f1c4feeb.png",
+    "static/media/bg_metal.png": "/EBEquine_Income_Expense/static/media/bg_metal.5d9f6bc732a647073dba.png",
+    "static/media/bg_spring.png": "/EBEquine_Income_Expense/static/media/bg_spring.fe4dee2fbcde5828650a.png",
+    "static/media/bg_fire.png": "/EBEquine_Income_Expense/static/media/bg_fire.2130f561e14f938fbf3e.png",
+    "static/media/bg_rainbow.png": "/EBEquine_Income_Expense/static/media/bg_rainbow.0712297004f18eef95cb.png",
+    "static/media/invoiceLogo.png": "/EBEquine_Income_Expense/static/media/invoiceLogo.2b664d75a99500c24bef.png",
+    "static/media/bg_winter.png": "/EBEquine_Income_Expense/static/media/bg_winter.7bf4d4402fbc4566c399.png",
+    "static/media/bg.png": "/EBEquine_Income_Expense/static/media/bg.240048b63f8ee040169b.png",
+    "index.html": "/EBEquine_Income_Expense/index.html",
+    "main.a23cfe0f.css.map": "/EBEquine_Income_Expense/static/css/main.a23cfe0f.css.map",
+    "main.9a3c5c2e.js.map": "/EBEquine_Income_Expense/static/js/main.9a3c5c2e.js.map",
+    "239.e39fb35b.chunk.js.map": "/EBEquine_Income_Expense/static/js/239.e39fb35b.chunk.js.map",
+    "977.240addac.chunk.js.map": "/EBEquine_Income_Expense/static/js/977.240addac.chunk.js.map",
+    "455.17dfdb39.chunk.js.map": "/EBEquine_Income_Expense/static/js/455.17dfdb39.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a23cfe0f.css",
+    "static/js/main.9a3c5c2e.js"
+  ]
+}
