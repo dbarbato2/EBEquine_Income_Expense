@@ -1,10 +1,13 @@
 {
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "gh-pages": "^6.3.0"
   },
   "scripts": {
     "backend": "npm start --prefix backend",
     "frontend": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
-}
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  }
 }
