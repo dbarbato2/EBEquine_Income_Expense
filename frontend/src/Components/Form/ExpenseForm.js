@@ -36,7 +36,7 @@ function ExpenseForm() {
 
     const fetchAndPopulateExpenseRecordNumber = async () => {
         try {
-            const response = await fetch(`http://localhost:5001/api/v1/get-max-expense-record-number?userid=${user}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api/v1/'}get-max-expense-record-number?userid=${user}`);
             const data = await response.json();
             if (data.nextRecordNumber !== undefined) {
                 setInputState(prevState => ({

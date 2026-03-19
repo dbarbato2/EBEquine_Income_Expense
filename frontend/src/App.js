@@ -176,7 +176,7 @@ function App() {
   return (
     <AppStyled bg={backgroundImage} className="App">
       {orbMemo}
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL || ""}>
         <GlobalProvider>
           <Routes>
             <Route path="/register" element={<Register />} />

@@ -48,7 +48,7 @@ function RevenueForm() {
                 : 'get-max-monthly-invoice'
             
             // console.log('Fetching invoice number for type:', invoiceType, 'endpoint:', endpoint);
-            const response = await fetch(`http://localhost:5001/api/v1/${endpoint}?userid=${user}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001/api/v1/'}${endpoint}?userid=${user}`);
             const data = await response.json();
             // console.log('Response data:', data);
             

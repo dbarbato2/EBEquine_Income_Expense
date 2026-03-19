@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { LoginStyled } from '../../styles/Layouts';
 
-const BASE_URL = 'http://localhost:5001/api/v1/';
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api/v1/';
 
 function ForgotPassword() {
     const [email, setEmail] = useState('');

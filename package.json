@@ -4,7 +4,7 @@
     "gh-pages": "^6.3.0"
   },
   "scripts": {
-    "backend": "npm start --prefix backend",
+    "backend": "npm run dev --prefix backend",
     "frontend": "npm start --prefix frontend",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "build": "npm run build --prefix frontend",

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { toast, Toaster } from 'react-hot-toast';
 
-const BASE_URL = "http://localhost:5001/api/v1/";
+const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5001/api/v1/";
 
 const GlobalContext = React.createContext();
 
@@ -136,7 +136,6 @@ export const GlobalProvider = ({ children }) => {
       setUser(null);
       setEmail("");
       navigate('/login');
-      window.location.reload();
     } catch (err) {
       console.log(err);
     }
