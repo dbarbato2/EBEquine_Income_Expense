@@ -11,7 +11,7 @@ const PORT = process.env.PORT;
 
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://script.google.com', 'https://script.googleusercontent.com'],
+    origin: ['http://localhost:3000', 'https://darrelbarbato.github.io', 'https://script.google.com', 'https://script.googleusercontent.com'],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));

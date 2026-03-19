@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "App.js",
   "scripts": {
-    "start": "nodemon App.js"
+    "start": "node App.js",
+    "dev": "nodemon App.js"
   },
   "author": "Darrel Barbato",
   "license": "MIT",
