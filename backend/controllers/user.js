@@ -51,10 +51,12 @@ module.exports.register = async (req, res, next) => {
     const user = await User.create({ name, email, password });
     const token = createToken(user._id);
 
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie("jwt", token, {
-      withCredentials: true,
       httpOnly: false,
       maxAge: maxAge * 1000,
+      sameSite: isProduction ? 'none' : 'lax',
+      secure: isProduction,
     });
 
     console.log('User registered successfully:', user._id);
@@ -72,7 +74,8 @@ module.exports.login = async (req, res) => {
     console.log('Login attempt:', email);
     const user = await User.login(email.toLowerCase().trim(), password);
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
+    const isProduction = process.env.NODE_ENV === 'production';
+    res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000, sameSite: isProduction ? 'none' : 'lax', secure: isProduction });
     console.log('Login successful:', user._id);
     res.status(200).json({ status: true, user: user._id.toString(), name:user.name, email: user.email });
   } catch (err) {
