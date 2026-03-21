@@ -3,7 +3,7 @@ const PasswordReset = require("../models/PasswordResetModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+const { Resend } = require('resend');
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
@@ -90,9 +90,9 @@ module.exports.forgotPassword = async (req, res) => {
   // Generic response prevents email enumeration attacks
   const genericResponse = { status: true, message: 'If that email is registered, a password reset link has been sent.' };
 
-  // Validate email config is present (env vars missing on Render = 500)
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error('FORGOT PASSWORD ERROR: EMAIL_USER or EMAIL_PASS env vars are not set on this server.');
+  // Validate Resend API key is present
+  if (!process.env.RESEND_API_KEY) {
+    console.error('FORGOT PASSWORD ERROR: RESEND_API_KEY env var is not set on this server.');
     return res.status(500).json({ status: false, message: 'Email service is not configured on the server. Please contact the administrator.' });
   }
 
@@ -117,16 +117,10 @@ module.exports.forgotPassword = async (req, res) => {
 
     const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${token}`;
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    await transporter.sendMail({
-      from: `"EB Equine" <${process.env.EMAIL_USER}>`,
+    await resend.emails.send({
+      from: 'EB Equine <onboarding@resend.dev>',
       to: user.email,
       subject: 'Password Reset Request - EB Equine',
       html: `
