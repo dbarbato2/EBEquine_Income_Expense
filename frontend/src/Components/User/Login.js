@@ -52,10 +52,10 @@ function Login() {
         <span>
           Don't want to login ?<span onClick={handleGuestLogin} style={{ cursor: 'pointer', color:'blue' }}> Sign in Guest</span>
         </span>
-        <span>
-          <Link to="/forgot-password" style={{ color: 'rgb(80, 98, 255)' }}>Forgot your password?</Link>
-        </span>
       </form>
+      <span style={{ marginTop: '0.75rem', display: 'block' }}>
+        <Link to="/forgot-password" style={{ color: 'rgb(80, 98, 255)' }}>Forgot your password?</Link>
+      </span>
 
       </div>
       <ToastContainer />
