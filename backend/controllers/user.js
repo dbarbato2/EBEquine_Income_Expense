@@ -90,7 +90,15 @@ module.exports.forgotPassword = async (req, res) => {
   // Generic response prevents email enumeration attacks
   const genericResponse = { status: true, message: 'If that email is registered, a password reset link has been sent.' };
 
+  // Validate email config is present (env vars missing on Render = 500)
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error('FORGOT PASSWORD ERROR: EMAIL_USER or EMAIL_PASS env vars are not set on this server.');
+    return res.status(500).json({ status: false, message: 'Email service is not configured on the server. Please contact the administrator.' });
+  }
+
   try {
+    if (!email) return res.status(400).json({ status: false, message: 'Email is required.' });
+
     const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user) return res.status(200).json(genericResponse);
 
@@ -138,7 +146,7 @@ module.exports.forgotPassword = async (req, res) => {
 
     res.status(200).json(genericResponse);
   } catch (err) {
-    console.log('Forgot password error:', err.message);
+    console.error('Forgot password error:', err.message, err.stack);
     res.status(500).json({ status: false, message: 'An error occurred. Please try again.' });
   }
 };
