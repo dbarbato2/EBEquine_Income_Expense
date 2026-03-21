@@ -5,7 +5,7 @@ import { LoginStyled } from "../../styles/Layouts";
 import { useGlobalContext } from "../../context/globalContext";
 
 function Login() {
-    const { login, error } = useGlobalContext();
+    const { login } = useGlobalContext();
     const [values, setValues] = useState({ email: "", password: "" });
     const [loading, setLoading] = useState(false);
   

@@ -15,7 +15,6 @@ An Expense Tracker application designed for EB Equine built with React, Node.js,
 
 ## Backlog
 - Update All Recent Data Under Erin's username
-- Publish Site
 - After publishing:
 - Test Change Password Functionality
 - Add a listener to the Google Form so that a new row gets added to the database (/Users/darrelbarbato/Documents/JavascriptPrograms/EBEquine_Income_Expense/google-apps-script/GoogleSheetsWebhook.gs)
