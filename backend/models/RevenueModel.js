@@ -19,7 +19,7 @@ const RevenueSchema = new mongoose.Schema({
     },
     Service: {
         type: String,
-        enum: ['Introductory Massager', '1 Hour Massage', 'Kinesiology Tape', '8 Hours Teaching', 'Gift Certificate'],
+        enum: ['Introductory Massage', '1 Hour Massage', 'Kinesiology Tape', '8 Hours Teaching', 'Gift Certificate'],
         required: false,
         default: "1 Hour Massage"
     },
