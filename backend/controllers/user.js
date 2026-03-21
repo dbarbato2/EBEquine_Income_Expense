@@ -147,7 +147,8 @@ module.exports.forgotPassword = async (req, res) => {
     res.status(200).json(genericResponse);
   } catch (err) {
     console.error('Forgot password error:', err.message, err.stack);
-    res.status(500).json({ status: false, message: 'An error occurred. Please try again.' });
+    // Temporarily expose error detail for diagnosis — remove after fix confirmed
+    res.status(500).json({ status: false, message: 'An error occurred. Please try again.', debug: err.message });
   }
 };
 

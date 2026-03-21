@@ -25,7 +25,8 @@ function ForgotPassword() {
             await axios.post(`${BASE_URL}forgot-password`, { email });
             setSubmitted(true);
         } catch (err) {
-            setError('Something went wrong. Please try again.');
+            console.error('Forgot password failed:', err.response?.data);
+            setError(err.response?.data?.debug || err.response?.data?.message || 'Something went wrong. Please try again.');
         } finally {
             setLoading(false);
         }
