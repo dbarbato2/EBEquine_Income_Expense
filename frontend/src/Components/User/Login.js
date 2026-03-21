@@ -5,12 +5,15 @@ import { LoginStyled } from "../../styles/Layouts";
 import { useGlobalContext } from "../../context/globalContext";
 
 function Login() {
-    const { login } = useGlobalContext();
+    const { login, error } = useGlobalContext();
     const [values, setValues] = useState({ email: "", password: "" });
+    const [loading, setLoading] = useState(false);
   
     const handleSubmit = async (event) => {
       event.preventDefault();
+      setLoading(true);
       await login(values);
+      setLoading(false);
     };
 
     const handleGuestLogin = async () => {
@@ -45,7 +48,7 @@ function Login() {
             }
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Submit'}</button>
         <span>
           Don't have an account ?<Link to="/register"> Register </Link>
         </span>

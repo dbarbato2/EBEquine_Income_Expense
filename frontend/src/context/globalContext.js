@@ -45,6 +45,9 @@ export const GlobalProvider = ({ children }) => {
       }
     } catch (err) {
       console.log(err);
+      const errors = err.response?.data?.errors;
+      const message = errors?.email || errors?.password || 'Login failed. Please check your credentials.';
+      toast.error(message);
     }
   };
 
