@@ -260,18 +260,29 @@ exports.updateRevenue = async (req, res) => {
             return amountStr ? `$${Number(amountStr).toFixed(2)}` : '';
         };
 
+        // Normalize an enum value case-insensitively against a list of valid values
+        const normalizeEnum = (value, validValues) => {
+            if (!value) return undefined;
+            const match = validValues.find(v => v.toLowerCase() === value.toLowerCase());
+            return match || value;
+        };
+
+        const validServices = ['Introductory Massage', '1 Hour Massage', 'Kinesiology Tape', '8 Hours Teaching', 'Gift Certificate'];
+        const validLocations = ['MA', 'NH', 'NJ', 'FL'];
+        const validPaymentTypes = ['Venmo', 'Cash', 'Check', 'Gift Certificate'];
+
         const updateData = {
             Date: date,
             Client: client,
-            Service: service,
+            Service: normalizeEnum(service, validServices),
             Quantity: quantity ? Number(quantity) : undefined,
             'Add-On Service': addOnService,
-            'Service Location': serviceLocation || undefined,
+            'Service Location': normalizeEnum(serviceLocation, validLocations),
             'Service Fee': formatAmount(serviceFee),
             'Travel Fee': formatAmount(travelFee),
             Discount: formatAmount(discount),
             'Discount Reason': discountReason,
-            'Payment Type': paymentType || undefined,
+            'Payment Type': normalizeEnum(paymentType, validPaymentTypes),
             'Transaction Fees': formatAmount(transactionFee),
             'Actual Fees': formatAmount(actualRevenue),
             'Invoice Number': invoiceNumber
