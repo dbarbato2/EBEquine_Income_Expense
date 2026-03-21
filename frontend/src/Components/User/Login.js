@@ -11,6 +11,7 @@ function Login() {
   
     const handleSubmit = async (event) => {
       event.preventDefault();
+      if (!values.email || !values.password) return;
       setLoading(true);
       await login(values);
       setLoading(false);

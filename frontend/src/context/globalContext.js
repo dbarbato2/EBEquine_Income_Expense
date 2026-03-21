@@ -22,6 +22,7 @@ export const GlobalProvider = ({ children }) => {
 
   // Login user
   const login = async (values) => {
+    if (!values.email || !values.password) return;
     try {
       const { data } = await axios.post(
         `${BASE_URL}login`,
