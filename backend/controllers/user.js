@@ -123,6 +123,9 @@ module.exports.forgotPassword = async (req, res) => {
       from: 'EB Equine <onboarding@resend.dev>',
       to: user.email,
       subject: 'Password Reset Request - EB Equine',
+      headers: {
+        'X-Entity-Ref-ID': token.slice(0, 16), // prevents threading in Gmail
+      },
       html: `
         <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; padding: 24px;">
           <h2 style="color: #222260; margin-bottom: 8px;">EB Equine — Password Reset</h2>
@@ -130,6 +133,8 @@ module.exports.forgotPassword = async (req, res) => {
           <a href="${resetUrl}" style="display: inline-block; margin: 20px 0; padding: 12px 28px; background: #222260; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">
             Reset My Password
           </a>
+          <p style="color: #666; font-size: 0.85rem;">If the button doesn't work, copy and paste this link into your browser:</p>
+          <p style="color: #222260; font-size: 0.85rem; word-break: break-all;">${resetUrl}</p>
           <p style="color: #888; font-size: 0.88rem;">This link expires in <strong>1 hour</strong>.</p>
           <p style="color: #888; font-size: 0.88rem;">If you didn't request this, you can safely ignore this email — your password won't change.</p>
           <hr style="border: none; border-top: 1px solid #eee; margin-top: 24px;" />
