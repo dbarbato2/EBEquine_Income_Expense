@@ -69,6 +69,7 @@ input {
   border-radius: 0.3rem;
   border: 1px solid gray;
   font-size: 1.1rem;
+  width: 100%;
 }
 
 button {
