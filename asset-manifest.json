@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/EBEquine_Income_Expense/static/css/main.a23cfe0f.css",
-    "main.js": "/EBEquine_Income_Expense/static/js/main.f0399830.js",
+    "main.js": "/EBEquine_Income_Expense/static/js/main.464e9582.js",
     "static/js/239.e39fb35b.chunk.js": "/EBEquine_Income_Expense/static/js/239.e39fb35b.chunk.js",
     "static/js/977.240addac.chunk.js": "/EBEquine_Income_Expense/static/js/977.240addac.chunk.js",
     "static/js/455.17dfdb39.chunk.js": "/EBEquine_Income_Expense/static/js/455.17dfdb39.chunk.js",
@@ -15,13 +15,13 @@
     "static/media/bg.png": "/EBEquine_Income_Expense/static/media/bg.240048b63f8ee040169b.png",
     "index.html": "/EBEquine_Income_Expense/index.html",
     "main.a23cfe0f.css.map": "/EBEquine_Income_Expense/static/css/main.a23cfe0f.css.map",
-    "main.f0399830.js.map": "/EBEquine_Income_Expense/static/js/main.f0399830.js.map",
+    "main.464e9582.js.map": "/EBEquine_Income_Expense/static/js/main.464e9582.js.map",
     "239.e39fb35b.chunk.js.map": "/EBEquine_Income_Expense/static/js/239.e39fb35b.chunk.js.map",
     "977.240addac.chunk.js.map": "/EBEquine_Income_Expense/static/js/977.240addac.chunk.js.map",
     "455.17dfdb39.chunk.js.map": "/EBEquine_Income_Expense/static/js/455.17dfdb39.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a23cfe0f.css",
-    "static/js/main.f0399830.js"
+    "static/js/main.464e9582.js"
   ]
 }
