@@ -1,32 +1,41 @@
 /**
  * Google Apps Script for EB Equine Client Intake Form
  * 
- * This script automatically sends new form submissions to your MongoDB database
- * via your backend webhook endpoint.
+ * This script automatically sends new Google Form submissions to your live MongoDB
+ * database via the backend webhook on Render.
  * 
  * SETUP INSTRUCTIONS:
  * 1. Open your Google Sheet: https://docs.google.com/spreadsheets/d/1u8_r0gcfLqURBd_FlwL8B0R53KOLO-7RMeYE9FuvYxU/edit
  * 2. Go to Extensions > Apps Script
  * 3. Delete any existing code and paste this entire script
- * 4. Update the CONFIGURATION section below with your values
+ * 4. Fill in the two required values in the CONFIGURATION section below:
+ *      - API_KEY  →  copy GOOGLE_SHEETS_API_KEY from your Render dashboard
+ *      - USER_ID  →  your MongoDB user _id (see comment below for how to find it)
  * 5. Save the script (Ctrl+S or Cmd+S)
  * 6. Run the 'setupTrigger' function once to create the automatic trigger
  * 7. Authorize the script when prompted
+ * 
+ * Once set up, every new Google Form submission will automatically create a client
+ * record in the app — no manual entry needed.
  */
 
 // ============ CONFIGURATION ============
 // Update these values for your setup
 
 const CONFIG = {
-  // Your backend webhook URL (update with your actual server URL when deployed)
-  // For local development, you'll need to use a service like ngrok to expose your localhost
-  WEBHOOK_URL: 'http://localhost:5001/api/v1/webhook/google-sheets-client',
+  // Live backend webhook URL on Render
+  WEBHOOK_URL: 'https://ebequine-income-expense.onrender.com/api/v1/webhook/google-sheets-client',
   
-  // API key for security (must match the value in your backend .env file)
-  API_KEY: 'your-secret-api-key',
+  // API key for security
+  // Must match the GOOGLE_SHEETS_API_KEY environment variable set in your Render dashboard.
+  // Go to Render > Your Service > Environment and copy the value of GOOGLE_SHEETS_API_KEY here.
+  API_KEY: 'ebequine-sheets-webhook-2026',
   
-  // The user ID to associate clients with (your MongoDB user ID)
-  USER_ID: 'YOUR_USER_ID_HERE',
+  // Your MongoDB user ID — this links new clients to your account.
+  // To find it: log into the app, open the browser DevTools (F12) > Application > Cookies,
+  // find the JWT token, paste it at https://jwt.io and copy the "id" field from the payload.
+  // Alternatively, check your MongoDB Atlas collection for your user document's _id field.
+  USER_ID: '69adf9e957e023c92c262b85',
   
   // Column mapping from Google Sheet to MongoDB fields
   // Update the column numbers (1-indexed) to match your Google Sheet structure
