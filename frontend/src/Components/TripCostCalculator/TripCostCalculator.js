@@ -405,7 +405,7 @@ const TripCostCalculator = () => {
                 <input
                   id="hotelCost"
                   type="number"
-                  step="0.01"
+                  step="any"
                   min="0"
                   placeholder="0.00"
                   value={tripDetails.hotelCostPerNight}
@@ -421,7 +421,7 @@ const TripCostCalculator = () => {
                 <input
                   id="flightCost"
                   type="number"
-                  step="0.01"
+                  step="any"
                   min="0"
                   placeholder="0.00"
                   value={tripDetails.flightCost}
@@ -597,7 +597,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.breakfastMealCost}
                           onChange={handleAssumptionsChange('breakfastMealCost')}
@@ -612,7 +612,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.lunchMealCost}
                           onChange={handleAssumptionsChange('lunchMealCost')}
@@ -627,7 +627,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.dinnerMealCost}
                           onChange={handleAssumptionsChange('dinnerMealCost')}
@@ -642,7 +642,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.dailyRentalCarCost}
                           onChange={handleAssumptionsChange('dailyRentalCarCost')}
@@ -657,7 +657,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.baggageFePerFlight}
                           onChange={handleAssumptionsChange('baggageFePerFlight')}
@@ -686,7 +686,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.tollCost}
                           onChange={handleAssumptionsChange('tollCost')}
@@ -701,7 +701,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.gasCost}
                           onChange={handleAssumptionsChange('gasCost')}
@@ -716,7 +716,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.loganExpressParkingPerDay}
                           onChange={handleAssumptionsChange('loganExpressParkingPerDay')}
@@ -731,7 +731,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.loganExpressRoundTripTicket}
                           onChange={handleAssumptionsChange('loganExpressRoundTripTicket')}
@@ -746,7 +746,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.airportParkingReservedEconomyPerDay}
                           onChange={handleAssumptionsChange('airportParkingReservedEconomyPerDay')}
@@ -761,7 +761,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.airportParkingEconomyPerDay}
                           onChange={handleAssumptionsChange('airportParkingEconomyPerDay')}
@@ -776,7 +776,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.airportParkingCentralPerDay}
                           onChange={handleAssumptionsChange('airportParkingCentralPerDay')}
@@ -791,7 +791,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.massageFee}
                           onChange={handleAssumptionsChange('massageFee')}
@@ -806,7 +806,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={assumptions.travelFeePerBarn}
                           onChange={handleAssumptionsChange('travelFeePerBarn')}
@@ -911,7 +911,7 @@ const TripCostCalculator = () => {
                         <div className="input-wrapper">
                           <input
                             type="number"
-                            step="0.01"
+                            step="any"
                             min="0"
                             max="100"
                             value={rate.taxRate}
@@ -925,7 +925,7 @@ const TripCostCalculator = () => {
                           <span className="currency-symbol">$</span>
                           <input
                             type="number"
-                            step="0.01"
+                            step="any"
                             min="0"
                             value={rate.fromAmount}
                             onChange={handleFederalTaxRateChange(index, 'fromAmount')}
@@ -946,7 +946,7 @@ const TripCostCalculator = () => {
                               <span className="currency-symbol">$</span>
                               <input
                                 type="number"
-                                step="0.01"
+                                step="any"
                                 min="0"
                                 value={rate.toAmount}
                                 onChange={handleFederalTaxRateChange(index, 'toAmount')}
@@ -977,7 +977,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={quarterlyIncome.darrel}
                           onChange={handleQuarterlyIncomeChange('darrel')}
@@ -992,7 +992,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={quarterlyIncome.erin}
                           onChange={handleQuarterlyIncomeChange('erin')}
@@ -1007,7 +1007,7 @@ const TripCostCalculator = () => {
                         <span className="currency-symbol">$</span>
                         <input
                           type="number"
-                          step="0.01"
+                          step="any"
                           min="0"
                           value={quarterlyIncome.bonus}
                           onChange={handleQuarterlyIncomeChange('bonus')}

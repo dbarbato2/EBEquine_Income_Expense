@@ -153,7 +153,7 @@ function ExpenseForm() {
                     name={'amount'} 
                     placeholder="Amount"
                     onChange={handleInput('amount')}
-                    step="0.01"
+                    step="any"
                     min="0"
                 />
             </div>

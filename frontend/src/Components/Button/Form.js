@@ -142,7 +142,7 @@ function Form() {
                     name={'serviceFee'} 
                     placeholder="Service Fee"
                     onChange={handleInput('serviceFee')}
-                    step="0.01"
+                    step="any"
                     min="0"
                 />
             </div>
@@ -153,7 +153,7 @@ function Form() {
                     name={'travelFee'} 
                     placeholder="Travel Fee"
                     onChange={handleInput('travelFee')}
-                    step="0.01"
+                    step="any"
                     min="0"
                 />
             </div>
@@ -164,7 +164,7 @@ function Form() {
                     name={'discount'} 
                     placeholder="Discount"
                     onChange={handleInput('discount')}
-                    step="0.01"
+                    step="any"
                     min="0"
                 />
             </div>
@@ -193,7 +193,7 @@ function Form() {
                     name={'transactionFee'} 
                     placeholder="Transaction Fee"
                     onChange={handleInput('transactionFee')}
-                    step="0.01"
+                    step="any"
                     min="0"
                 />
             </div>
@@ -204,7 +204,7 @@ function Form() {
                     name={'actualRevenue'} 
                     placeholder="Actual Revenue"
                     onChange={handleInput('actualRevenue')}
-                    step="0.01"
+                    step="any"
                     min="0"
                 />
             </div>

@@ -230,7 +230,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                 </td>
                 <td style={{ textAlign: 'right' }}>{fmt(unitPrice)}</td>
                 <td style={{ textAlign: 'right' }}>
-                  <input className="inv-input number-input" type="number" step="0.01" value={fields.serviceFee} onChange={update('serviceFee')} />
+                  <input className="inv-input number-input" type="number" step="any" value={fields.serviceFee} onChange={update('serviceFee')} />
                 </td>
               </tr>
               {fields.addOnLabel && (
@@ -243,7 +243,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                     {(() => { const q = parseFloat(fields.addOnQty)||0; const a = parseFloat(fields.addOnAmount)||0; return q > 0 ? fmt(a/q) : '-'; })()}
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" step="0.01" value={fields.addOnAmount} onChange={update('addOnAmount')} />
+                    <input className="inv-input number-input" type="number" step="any" value={fields.addOnAmount} onChange={update('addOnAmount')} />
                   </td>
                 </tr>
               )}
@@ -257,7 +257,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                     {(() => { const q = parseFloat(fields.travelFeeQty)||0; return q > 0 ? fmt(travelFee/q) : '-'; })()}
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" step="0.01" value={fields.travelFee} onChange={update('travelFee')} />
+                    <input className="inv-input number-input" type="number" step="any" value={fields.travelFee} onChange={update('travelFee')} />
                   </td>
                 </tr>
               )}
@@ -271,7 +271,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                     {(() => { const q = parseFloat(fields.discountQty)||0; return q > 0 ? `-${fmt(discount/q)}` : '-'; })()}
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" step="0.01" value={fields.discount} onChange={update('discount')} />
+                    <input className="inv-input number-input" type="number" step="any" value={fields.discount} onChange={update('discount')} />
                   </td>
                 </tr>
               )}
@@ -292,7 +292,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                     </td>
                     <td style={{ textAlign: 'right' }}>{rowUnit}</td>
                     <td style={{ textAlign: 'right' }}>
-                      <input className="inv-input number-input" type="number" step="0.01" value={row.amount} onChange={updateExtraRow(i, 'amount')} />
+                      <input className="inv-input number-input" type="number" step="any" value={row.amount} onChange={updateExtraRow(i, 'amount')} />
                     </td>
                   </tr>
                 );

@@ -146,7 +146,7 @@ function DeductionForm() {
                     name={'deductionAmount'} 
                     placeholder="Amount"
                     onChange={handleInput('deductionAmount')}
-                    step="0.01"
+                    step="any"
                     min="0"
                 />
             </div>
