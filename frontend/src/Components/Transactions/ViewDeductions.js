@@ -165,7 +165,7 @@ const ViewDeductions = () => {
           <div className="search-controls">
             <div className="input-control">
               <input 
-                type="number"
+                type="number" onWheel={(e) => e.target.blur()}
                 value={searchCriteria.year}
                 name="year"
                 placeholder="Year (e.g., 2026)"
@@ -277,7 +277,7 @@ const ViewDeductions = () => {
             <div className="form-group">
               <label>Year:</label>
               <input 
-                type="number" 
+                type="number" onWheel={(e) => e.target.blur()} 
                 value={isEditing ? editedDeduction.Year : selectedDeduction.Year} 
                 readOnly={!isEditing}
                 onChange={isEditing ? handleEditInput('Year') : undefined}
@@ -353,7 +353,7 @@ const ViewDeductions = () => {
             <div className="form-group">
               <label>Record Number:</label>
               <input 
-                type="number" 
+                type="number" onWheel={(e) => e.target.blur()} 
                 value={isEditing ? (editedDeduction['Deduction Record Number'] || '') : (selectedDeduction['Deduction Record Number'] || '')} 
                 readOnly={!isEditing}
                 onChange={isEditing ? handleEditInput('Deduction Record Number') : undefined}

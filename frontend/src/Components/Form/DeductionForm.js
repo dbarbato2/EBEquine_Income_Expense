@@ -81,7 +81,7 @@ function DeductionForm() {
             {error && <p className='error'>{error}</p>}
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={year}
                     name={'year'} 
                     placeholder="Year"
@@ -141,7 +141,7 @@ function DeductionForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={deductionAmount}
                     name={'deductionAmount'} 
                     placeholder="Amount"
@@ -152,7 +152,7 @@ function DeductionForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={deductionRecordNumber}
                     name={'deductionRecordNumber'} 
                     placeholder="Record Number"

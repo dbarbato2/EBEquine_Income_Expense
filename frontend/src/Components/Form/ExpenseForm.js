@@ -148,7 +148,7 @@ function ExpenseForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={amount}
                     name={'amount'} 
                     placeholder="Amount"
@@ -180,7 +180,7 @@ function ExpenseForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={expenseRecordNumber}
                     name={'expenseRecordNumber'} 
                     placeholder="Expense Record Number"

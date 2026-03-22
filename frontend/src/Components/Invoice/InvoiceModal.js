@@ -226,24 +226,24 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
               <tr>
                 <td><input className="inv-input" value={fields.service} onChange={update('service')} placeholder="Service" /></td>
                 <td style={{ textAlign: 'right' }}>
-                  <input className="inv-input number-input" type="number" min="1" value={fields.quantity} onChange={update('quantity')} />
+                  <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.quantity} onChange={update('quantity')} />
                 </td>
                 <td style={{ textAlign: 'right' }}>{fmt(unitPrice)}</td>
                 <td style={{ textAlign: 'right' }}>
-                  <input className="inv-input number-input" type="number" step="any" value={fields.serviceFee} onChange={update('serviceFee')} />
+                  <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.serviceFee} onChange={update('serviceFee')} />
                 </td>
               </tr>
               {fields.addOnLabel && (
                 <tr>
                   <td><input className="inv-input" value={fields.addOnLabel} onChange={update('addOnLabel')} placeholder="Add-On description" /></td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" min="1" value={fields.addOnQty} onChange={update('addOnQty')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.addOnQty} onChange={update('addOnQty')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     {(() => { const q = parseFloat(fields.addOnQty)||0; const a = parseFloat(fields.addOnAmount)||0; return q > 0 ? fmt(a/q) : '-'; })()}
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" step="any" value={fields.addOnAmount} onChange={update('addOnAmount')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.addOnAmount} onChange={update('addOnAmount')} />
                   </td>
                 </tr>
               )}
@@ -251,13 +251,13 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                 <tr>
                   <td><input className="inv-input" value={fields.travelFeeLabel} onChange={update('travelFeeLabel')} placeholder="Travel Fee" /></td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" min="1" value={fields.travelFeeQty} onChange={update('travelFeeQty')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.travelFeeQty} onChange={update('travelFeeQty')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     {(() => { const q = parseFloat(fields.travelFeeQty)||0; return q > 0 ? fmt(travelFee/q) : '-'; })()}
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" step="any" value={fields.travelFee} onChange={update('travelFee')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.travelFee} onChange={update('travelFee')} />
                   </td>
                 </tr>
               )}
@@ -265,13 +265,13 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                 <tr>
                   <td><input className="inv-input" value={fields.discountLabel} onChange={update('discountLabel')} placeholder="Discount" /></td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" min="1" value={fields.discountQty} onChange={update('discountQty')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.discountQty} onChange={update('discountQty')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     {(() => { const q = parseFloat(fields.discountQty)||0; return q > 0 ? `-${fmt(discount/q)}` : '-'; })()}
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" step="any" value={fields.discount} onChange={update('discount')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.discount} onChange={update('discount')} />
                   </td>
                 </tr>
               )}
@@ -288,11 +288,11 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                       </div>
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      <input className="inv-input number-input" type="number" min="1" value={row.qty} onChange={updateExtraRow(i, 'qty')} />
+                      <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={row.qty} onChange={updateExtraRow(i, 'qty')} />
                     </td>
                     <td style={{ textAlign: 'right' }}>{rowUnit}</td>
                     <td style={{ textAlign: 'right' }}>
-                      <input className="inv-input number-input" type="number" step="any" value={row.amount} onChange={updateExtraRow(i, 'amount')} />
+                      <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={row.amount} onChange={updateExtraRow(i, 'amount')} />
                     </td>
                   </tr>
                 );

@@ -404,7 +404,7 @@ const TripCostCalculator = () => {
                 <span className="currency-symbol">$</span>
                 <input
                   id="hotelCost"
-                  type="number"
+                  type="number" onWheel={(e) => e.target.blur()}
                   step="any"
                   min="0"
                   placeholder="0.00"
@@ -420,7 +420,7 @@ const TripCostCalculator = () => {
                 <span className="currency-symbol">$</span>
                 <input
                   id="flightCost"
-                  type="number"
+                  type="number" onWheel={(e) => e.target.blur()}
                   step="any"
                   min="0"
                   placeholder="0.00"
@@ -517,7 +517,7 @@ const TripCostCalculator = () => {
               <label htmlFor="numberOfHorses">Number of Horses:</label>
               <input
                 id="numberOfHorses"
-                type="number"
+                type="number" onWheel={(e) => e.target.blur()}
                 min="1"
                 placeholder="Enter number"
                 value={tripDetails.numberOfHorses}
@@ -529,7 +529,7 @@ const TripCostCalculator = () => {
               <label htmlFor="numberOfBarns">Number of Barns:</label>
               <input
                 id="numberOfBarns"
-                type="number"
+                type="number" onWheel={(e) => e.target.blur()}
                 min="1"
                 placeholder="Enter number"
                 value={tripDetails.numberOfBarns}
@@ -596,7 +596,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.breakfastMealCost}
@@ -611,7 +611,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.lunchMealCost}
@@ -626,7 +626,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.dinnerMealCost}
@@ -641,7 +641,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.dailyRentalCarCost}
@@ -656,7 +656,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.baggageFePerFlight}
@@ -670,7 +670,7 @@ const TripCostCalculator = () => {
                     <td>
                       <div className="input-wrapper">
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="0.1"
                           min="0"
                           value={assumptions.flightLength}
@@ -685,7 +685,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.tollCost}
@@ -700,7 +700,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.gasCost}
@@ -715,7 +715,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.loganExpressParkingPerDay}
@@ -730,7 +730,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.loganExpressRoundTripTicket}
@@ -745,7 +745,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.airportParkingReservedEconomyPerDay}
@@ -760,7 +760,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.airportParkingEconomyPerDay}
@@ -775,7 +775,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.airportParkingCentralPerDay}
@@ -790,7 +790,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.massageFee}
@@ -805,7 +805,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={assumptions.travelFeePerBarn}
@@ -910,7 +910,7 @@ const TripCostCalculator = () => {
                       <td>
                         <div className="input-wrapper">
                           <input
-                            type="number"
+                            type="number" onWheel={(e) => e.target.blur()}
                             step="any"
                             min="0"
                             max="100"
@@ -924,7 +924,7 @@ const TripCostCalculator = () => {
                         <div className="input-wrapper">
                           <span className="currency-symbol">$</span>
                           <input
-                            type="number"
+                            type="number" onWheel={(e) => e.target.blur()}
                             step="any"
                             min="0"
                             value={rate.fromAmount}
@@ -945,7 +945,7 @@ const TripCostCalculator = () => {
                             <>
                               <span className="currency-symbol">$</span>
                               <input
-                                type="number"
+                                type="number" onWheel={(e) => e.target.blur()}
                                 step="any"
                                 min="0"
                                 value={rate.toAmount}
@@ -976,7 +976,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={quarterlyIncome.darrel}
@@ -991,7 +991,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={quarterlyIncome.erin}
@@ -1006,7 +1006,7 @@ const TripCostCalculator = () => {
                       <div className="input-wrapper">
                         <span className="currency-symbol">$</span>
                         <input
-                          type="number"
+                          type="number" onWheel={(e) => e.target.blur()}
                           step="any"
                           min="0"
                           value={quarterlyIncome.bonus}

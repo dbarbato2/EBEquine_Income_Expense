@@ -110,7 +110,7 @@ function Form() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={quantity}
                     name={'quantity'} 
                     placeholder="Quantity"
@@ -137,7 +137,7 @@ function Form() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={serviceFee}
                     name={'serviceFee'} 
                     placeholder="Service Fee"
@@ -148,7 +148,7 @@ function Form() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={travelFee}
                     name={'travelFee'} 
                     placeholder="Travel Fee"
@@ -159,7 +159,7 @@ function Form() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={discount}
                     name={'discount'} 
                     placeholder="Discount"
@@ -188,7 +188,7 @@ function Form() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={transactionFee}
                     name={'transactionFee'} 
                     placeholder="Transaction Fee"
@@ -199,7 +199,7 @@ function Form() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={actualRevenue}
                     name={'actualRevenue'} 
                     placeholder="Actual Revenue"
@@ -210,7 +210,7 @@ function Form() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={invoiceNumber}
                     name={'invoiceNumber'} 
                     placeholder="Invoice Number"

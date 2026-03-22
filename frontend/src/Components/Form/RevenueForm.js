@@ -155,7 +155,7 @@ function RevenueForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={quantity}
                     name={'quantity'} 
                     placeholder="Quantity"
@@ -183,7 +183,7 @@ function RevenueForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={serviceFee}
                     name={'serviceFee'} 
                     placeholder="Service Fee"
@@ -194,7 +194,7 @@ function RevenueForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={travelFee}
                     name={'travelFee'} 
                     placeholder="Travel Fee"
@@ -205,7 +205,7 @@ function RevenueForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={discount}
                     name={'discount'} 
                     placeholder="Discount"
@@ -234,7 +234,7 @@ function RevenueForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={transactionFee}
                     name={'transactionFee'} 
                     placeholder="Transaction Fee"
@@ -245,7 +245,7 @@ function RevenueForm() {
             </div>
             <div className="input-control">
                 <input 
-                    type="number" 
+                    type="number" onWheel={(e) => e.target.blur()} 
                     value={actualRevenue}
                     name={'actualRevenue'} 
                     placeholder="Actual Revenue"

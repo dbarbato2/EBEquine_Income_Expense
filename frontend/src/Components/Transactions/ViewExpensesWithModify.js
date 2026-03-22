@@ -370,7 +370,7 @@ const ViewExpensesWithModify = () => {
             <div className="form-group">
               <label>Record Number:</label>
               <input 
-                type="number" 
+                type="number" onWheel={(e) => e.target.blur()} 
                 value={isEditing ? (editedExpense['Expense Record Number'] || '') : (selectedExpense['Expense Record Number'] || '')} 
                 readOnly={!isEditing}
                 onChange={isEditing ? handleEditInput('Expense Record Number') : undefined}

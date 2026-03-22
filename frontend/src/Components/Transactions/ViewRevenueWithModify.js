@@ -293,7 +293,7 @@ const ViewRevenueWithModify = () => {
             <div className="form-group">
               <label>Quantity:</label>
               <input 
-                type="number" 
+                type="number" onWheel={(e) => e.target.blur()} 
                 value={isEditing ? (editedRevenue.Quantity || '') : (selectedRevenue.Quantity || '')} 
                 readOnly={!isEditing}
                 onChange={isEditing ? handleEditInput('Quantity') : undefined}
