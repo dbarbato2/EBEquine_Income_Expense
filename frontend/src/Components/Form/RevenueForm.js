@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
@@ -283,7 +284,7 @@ function RevenueForm() {
                 </button>
             </div>
             
-            {showInvoiceModal && (
+            {showInvoiceModal && ReactDOM.createPortal(
                 <InvoiceModalOverlay>
                     <InvoiceModal>
                         <h3>Select Invoice Type</h3>
@@ -303,7 +304,8 @@ function RevenueForm() {
                             </button>
                         </div>
                     </InvoiceModal>
-                </InvoiceModalOverlay>
+                </InvoiceModalOverlay>,
+                document.body
             )}
         </FormStyled>
     )
