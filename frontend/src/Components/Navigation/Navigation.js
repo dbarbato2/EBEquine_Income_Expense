@@ -129,6 +129,7 @@ const NavStyled = styled.nav`
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow-y: auto;
         
         li {
             margin: .6rem 0;
