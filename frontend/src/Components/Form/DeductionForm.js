@@ -118,6 +118,7 @@ function DeductionForm() {
                     <option>Mileage</option>
                     <option>Tolls</option>
                     <option>Car Payment</option>
+                    <option>Car Maintenance</option>
                     <option>Auto Insurance</option>
                     <option>Cell Phone</option>
                     <option>Gym Membership</option>
