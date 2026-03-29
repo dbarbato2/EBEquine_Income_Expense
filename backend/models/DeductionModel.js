@@ -21,7 +21,7 @@ const DeductionSchema = new mongoose.Schema({
     'Deduction Type': {
         type: String,
         required: true,
-        enum: ['Mileage', 'Tolls', 'Car Payment', 'Car Maintenance', 'Auto Insurance', 'Cell Phone', 'Gym Membership', 'Mortgage', 'Real Estate Taxes', 'Internet', 'Utilities - Electric', 'Utilities - Gas', 'Lawn Maintenance', 'Recycling/Rubbish', 'Utilities - Water'],
+        enum: ['Mileage', 'Tolls', 'Car Payment', 'Car Maintenance', 'Auto Insurance', 'Cell Phone', 'Credit Card Fee', 'Gym Membership', 'Mortgage', 'Real Estate Taxes', 'Internet', 'Utilities - Electric', 'Utilities - Gas', 'Lawn Maintenance', 'Recycling/Rubbish', 'Utilities - Water'],
         default: false
     },
     'Deduction Description': {
