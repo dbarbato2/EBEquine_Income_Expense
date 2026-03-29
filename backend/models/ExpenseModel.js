@@ -43,7 +43,7 @@ const ExpenseSchema = new mongoose.Schema({
     'Payment Type': {
         type: String,
         required: false,
-        enum: ['Cash', 'Check', 'Chase Credit Card', 'Venmo', 'AutoPay Needham Bank'],
+        enum: ['Cash', 'Check', 'Chase Credit Card', 'JetBlue Credit Card', 'Personal Checking', 'Venmo', 'AutoPay Needham Bank'],
         default: false
     },
     'Associated with a Business Trip': {

@@ -163,6 +163,8 @@ function ExpenseForm() {
                     <option value="Cash">Cash</option>
                     <option value="Check">Check</option>
                     <option value="Chase Credit Card">Chase Credit Card</option>
+                    <option value="JetBlue Credit Card">JetBlue Credit Card</option>
+                    <option value="Personal Checking">Personal Checking</option>
                     <option value="Venmo">Venmo</option>
                     <option value="AutoPay Needham Bank">AutoPay Needham Bank</option>
                 </select>
