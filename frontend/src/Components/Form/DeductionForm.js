@@ -119,6 +119,7 @@ function DeductionForm() {
                     <option>Tolls</option>
                     <option>Car Payment</option>
                     <option>Auto Insurance</option>
+                    <option>Cell Phone</option>
                     <option>Gym Membership</option>
                     <option>Mortgage</option>
                     <option>Real Estate Taxes</option>
