@@ -133,9 +133,6 @@ function ExpenseForm() {
                     <option value="Supplies">Supplies</option>
                     <option value="Home Office Expenses">Home Office Expenses</option>
                     <option value="Gas">Gas</option>
-                    <option value="Gym">Gym</option>
-                    <option value="Car Payment">Car Payment</option>
-                    <option value="Car Maintenance">Car Maintenance</option>
                 </select>
             </div>
             <div className="input-control">
