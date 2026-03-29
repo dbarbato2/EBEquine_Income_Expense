@@ -26,7 +26,7 @@ const ExpenseSchema = new mongoose.Schema({
     'Expense Type': {
         type: String,
         required: true,
-        enum: ['Airfare', 'Hotel', 'Rental Car', 'Food', 'Parking', 'Professional', 'Supplies', 'Home Office Expenses', 'Gas', 'Gym', 'Car Payment', 'Car Maintenance'],
+        enum: ['Airfare', 'Business Lunch', 'Hotel', 'Rental Car', 'Food', 'Parking', 'Professional', 'Supplies', 'Home Office Expenses', 'Gas', 'Gym', 'Car Payment', 'Car Maintenance'],
         default: false
     },
     'Expense Description': {

@@ -124,6 +124,7 @@ function ExpenseForm() {
             <div className="selects input-control">
                 <select value={expenseType} name="expenseType" id="expenseType" onChange={handleInput('expenseType')}>
                     <option value="Airfare">Airfare</option>
+                    <option value="Business Lunch">Business Lunch</option>
                     <option value="Hotel">Hotel</option>
                     <option value="Rental Car">Rental Car</option>
                     <option value="Food">Food</option>
