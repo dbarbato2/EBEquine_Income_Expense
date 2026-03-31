@@ -5,37 +5,6 @@ const mongoose = require("mongoose")
 exports.addRevenue = async (req, res) => {
     const {userid, date, client, service, quantity, addOnService, serviceLocation, serviceFee, travelFee, discount, discountReason, paymentType, transactionFee, actualRevenue, invoiceNumber} = req.body
 
-    // console.log('=== ADD REVENUE DEBUG ===');
-    // console.log('Date received:', date);
-    // console.log('Date type:', typeof date);
-    // console.log('serviceLocation received:', serviceLocation);
-    // console.log('serviceLocation type:', typeof serviceLocation);
-    // console.log('serviceLocation value will be:', serviceLocation || undefined);
-
-    // Ensure date is stored as a Date object
-    let dateToStore = date;
-    if (typeof date === 'string') {
-        dateToStore = new Date(date);
-    }
-
-    const revenue = RevenueSchema({
-        userid,
-        Date: dateToStore,
-        Client: client,
-        Service: service,
-        Quantity: quantity,
-        'Add-On Service': addOnService,
-        'Service Location': serviceLocation || undefined,
-        'Service Fee': serviceFee ? `$${Number(serviceFee).toFixed(2)}` : '',
-        'Travel Fee': travelFee ? `$${Number(travelFee).toFixed(2)}` : '',
-        Discount: discount ? `$${Number(discount).toFixed(2)}` : '',
-        'Discount Reason': discountReason,
-        'Payment Type': paymentType || undefined,
-        'Transaction Fees': transactionFee ? `$${Number(transactionFee).toFixed(2)}` : '',
-        'Actual Fees': actualRevenue ? `$${Number(actualRevenue).toFixed(2)}` : '',
-        'Invoice Number': invoiceNumber
-    })
-
     try {
         if(!userid || !date || !client || !service){
             return res.status(400).json({message: 'Date, Client, and Service are required'})
@@ -55,14 +24,36 @@ exports.addRevenue = async (req, res) => {
             }
         }
 
+        // Ensure date is stored as a Date object
+        let dateToStore = date;
+        if (typeof date === 'string') {
+            dateToStore = new Date(date);
+        }
+
+        const revenue = RevenueSchema({
+            userid,
+            Date: dateToStore,
+            Client: client,
+            Service: service,
+            Quantity: quantity,
+            'Add-On Service': addOnService,
+            'Service Location': serviceLocation || undefined,
+            'Service Fee': serviceFee ? `$${Number(serviceFee).toFixed(2)}` : '',
+            'Travel Fee': travelFee ? `$${Number(travelFee).toFixed(2)}` : '',
+            Discount: discount ? `$${Number(discount).toFixed(2)}` : '',
+            'Discount Reason': discountReason,
+            'Payment Type': paymentType || undefined,
+            'Transaction Fees': transactionFee ? `$${Number(transactionFee).toFixed(2)}` : '',
+            'Actual Fees': actualRevenue ? `$${Number(actualRevenue).toFixed(2)}` : '',
+            'Invoice Number': invoiceNumber
+        })
+
         await revenue.save()
         res.status(200).json({message: 'Revenue Added'})
     } catch (error) {
         console.error("CRITICAL BACKEND ERROR:", error);
-        res.status(500).json({message: 'Server Error'})
+        res.status(500).json({message: 'Server Error', debug: error.message})
     }
-
-    // console.log(revenue)
 }
 
 exports.getRevenue = async (req, res) => {
