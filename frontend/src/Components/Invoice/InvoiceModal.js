@@ -27,12 +27,16 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
     addOnLabel: revenueData?.['Add-On Service'] ? `Add-On: ${revenueData['Add-On Service']}` : '',
     addOnQty: '1',
     addOnAmount: '0.00',
+    addOnUnitPrice: '0.00',
     quantity: revenueData?.Quantity || '1',
     serviceFee: parseValue(revenueData?.['Service Fee']).toFixed(2),
+    serviceUnitPrice: (parseValue(revenueData?.['Service Fee']) / (parseInt(revenueData?.Quantity) || 1)).toFixed(2),
     travelFee: parseValue(revenueData?.['Travel Fee']).toFixed(2),
+    travelUnitPrice: parseValue(revenueData?.['Travel Fee']).toFixed(2),
     travelFeeLabel: 'Travel Fee',
     travelFeeQty: '1',
     discount: parseValue(revenueData?.Discount).toFixed(2),
+    discountUnitPrice: parseValue(revenueData?.Discount).toFixed(2),
     discountReason: revenueData?.['Discount Reason'] || '',
     discountLabel: revenueData?.['Discount Reason'] ? `Discount (${revenueData['Discount Reason']})` : 'Discount',
     discountQty: '1',
@@ -60,12 +64,16 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
       addOnLabel: revenueData['Add-On Service'] ? `Add-On: ${revenueData['Add-On Service']}` : '',
       addOnQty: '1',
       addOnAmount: '0.00',
+      addOnUnitPrice: '0.00',
       quantity: revenueData.Quantity || '1',
       serviceFee: parseValue(revenueData['Service Fee']).toFixed(2),
+      serviceUnitPrice: (parseValue(revenueData['Service Fee']) / (parseInt(revenueData.Quantity) || 1)).toFixed(2),
       travelFee: parseValue(revenueData['Travel Fee']).toFixed(2),
+      travelUnitPrice: parseValue(revenueData['Travel Fee']).toFixed(2),
       travelFeeLabel: 'Travel Fee',
       travelFeeQty: '1',
       discount: parseValue(revenueData.Discount).toFixed(2),
+      discountUnitPrice: parseValue(revenueData.Discount).toFixed(2),
       discountReason: revenueData['Discount Reason'] || '',
       discountLabel: revenueData['Discount Reason'] ? `Discount (${revenueData['Discount Reason']})` : 'Discount',
       discountQty: '1',
@@ -82,6 +90,27 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
 
   const update = (field) => (e) => setFields((prev) => ({ ...prev, [field]: e.target.value }));
 
+  // Keeps qty, unit price, and amount in sync — editing any one recalculates the others
+  const updateLinkedRow = (qtyField, unitField, amountField) => (changedField) => (e) => {
+    const val = e.target.value;
+    setFields(prev => {
+      const result = { ...prev, [changedField]: val };
+      const q = changedField === qtyField    ? (parseFloat(val) || 1) : (parseFloat(prev[qtyField])    || 1);
+      const u = changedField === unitField   ? (parseFloat(val) || 0) : (parseFloat(prev[unitField])   || 0);
+      const a = changedField === amountField ? (parseFloat(val) || 0) : (parseFloat(prev[amountField]) || 0);
+      if (changedField === qtyField || changedField === unitField) {
+        result[amountField] = (u * q).toFixed(2);
+      } else if (changedField === amountField) {
+        result[unitField] = q > 0 ? (a / q).toFixed(2) : '0.00';
+      }
+      return result;
+    });
+  };
+  const updateService  = updateLinkedRow('quantity',     'serviceUnitPrice',  'serviceFee');
+  const updateAddOn    = updateLinkedRow('addOnQty',     'addOnUnitPrice',    'addOnAmount');
+  const updateTravel   = updateLinkedRow('travelFeeQty', 'travelUnitPrice',   'travelFee');
+  const updateDiscount = updateLinkedRow('discountQty',  'discountUnitPrice', 'discount');
+
   const serviceFee = parseFloat(fields.serviceFee) || 0;
   const travelFee  = parseFloat(fields.travelFee)  || 0;
   const discount   = parseFloat(fields.discount)   || 0;
@@ -90,11 +119,22 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
   const extraTotal = extraRows.reduce((sum, r) => sum + (parseFloat(r.amount) || 0), 0);
   const subtotal   = serviceFee + travelFee + addOnFee + extraTotal;
   const total      = subtotal - discount;
-  const unitPrice  = qty > 0 ? (serviceFee) / qty : 0;
 
   /* ── Extra row helpers ── */
-  const addExtraRow    = () => setExtraRows(prev => [...prev, { description: '', qty: '1', unitPrice: '0.00', amount: '0.00' }]);
-  const updateExtraRow = (i, field) => (e) => setExtraRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: e.target.value } : r));
+  const addExtraRow = () => setExtraRows(prev => [...prev, { description: '', qty: '1', unitPrice: '0.00', amount: '0.00' }]);
+  const updateExtraRow = (i, field) => (e) => {
+    const val = e.target.value;
+    setExtraRows(prev => prev.map((r, idx) => {
+      if (idx !== i) return r;
+      const updated = { ...r, [field]: val };
+      const q = field === 'qty'       ? (parseFloat(val) || 1) : (parseFloat(r.qty)       || 1);
+      const u = field === 'unitPrice' ? (parseFloat(val) || 0) : (parseFloat(r.unitPrice) || 0);
+      const a = field === 'amount'    ? (parseFloat(val) || 0) : (parseFloat(r.amount)    || 0);
+      if (field === 'qty' || field === 'unitPrice') { updated.amount    = (u * q).toFixed(2); }
+      else if (field === 'amount')                  { updated.unitPrice = q > 0 ? (a / q).toFixed(2) : '0.00'; }
+      return updated;
+    }));
+  };
   const removeExtraRow = (i) => setExtraRows(prev => prev.filter((_, idx) => idx !== i));
 
   /* ── Due date helpers ── */
@@ -128,7 +168,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
   /* ── Print handler ── */
   const handlePrint = async () => {
     const logoDataUrl = await getLogoDataUrl();
-    const html = buildFullHTML(fields, subtotal, total, discount, qty, unitPrice, logoDataUrl, extraRows);
+    const html = buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows);
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
     printWindow.document.write(html);
@@ -143,7 +183,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
   /* ── Save as HTML handler ── */
   const handleSaveHTML = async () => {
     const logoDataUrl = await getLogoDataUrl();
-    const html = buildFullHTML(fields, subtotal, total, discount, qty, unitPrice, logoDataUrl, extraRows);
+    const html = buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows);
     const blob = new Blob([html], { type: 'text/html' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -226,24 +266,26 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
               <tr>
                 <td><input className="inv-input" value={fields.service} onChange={update('service')} placeholder="Service" /></td>
                 <td style={{ textAlign: 'right' }}>
-                  <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.quantity} onChange={update('quantity')} />
+                  <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.quantity} onChange={updateService('quantity')} />
                 </td>
-                <td style={{ textAlign: 'right' }}>{fmt(unitPrice)}</td>
                 <td style={{ textAlign: 'right' }}>
-                  <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.serviceFee} onChange={update('serviceFee')} />
+                  <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.serviceUnitPrice} onChange={updateService('serviceUnitPrice')} />
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.serviceFee} onChange={updateService('serviceFee')} />
                 </td>
               </tr>
               {fields.addOnLabel && (
                 <tr>
                   <td><input className="inv-input" value={fields.addOnLabel} onChange={update('addOnLabel')} placeholder="Add-On description" /></td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.addOnQty} onChange={update('addOnQty')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.addOnQty} onChange={updateAddOn('addOnQty')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    {(() => { const q = parseFloat(fields.addOnQty)||0; const a = parseFloat(fields.addOnAmount)||0; return q > 0 ? fmt(a/q) : '-'; })()}
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.addOnUnitPrice} onChange={updateAddOn('addOnUnitPrice')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.addOnAmount} onChange={update('addOnAmount')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.addOnAmount} onChange={updateAddOn('addOnAmount')} />
                   </td>
                 </tr>
               )}
@@ -251,13 +293,13 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                 <tr>
                   <td><input className="inv-input" value={fields.travelFeeLabel} onChange={update('travelFeeLabel')} placeholder="Travel Fee" /></td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.travelFeeQty} onChange={update('travelFeeQty')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.travelFeeQty} onChange={updateTravel('travelFeeQty')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    {(() => { const q = parseFloat(fields.travelFeeQty)||0; return q > 0 ? fmt(travelFee/q) : '-'; })()}
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.travelUnitPrice} onChange={updateTravel('travelUnitPrice')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.travelFee} onChange={update('travelFee')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.travelFee} onChange={updateTravel('travelFee')} />
                   </td>
                 </tr>
               )}
@@ -265,21 +307,17 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                 <tr>
                   <td><input className="inv-input" value={fields.discountLabel} onChange={update('discountLabel')} placeholder="Discount" /></td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.discountQty} onChange={update('discountQty')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={fields.discountQty} onChange={updateDiscount('discountQty')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    {(() => { const q = parseFloat(fields.discountQty)||0; return q > 0 ? `-${fmt(discount/q)}` : '-'; })()}
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.discountUnitPrice} onChange={updateDiscount('discountUnitPrice')} />
                   </td>
                   <td style={{ textAlign: 'right' }}>
-                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.discount} onChange={update('discount')} />
+                    <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.discount} onChange={updateDiscount('discount')} />
                   </td>
                 </tr>
               )}
-              {extraRows.map((row, i) => {
-                const rowQty    = parseFloat(row.qty) || 0;
-                const rowAmount = parseFloat(row.amount) || 0;
-                const rowUnit   = rowQty > 0 ? fmt(rowAmount / rowQty) : '-';
-                return (
+              {extraRows.map((row, i) => (
                   <tr key={i}>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -290,13 +328,14 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                     <td style={{ textAlign: 'right' }}>
                       <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={row.qty} onChange={updateExtraRow(i, 'qty')} />
                     </td>
-                    <td style={{ textAlign: 'right' }}>{rowUnit}</td>
+                    <td style={{ textAlign: 'right' }}>
+                      <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={row.unitPrice} onChange={updateExtraRow(i, 'unitPrice')} />
+                    </td>
                     <td style={{ textAlign: 'right' }}>
                       <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={row.amount} onChange={updateExtraRow(i, 'amount')} />
                     </td>
                   </tr>
-                );
-              })}
+              ))}
             </tbody>
           </table>
           <button className="add-row-btn" onClick={addExtraRow}>+ Add Row</button>
@@ -333,7 +372,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
 };
 
 /* ─── Full HTML document (shared by print and save) ────────────────────────── */
-function buildFullHTML(fields, subtotal, total, discount, qty, unitPrice, logoDataUrl, extraRows = []) {
+function buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows = []) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -378,34 +417,29 @@ function buildFullHTML(fields, subtotal, total, discount, qty, unitPrice, logoDa
 </head>
 <body>
   <div class="invoice">
-    ${buildHTMLBody(fields, subtotal, total, discount, qty, unitPrice, logoDataUrl, extraRows)}
+    ${buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extraRows)}
   </div>
 </body>
 </html>`;
 }
 
 /* ─── Shared HTML body builder ──────────────────────────────────────────────── */
-function buildHTMLBody(fields, subtotal, total, discount, qty, unitPrice, logoDataUrl, extraRows = []) {
+function buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extraRows = []) {
   const fmt = (n) => `$${parseFloat(n || 0).toFixed(2)}`;
   const travelFee  = parseFloat(fields.travelFee)  || 0;
   const addOnFee   = parseFloat(fields.addOnAmount) || 0;
-  const addOnQty   = parseFloat(fields.addOnQty)    || 0;
-  const addOnUnit  = addOnQty > 0 ? fmt(addOnFee / addOnQty) : '-';
-  const tFeeQty    = parseFloat(fields.travelFeeQty) || 0;
-  const tFeeUnit   = tFeeQty > 0 ? fmt(travelFee / tFeeQty) : '-';
-  const discQty    = parseFloat(fields.discountQty)  || 0;
-  const discUnit   = discQty > 0 ? `-${fmt(discount / discQty)}` : '-';
+  const addOnUnit  = fmt(fields.addOnUnitPrice  || 0);
+  const tFeeUnit   = fmt(fields.travelUnitPrice || 0);
+  const discUnit   = `-${fmt(fields.discountUnitPrice || 0)}`;
 
   const rows = [
-    `<tr><td>${fields.service}</td><td>${qty}</td><td>${fmt(unitPrice)}</td><td>${fmt(fields.serviceFee)}</td></tr>`,
+    `<tr><td>${fields.service}</td><td>${qty}</td><td>${fmt(fields.serviceUnitPrice || 0)}</td><td>${fmt(fields.serviceFee)}</td></tr>`,
     fields.addOnLabel ? `<tr><td>${fields.addOnLabel}</td><td>${fields.addOnQty}</td><td>${addOnUnit}</td><td>${fmt(addOnFee)}</td></tr>` : '',
     travelFee > 0 ? `<tr><td>${fields.travelFeeLabel}</td><td>${fields.travelFeeQty}</td><td>${tFeeUnit}</td><td>${fmt(travelFee)}</td></tr>` : '',
     discount > 0 ? `<tr><td>${fields.discountLabel}</td><td>${fields.discountQty}</td><td>${discUnit}</td><td>-${fmt(discount)}</td></tr>` : '',
     ...extraRows.map(r => {
-      const rQty  = parseFloat(r.qty) || 0;
-      const rAmt  = parseFloat(r.amount) || 0;
-      const rUnit = rQty > 0 ? fmt(rAmt / rQty) : '-';
-      return `<tr><td>${r.description}</td><td>${r.qty}</td><td>${rUnit}</td><td>${fmt(rAmt)}</td></tr>`;
+      const rAmt = parseFloat(r.amount) || 0;
+      return `<tr><td>${r.description}</td><td>${r.qty}</td><td>${fmt(r.unitPrice || 0)}</td><td>${fmt(rAmt)}</td></tr>`;
     }),
   ].join('');
 
