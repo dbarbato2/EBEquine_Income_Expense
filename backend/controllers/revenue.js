@@ -374,14 +374,17 @@ exports.getMaxIndividualInvoice = async (req, res) => {
             revenues = await RevenueSchema.find({userid: {$regex: userid, $options: 'i'}})
         }
         
-        // Extract numeric invoice numbers and find the max
+        // Extract purely numeric invoice numbers and find the max (ignore any with letters like '23m' or '2015h')
         let maxInvoiceNumber = 0
         
         revenues.forEach(revenue => {
             if (revenue['Invoice Number']) {
-                const invoiceNum = parseInt(revenue['Invoice Number'], 10)
-                if (!isNaN(invoiceNum) && invoiceNum > maxInvoiceNumber) {
-                    maxInvoiceNumber = invoiceNum
+                const invoiceStr = String(revenue['Invoice Number']).trim()
+                if (/^\d+$/.test(invoiceStr)) {
+                    const invoiceNum = parseInt(invoiceStr, 10)
+                    if (invoiceNum > maxInvoiceNumber) {
+                        maxInvoiceNumber = invoiceNum
+                    }
                 }
             }
         })
