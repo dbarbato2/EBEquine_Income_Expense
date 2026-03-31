@@ -30,7 +30,7 @@ exports.addRevenue = async (req, res) => {
         'Travel Fee': travelFee ? `$${Number(travelFee).toFixed(2)}` : '',
         Discount: discount ? `$${Number(discount).toFixed(2)}` : '',
         'Discount Reason': discountReason,
-        'Payment Type': paymentType,
+        'Payment Type': paymentType || undefined,
         'Transaction Fees': transactionFee ? `$${Number(transactionFee).toFixed(2)}` : '',
         'Actual Fees': actualRevenue ? `$${Number(actualRevenue).toFixed(2)}` : '',
         'Invoice Number': invoiceNumber
