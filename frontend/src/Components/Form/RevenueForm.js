@@ -225,8 +225,8 @@ function RevenueForm() {
                 />
             </div>
             <div className="selects input-control">
-                <select value={paymentType} name="paymentType" id="paymentType" onChange={handleInput('paymentType')} required>
-                    <option value="" disabled>Select Payment Type</option>
+                <select value={paymentType} name="paymentType" id="paymentType" onChange={handleInput('paymentType')}>
+                    <option value="">Select Payment Type</option>
                     <option value="Venmo">Venmo</option>
                     <option value="Cash">Cash</option>
                     <option value="Check">Check</option>
