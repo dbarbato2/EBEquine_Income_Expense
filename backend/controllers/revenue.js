@@ -427,34 +427,25 @@ exports.getMaxMonthlyInvoice = async (req, res) => {
             revenues = await RevenueSchema.find({userid: {$regex: userid, $options: 'i'}})
         }
         
-        // Extract monthly invoice numbers (non-numeric with letters)
+        // Extract monthly invoice numbers: only those matching /^\d+m$/i (e.g. "23m", "2015m")
+        // Ignore anything like "2301h" or purely numeric invoices
         let maxMonthlyNumber = 0
-        let monthlyInvoiceSuffix = 'm' // default suffix
         
         revenues.forEach(revenue => {
             if (revenue['Invoice Number']) {
-                const invoiceStr = String(revenue['Invoice Number']).toLowerCase()
+                const invoiceStr = String(revenue['Invoice Number']).trim().toLowerCase()
                 
-                // Check if it contains letters (monthly invoice)
-                if (/[a-z]/.test(invoiceStr)) {
-                    // Extract numeric part
-                    const numericPart = parseInt(invoiceStr.replace(/[a-z]/g, ''), 10)
-                    
-                    if (!isNaN(numericPart) && numericPart > maxMonthlyNumber) {
+                if (/^\d+m$/.test(invoiceStr)) {
+                    const numericPart = parseInt(invoiceStr, 10)
+                    if (numericPart > maxMonthlyNumber) {
                         maxMonthlyNumber = numericPart
-                    }
-                    
-                    // Extract the letter suffix (get all letters at the end)
-                    const suffixMatch = invoiceStr.match(/[a-z]+$/)
-                    if (suffixMatch) {
-                        monthlyInvoiceSuffix = suffixMatch[0]
                     }
                 }
             }
         })
         
-        // Return the next monthly invoice number
-        const nextInvoiceNumber = String(maxMonthlyNumber + 1) + monthlyInvoiceSuffix
+        // Return the next monthly invoice number with 'm' suffix
+        const nextInvoiceNumber = String(maxMonthlyNumber + 1) + 'm'
         
         res.status(200).json({ nextInvoiceNumber: nextInvoiceNumber })
     } catch (error) {
