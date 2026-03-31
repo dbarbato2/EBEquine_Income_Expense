@@ -260,6 +260,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                 <th style={{ textAlign: 'right' }}>Qty</th>
                 <th style={{ textAlign: 'right' }}>Unit Price</th>
                 <th style={{ textAlign: 'right' }}>Amount</th>
+                <th style={{ width: '32px' }}></th>
               </tr>
             </thead>
             <tbody>
@@ -274,6 +275,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                 <td style={{ textAlign: 'right' }}>
                   <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.serviceFee} onChange={updateService('serviceFee')} />
                 </td>
+                <td></td>
               </tr>
               {fields.addOnLabel && (
                 <tr>
@@ -287,6 +289,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                   <td style={{ textAlign: 'right' }}>
                     <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.addOnAmount} onChange={updateAddOn('addOnAmount')} />
                   </td>
+                  <td><button className="remove-row-btn" onClick={() => setFields(p => ({ ...p, addOnLabel: '' }))} title="Remove row">✕</button></td>
                 </tr>
               )}
               {travelFee > 0 && (
@@ -301,6 +304,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                   <td style={{ textAlign: 'right' }}>
                     <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.travelFee} onChange={updateTravel('travelFee')} />
                   </td>
+                  <td><button className="remove-row-btn" onClick={() => setFields(p => ({ ...p, travelFee: '0', travelUnitPrice: '0.00' }))} title="Remove row">✕</button></td>
                 </tr>
               )}
               {discount > 0 && (
@@ -315,15 +319,13 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                   <td style={{ textAlign: 'right' }}>
                     <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={fields.discount} onChange={updateDiscount('discount')} />
                   </td>
+                  <td><button className="remove-row-btn" onClick={() => setFields(p => ({ ...p, discount: '0', discountUnitPrice: '0.00' }))} title="Remove row">✕</button></td>
                 </tr>
               )}
               {extraRows.map((row, i) => (
                   <tr key={i}>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <input className="inv-input" value={row.description} onChange={updateExtraRow(i, 'description')} placeholder="Description" style={{ flex: 1 }} />
-                        <button className="remove-row-btn" onClick={() => removeExtraRow(i)} title="Remove row">✕</button>
-                      </div>
+                      <input className="inv-input" value={row.description} onChange={updateExtraRow(i, 'description')} placeholder="Description" />
                     </td>
                     <td style={{ textAlign: 'right' }}>
                       <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} min="1" value={row.qty} onChange={updateExtraRow(i, 'qty')} />
@@ -334,6 +336,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
                     <td style={{ textAlign: 'right' }}>
                       <input className="inv-input number-input" type="number" onWheel={(e) => e.target.blur()} step="any" value={row.amount} onChange={updateExtraRow(i, 'amount')} />
                     </td>
+                    <td><button className="remove-row-btn" onClick={() => removeExtraRow(i)} title="Remove row">✕</button></td>
                   </tr>
               ))}
             </tbody>
