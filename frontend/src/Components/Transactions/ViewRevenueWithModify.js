@@ -371,6 +371,7 @@ const ViewRevenueWithModify = () => {
                   <option value="">Select Payment Type</option>
                   <option value="Venmo">Venmo</option>
                   <option value="Cash">Cash</option>
+                  <option value="Cash and Venmo">Cash and Venmo</option>
                   <option value="Check">Check</option>
                   <option value="Gift Certificate">Gift Certificate</option>
                 </select>
