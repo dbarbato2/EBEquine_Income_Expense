@@ -63,7 +63,7 @@ const RevenueSchema = new mongoose.Schema({
     },
     'Payment Type': {
         type: String,
-        enum: ['Venmo', 'Cash', 'Check', 'Gift Certificate'],
+        enum: ['Venmo', 'Cash', 'Cash and Venmo', 'Check', 'Gift Certificate'],
         required: false
     },
     'Transaction Fees': {
