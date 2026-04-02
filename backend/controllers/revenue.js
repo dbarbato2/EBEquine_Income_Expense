@@ -260,7 +260,7 @@ exports.updateRevenue = async (req, res) => {
 
         const validServices = ['Introductory Massage', '1 Hour Massage', 'Kinesiology Tape', '8 Hours Teaching', 'Gift Certificate'];
         const validLocations = ['MA', 'NH', 'NJ', 'FL'];
-        const validPaymentTypes = ['Venmo', 'Cash', 'Check', 'Gift Certificate'];
+        const validPaymentTypes = ['Venmo', 'Cash', 'Cash and Venmo', 'Check', 'Gift Certificate'];
 
         const updateData = {
             Date: date,
