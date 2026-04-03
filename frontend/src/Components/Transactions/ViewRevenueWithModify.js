@@ -27,6 +27,15 @@ const ViewRevenueWithModify = () => {
     getClients();
   }, [getRevenue, getClients]);
 
+  useEffect(() => {
+    if (!isEditing || !editedRevenue) return;
+    if (editedRevenue['Payment Type'] === 'Venmo') {
+      const parseFee = (val) => parseFloat(String(val || '').replace(/[^0-9.]/g, '')) || 0;
+      const fee = (parseFee(editedRevenue['Service Fee']) + parseFee(editedRevenue['Travel Fee']) - parseFee(editedRevenue.Discount)) * 0.019 + 0.10;
+      setEditedRevenue(prev => ({ ...prev, 'Transaction Fees': '$' + (fee > 0 ? fee.toFixed(2) : '0.10') }));
+    }
+  }, [isEditing, editedRevenue?.['Payment Type'], editedRevenue?.['Service Fee'], editedRevenue?.['Travel Fee'], editedRevenue?.Discount]);
+
   const handleSearchInput = (name) => (e) => {
     setSearchCriteria({ ...searchCriteria, [name]: e.target.value });
   };
@@ -387,6 +396,7 @@ const ViewRevenueWithModify = () => {
                 readOnly={!isEditing}
                 onChange={isEditing ? handleEditInput('Transaction Fees') : undefined}
               />
+              {isEditing && editedRevenue['Payment Type'] === 'Venmo' && <p className="input-note">Assumes a 1.9% + $0.10 fee for all Venmo payments</p>}
             </div>
             <div className="form-group">
               <label>Actual Revenue:</label>
