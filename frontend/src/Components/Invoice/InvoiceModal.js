@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { x } from '../../utils/Icons';
 import invoiceLogo from '../../img/invoiceLogo.png';
+import venmoQR from '../../img/ebEquineVenmo.png';
 
 const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
   const parseValue = (value) => {
@@ -165,10 +166,25 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
     img.src = invoiceLogo;
   });
 
+  const getVenmoDataUrl = () => new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.onerror = () => resolve(venmoQR);
+    img.src = venmoQR;
+  });
+
   /* ── Print handler ── */
   const handlePrint = async () => {
     const logoDataUrl = await getLogoDataUrl();
-    const html = buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows);
+    const venmoDataUrl = await getVenmoDataUrl();
+    const html = buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows, venmoDataUrl);
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
     printWindow.document.write(html);
@@ -183,7 +199,8 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
   /* ── Save as HTML handler ── */
   const handleSaveHTML = async () => {
     const logoDataUrl = await getLogoDataUrl();
-    const html = buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows);
+    const venmoDataUrl = await getVenmoDataUrl();
+    const html = buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows, venmoDataUrl);
     const blob = new Blob([html], { type: 'text/html' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -220,6 +237,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
               <span>508-579-4348</span>
             </div>
             <div className="inv-company-right">
+              <img src={venmoQR} alt="Venmo QR" className="venmo-qr" />
               <span className="venmo">Venmo @EB-Equine</span>
             </div>
           </div>
@@ -375,7 +393,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
 };
 
 /* ─── Full HTML document (shared by print and save) ────────────────────────── */
-function buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows = []) {
+function buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows = [], venmoDataUrl = '') {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -397,6 +415,7 @@ function buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extr
     .inv-company-center{text-align:right;font-size:16px;line-height:1.7}
     .inv-company-center strong{font-size:22px;display:block}
     .inv-company-right{text-align:right;font-size:16px;line-height:1.7}
+    .venmo-qr{display:block;width:80px;height:80px;object-fit:contain;margin-left:auto;margin-bottom:4px}
     .venmo{color:#6d64e8;font-weight:bold}
     .inv-billing{display:flex;justify-content:space-between;margin-top:4rem;margin-bottom:24px;font-size:12px}
     .inv-billing>div{min-width:160px}
@@ -420,14 +439,14 @@ function buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extr
 </head>
 <body>
   <div class="invoice">
-    ${buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extraRows)}
+    ${buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extraRows, venmoDataUrl)}
   </div>
 </body>
 </html>`;
 }
 
 /* ─── Shared HTML body builder ──────────────────────────────────────────────── */
-function buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extraRows = []) {
+function buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extraRows = [], venmoDataUrl = '') {
   const fmt = (n) => `$${parseFloat(n || 0).toFixed(2)}`;
   const travelFee  = parseFloat(fields.travelFee)  || 0;
   const addOnFee   = parseFloat(fields.addOnAmount) || 0;
@@ -457,6 +476,7 @@ function buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extr
         50 Constitution St., Ashland, MA 01721<br/>508-579-4348
       </div>
       <div class="inv-company-right">
+        ${venmoDataUrl ? `<img src="${venmoDataUrl}" class="venmo-qr" alt="Venmo QR" style="display:block;width:80px;height:80px;object-fit:contain;margin-left:auto;margin-bottom:4px" />` : ''}
         <span class="venmo">Venmo @EB-Equine</span>
       </div>
     </div>
@@ -560,6 +580,7 @@ const ModalContent = styled.div`
     }
     .inv-company-right {
       text-align: right; display: flex; flex-direction: column; font-size: 15px; line-height: 1.7;
+      .venmo-qr { width: 80px; height: 80px; object-fit: contain; margin-left: auto; margin-bottom: 4px; display: block; }
       .venmo { color: #6d64e8; font-weight: bold; }
     }
   }
