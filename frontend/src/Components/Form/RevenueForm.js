@@ -72,6 +72,13 @@ function RevenueForm() {
         setShowInvoiceModal(false)
     }
 
+    useEffect(() => {
+        if (paymentType === 'Venmo') {
+            const fee = (parseFloat(serviceFee || 0) + parseFloat(travelFee || 0) - parseFloat(discount || 0)) * 0.019 + 0.10
+            setInputState(prev => ({ ...prev, transactionFee: fee > 0 ? fee.toFixed(2) : '0.10' }))
+        }
+    }, [paymentType, serviceFee, travelFee, discount])
+
     const handleSubmit = e => {
         e.preventDefault()
         // Convert date object to ISO string if it exists
@@ -244,6 +251,7 @@ function RevenueForm() {
                     step="any"
                     min="0"
                 />
+                {paymentType === 'Venmo' && <p className="input-note">Assumes a 1.9% + $0.10 fee for all Venmo payments</p>}
             </div>
             <div className="input-control">
                 <input 
