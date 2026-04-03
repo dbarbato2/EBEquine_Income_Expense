@@ -415,7 +415,7 @@ function buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extr
     .inv-company-center{text-align:right;font-size:16px;line-height:1.7}
     .inv-company-center strong{font-size:22px;display:block}
     .inv-company-right{text-align:right;font-size:16px;line-height:1.7}
-    .venmo-qr{display:block;width:80px;height:80px;object-fit:contain;margin:0 auto 4px auto}
+    .venmo-qr{display:block;width:80px;height:80px;object-fit:contain;margin:0 auto 4px 0}
     .venmo{color:#6d64e8;font-weight:bold}
     .inv-billing{display:flex;justify-content:space-between;margin-top:4rem;margin-bottom:24px;font-size:12px}
     .inv-billing>div{min-width:160px}
@@ -476,7 +476,7 @@ function buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extr
         50 Constitution St., Ashland, MA 01721<br/>508-579-4348
       </div>
       <div class="inv-company-right">
-        ${venmoDataUrl ? `<img src="${venmoDataUrl}" class="venmo-qr" alt="Venmo QR" style="display:block;width:80px;height:80px;object-fit:contain;margin:0 auto 4px auto" />` : ''}
+        ${venmoDataUrl ? `<img src="${venmoDataUrl}" class="venmo-qr" alt="Venmo QR" style="display:block;width:80px;height:80px;object-fit:contain;margin:0 auto 4px 0" />` : ''}
         <span class="venmo">Venmo @EB-Equine</span>
       </div>
     </div>
@@ -580,7 +580,7 @@ const ModalContent = styled.div`
     }
     .inv-company-right {
       text-align: right; display: flex; flex-direction: column; font-size: 15px; line-height: 1.7;
-      .venmo-qr { width: 80px; height: 80px; object-fit: contain; margin: 0 auto 4px auto; display: block; }
+      .venmo-qr { width: 80px; height: 80px; object-fit: contain; margin: 0 auto 4px 0; display: block; }
       .venmo { color: #6d64e8; font-weight: bold; }
     }
   }
