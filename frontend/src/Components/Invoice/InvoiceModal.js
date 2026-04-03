@@ -347,7 +347,7 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
           <div className="inv-totals">
             <div className="tot-row"><span>Subtotal:</span><span>{fmt(subtotal)}</span></div>
             {discount > 0 && <div className="tot-row discount"><span>Discount:</span><span>-{fmt(discount)}</span></div>}
-            <div className="tot-row payment"><span>Payment:</span><span>{fmt(total)}</span></div>
+            <div className="tot-row payment"><span>Total Due:</span><span>{fmt(total)}</span></div>
           </div>
 
           {/* Notes */}
@@ -487,7 +487,7 @@ function buildHTMLBody(fields, subtotal, total, discount, qty, logoDataUrl, extr
     <div class="inv-totals">
       <div>Subtotal: <strong>${fmt(subtotal)}</strong></div>
       ${discount > 0 ? `<div class="discount">Discount: <strong>-${fmt(discount)}</strong></div>` : ''}
-      <div class="payment">Payment: <span>${fmt(total)}</span></div>
+      <div class="payment">Total Due: <span>${fmt(total)}</span></div>
     </div>
     ${fields.notes ? `<div class="inv-notes"><strong>Notes:</strong> ${fields.notes}</div>` : ''}
     <div class="inv-review"><a href="https://g.page/r/CWbX4_cqMq6pEAI/review">Leave us a review!</a></div>

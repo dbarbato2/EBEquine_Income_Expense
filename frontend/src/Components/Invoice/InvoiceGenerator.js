@@ -290,7 +290,7 @@ export const generateInvoicePDF = async (revenueData, clientData = null) => {
   doc.setFontSize(20);
   doc.setFont('roboto', 'bold');
   doc.setTextColor(42, 57, 144); // #2a3990
-  doc.text('Payment:', totalsX, currentY);
+  doc.text('Total Due:', totalsX, currentY);
   const total = subtotal - discount;
   doc.setTextColor(224, 27, 132); // #e01b84 (pink)
   doc.text(formatCurrency(total), pageWidth - margin, currentY, { align: 'right' });
