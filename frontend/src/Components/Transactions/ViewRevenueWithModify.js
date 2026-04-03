@@ -502,6 +502,13 @@ const ViewRevenueStyled = styled.div`
     min-height: 0;
     padding: 0;
 
+    .input-note {
+      font-size: 0.7rem;
+      color: var(--primary-color, #888);
+      margin-top: 0.2rem;
+      font-style: italic;
+    }
+
     .content-wrapper {
       padding: 2rem 1.5rem;
       width: 100%;
