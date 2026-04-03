@@ -415,7 +415,7 @@ function buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extr
     .inv-company-center{text-align:right;font-size:16px;line-height:1.7}
     .inv-company-center strong{font-size:22px;display:block}
     .inv-company-right{text-align:right;font-size:16px;line-height:1.7}
-    .venmo-qr{display:block;width:80px;height:80px;object-fit:contain;margin:0 auto 4px 20px}
+    .venmo-qr{display:block;width:80px;height:80px;object-fit:contain;margin:0 auto 4px 22px}
     .venmo{color:#6d64e8;font-weight:bold}
     .inv-billing{display:flex;justify-content:space-between;margin-top:4rem;margin-bottom:24px;font-size:12px}
     .inv-billing>div{min-width:160px}

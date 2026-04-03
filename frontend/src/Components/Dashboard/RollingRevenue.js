@@ -46,12 +46,18 @@ function RollingRevenue() {
             monthlyRevenue[key] = (monthlyRevenue[key] || 0) + actualFees
         })
 
+        // Exclude the current (incomplete) month
+        const now = new Date()
+        const currentYear = now.getFullYear()
+        const currentMonth = now.getMonth()
+
         // Create sorted list of year/month combinations
         const sortedMonths = Object.keys(monthlyRevenue)
             .map(key => {
                 const [year, month] = key.split('-').map(Number)
                 return { key, year, month, display: `${months[month].slice(0, 3)} ${year}` }
             })
+            .filter(item => !(item.year === currentYear && item.month === currentMonth))
             .sort((a, b) => {
                 if (a.year !== b.year) return a.year - b.year
                 return a.month - b.month
