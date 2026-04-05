@@ -35,6 +35,7 @@ import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [active, setActive] = useState(1)
+  const [navCollapsed, setNavCollapsed] = useState(false)
   const [backgroundImage, setBackgroundImage] = useState(bg)
 
   // Apply saved theme on mount
@@ -189,7 +190,7 @@ function App() {
                 <>
                       <MainLayout>
 
-                  <Navigation active={active} setActive={setActive} />
+                  <Navigation active={active} setActive={setActive} collapsed={navCollapsed} onToggle={() => setNavCollapsed(p => !p)} />
                   <main>{displayData()}</main>
                   </MainLayout>
 
