@@ -42,6 +42,20 @@ function QuarterlyDeductionModal({ onClose }) {
     const [selectedQuarter, setSelectedQuarter] = useState('')
     const [rows, setRows] = useState([])
     const [saving, setSaving] = useState(false)
+    const TOTAL_SQ_FT = 2335
+    const [officePct, setOfficePct] = useState('2.1')
+    const [officeSqFt, setOfficeSqFt] = useState('48')
+
+    const handlePctChange = (val) => {
+        setOfficePct(val)
+        const sqft = ((parseFloat(val) || 0) / 100 * TOTAL_SQ_FT).toFixed(0)
+        setOfficeSqFt(sqft)
+    }
+    const handleSqFtChange = (val) => {
+        setOfficeSqFt(val)
+        const pct = ((parseFloat(val) || 0) / TOTAL_SQ_FT * 100).toFixed(1)
+        setOfficePct(pct)
+    }
 
     const years = Array.from({ length: 10 }, (_, i) => currentYear - 5 + i)
 
@@ -141,6 +155,9 @@ function QuarterlyDeductionModal({ onClose }) {
                             </div>
                         </div>
                         <div className="modal-footer">
+                            <button className="back-btn" type="button" onClick={onClose}>
+                                Cancel
+                            </button>
                             <Button
                                 name={'Continue'}
                                 icon={plus}
@@ -157,6 +174,28 @@ function QuarterlyDeductionModal({ onClose }) {
 
                 {step === 2 && (
                     <div className="step-two">
+                        <div className="assumption-note">
+                            Assumes a
+                            <input
+                                className="pct-input"
+                                type="number"
+                                value={officePct}
+                                onChange={e => handlePctChange(e.target.value)}
+                                step="0.1"
+                                min="0"
+                                max="100"
+                                onWheel={e => e.target.blur()}
+                            />% factor based on square footage of the home designated as an office (
+                            <input
+                                className="pct-input sqft-input"
+                                type="number"
+                                value={officeSqFt}
+                                onChange={e => handleSqFtChange(e.target.value)}
+                                step="1"
+                                min="0"
+                                onWheel={e => e.target.blur()}
+                            /> sq. ft. out of 2,335 total sq. ft.).
+                        </div>
                         <p className="subtitle">
                             Amounts pre-filled from the previous quarter. Edit as needed, then click <strong>Add Deductions</strong>.
                         </p>
@@ -265,6 +304,37 @@ const Modal = styled.div`
 
     p { margin-bottom: 1.2rem; color: var(--text-color); opacity: 0.85; }
     .subtitle { font-size: 0.9rem; }
+
+    .assumption-note {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        font-style: italic;
+        color: var(--text-color);
+        opacity: 0.85;
+        background: var(--input-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        margin-bottom: 1rem;
+
+        .pct-input {
+            width: 58px;
+            padding: 0.2rem 0.4rem;
+            border-radius: 5px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--input-text);
+            font-family: inherit;
+            font-size: inherit;
+            font-style: normal;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+        }
+    }
 
     .selects-row {
         display: flex;
