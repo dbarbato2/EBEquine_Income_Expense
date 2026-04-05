@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import axios from 'axios'
@@ -41,6 +41,7 @@ function QuarterlyDeductionModal({ onClose }) {
     const [selectedYear, setSelectedYear] = useState(String(currentYear))
     const [selectedQuarter, setSelectedQuarter] = useState('')
     const [rows, setRows] = useState([])
+    const [baseAmounts, setBaseAmounts] = useState([]) // raw house expense per category, index-aligned with HOUSE_CATEGORIES
     const [saving, setSaving] = useState(false)
     const TOTAL_SQ_FT = 2335
     const [officePct, setOfficePct] = useState(() => localStorage.getItem('qdm_officePct') || '2.1')
@@ -113,6 +114,12 @@ function QuarterlyDeductionModal({ onClose }) {
             console.error('Error fetching record number:', err)
         }
 
+        const bases = HOUSE_CATEGORIES.map(type => {
+            const prevAmt = getPrevRaw(type)
+            if (prevAmt === null || savedPct === 0) return null
+            return prevAmt / (savedPct / 100)
+        })
+
         const initialRows = HOUSE_CATEGORIES.map((type, i) => ({
             deductionType: type,
             deductionDescription: getDescription(type),
@@ -122,9 +129,23 @@ function QuarterlyDeductionModal({ onClose }) {
             deductionRecordNumber: startingRecordNumber + i,
         }))
 
+        setBaseAmounts(bases)
         setRows(initialRows)
         setStep(2)
     }
+
+    useEffect(() => {
+        if (step !== 2 || baseAmounts.length === 0) return
+        const pct = parseFloat(officePct) || 0
+        setRows(prev => prev.map((row, i) => {
+            const base = baseAmounts[i]
+            if (base === null || base === undefined) return row
+            const newAmount = (base * (pct / 100)).toFixed(2)
+            const newDesc = `${pct}% of $${parseFloat(base.toFixed(2)).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+            return { ...row, deductionAmount: newAmount, deductionDescription: newDesc }
+        }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [officePct, step])
 
     const updateRow = (index, field, value) => {
         setRows(prev => prev.map((row, i) => i === index ? { ...row, [field]: value } : row))
