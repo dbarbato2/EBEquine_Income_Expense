@@ -35,17 +35,12 @@ function Navigation({active, setActive, collapsed, onToggle}) {
     
     return (
         <NavStyled className={collapsed ? 'collapsed' : ''}>
-            <div className="nav-header">
-                <div className="user-con">
-                    <img src={avatar} alt="" />
-                    <div className="text">
-                        <h2>{name}</h2>
-                        <p>{email || 'Your Money'}</p>
-                    </div>
+            <div className="user-con">
+                <img src={avatar} alt="" />
+                <div className="text">
+                    <h2>{name}</h2>
+                    <p>{email || 'Your Money'}</p>
                 </div>
-                <button className="collapse-btn" onClick={onToggle} title={collapsed ? 'Expand navigation' : 'Collapse navigation'}>
-                    {collapsed ? '▶' : '◀'}
-                </button>
             </div>
             <ul className="menu-items">
                 {menuItems.map((item) => {
@@ -86,13 +81,16 @@ function Navigation({active, setActive, collapsed, onToggle}) {
                         {signout} <span className="nav-label">Sign Out</span>
                     </span>
                 </div>
-                <button className="bottom-nav" onClick={() => {
+                <div className="bottom-nav" onClick={() => {
                     setActive(99);
                     setExpandedMenu(null);
                 }}>
                     <span>
                         {settings} <span className="nav-label">Settings</span>
                     </span>
+                </div>
+                <button className="collapse-btn" onClick={onToggle} title={collapsed ? 'Expand navigation' : 'Collapse navigation'}>
+                    {collapsed ? '▶' : '◀'}
                 </button>
             </div>
         </NavStyled>
@@ -113,33 +111,6 @@ const NavStyled = styled.nav`
     gap: 2rem;
     overflow: hidden;
     transition: width 0.3s ease, padding 0.3s ease;
-    .nav-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 0.5rem;
-
-        .collapse-btn {
-            background: transparent;
-            border: 1.5px solid var(--border-color);
-            border-radius: 6px;
-            width: 26px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 9px;
-            color: var(--text-color);
-            opacity: 0.6;
-            padding: 0;
-            flex-shrink: 0;
-            transition: opacity 0.2s;
-            margin-top: 4px;
-            &:hover { opacity: 1; background: var(--hover-bg); }
-        }
-    }
-
     .user-con{
         height: 100px;
         display: flex;
@@ -275,16 +246,29 @@ const NavStyled = styled.nav`
     gap: 1rem;
     align-items: center;
     justify-content: space-between;
+    .collapse-btn {
+      background: transparent;
+      border: 1.5px solid var(--border-color);
+      border-radius: 6px;
+      width: 26px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 9px;
+      color: var(--text-color);
+      opacity: 0.6;
+      padding: 0;
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+      &:hover { opacity: 1; background: var(--hover-bg); }
+    }
   }
 
   &.collapsed {
     width: 74px;
     padding: 2rem 0.75rem;
-
-    .nav-header {
-      justify-content: center;
-      .collapse-btn { border-radius: 50%; }
-    }
 
     .user-con {
       justify-content: center;
@@ -308,6 +292,7 @@ const NavStyled = styled.nav`
       flex-direction: column;
       gap: 0.6rem;
       align-items: center;
+      .collapse-btn { width: 22px; height: 22px; border-radius: 50%; }
     }
 
     .bottom-nav span {
