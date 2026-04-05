@@ -43,8 +43,8 @@ function QuarterlyDeductionModal({ onClose }) {
     const [rows, setRows] = useState([])
     const [saving, setSaving] = useState(false)
     const TOTAL_SQ_FT = 2335
-    const [officePct, setOfficePct] = useState('2.1')
-    const [officeSqFt, setOfficeSqFt] = useState('48')
+    const [officePct, setOfficePct] = useState(() => localStorage.getItem('qdm_officePct') || '2.1')
+    const [officeSqFt, setOfficeSqFt] = useState(() => localStorage.getItem('qdm_officeSqFt') || '48')
 
     const handlePctChange = (val) => {
         setOfficePct(val)
@@ -114,6 +114,8 @@ function QuarterlyDeductionModal({ onClose }) {
                 await axios.post(`${BASE_URL}add-deduction`, { ...row, userid: user })
             }
             await getDeductions()
+            localStorage.setItem('qdm_officePct', officePct)
+            localStorage.setItem('qdm_officeSqFt', officeSqFt)
             toast.success(`${rows.length} quarterly house deductions saved!`)
             onClose()
         } catch (err) {
