@@ -10,6 +10,15 @@ const MONTH_NAMES = [
     'July', 'August', 'September', 'October', 'November', 'December'
 ]
 
+const HOUSE_CATEGORIES = [
+    'Mortgage', 'Real Estate Taxes', 'Internet',
+    'Utilities - Gas', 'Utilities - Electric', 'Utilities - Water',
+    'Recycling/Rubbish', 'Lawn Maintenance',
+]
+
+// Month numbers (1-based) that open a quarter
+const QUARTER_START_MONTHS = new Set([1, 4, 7, 10])
+
 // Safely parse a currency string like "$1,234.56" → 1234.56
 const parseValue = (value) => {
     if (!value || value === 'N/A' || value === '') return 0
@@ -292,6 +301,7 @@ const TaxReportModal = ({ isOpen, onClose }) => {
     const [selectedYear,  setSelectedYear]  = useState('')
     const [selectedMonth, setSelectedMonth] = useState('')
     const [generating, setGenerating] = useState(false)
+    const [missingWarning, setMissingWarning] = useState([])
 
     // All years that exist in any dataset
     const availableYears = useMemo(() => {
@@ -325,16 +335,34 @@ const TaxReportModal = ({ isOpen, onClose }) => {
     const handleYearChange = (e) => {
         setSelectedYear(e.target.value)
         setSelectedMonth('')
+        setMissingWarning([])
     }
 
-    const handleGenerate = async () => {
+    const handleGenerate = async (force = false) => {
         if (!selectedYear || !selectedMonth) return
+
+        const yr = parseInt(selectedYear)
+        const mn = parseInt(selectedMonth)
+        const monthName = MONTH_NAMES[mn - 1]
+
+        // Warn if quarter-start month and any house categories are missing
+        if (!force && QUARTER_START_MONTHS.has(mn)) {
+            const missing = HOUSE_CATEGORIES.filter(cat =>
+                !deductions.some(d =>
+                    d['Deduction Type'] === cat &&
+                    parseInt(d.Year) === yr &&
+                    d.Month === monthName
+                )
+            )
+            if (missing.length > 0) {
+                setMissingWarning(missing)
+                return
+            }
+        }
+
+        setMissingWarning([])
         setGenerating(true)
         try {
-            const yr = parseInt(selectedYear)
-            const mn = parseInt(selectedMonth)
-            const monthName = MONTH_NAMES[mn - 1]
-
             const filteredRevenue = [...revenue]
                 .filter(r => r.Date && getUTCYear(r.Date) === yr && getUTCMonth(r.Date) === mn)
                 .sort((a, b) => new Date(a.Date) - new Date(b.Date))
@@ -391,7 +419,7 @@ const TaxReportModal = ({ isOpen, onClose }) => {
                             <select
                                 id="tax-month"
                                 value={selectedMonth}
-                                onChange={(e) => setSelectedMonth(e.target.value)}
+                                onChange={(e) => { setSelectedMonth(e.target.value); setMissingWarning([]) }}
                                 disabled={!selectedYear}
                             >
                                 <option value="">— Select Month —</option>
@@ -401,6 +429,16 @@ const TaxReportModal = ({ isOpen, onClose }) => {
                             </select>
                         </div>
                     </div>
+
+                    {missingWarning.length > 0 && (
+                        <div className="deduction-warning">
+                            <p><strong>⚠️ Warning:</strong> The following house deductions for <strong>{MONTH_NAMES[parseInt(selectedMonth) - 1]} {selectedYear}</strong> have not been entered:</p>
+                            <ul>
+                                {missingWarning.map(cat => <li key={cat}>{cat}</li>)}
+                            </ul>
+                            <p className="warning-prompt">You can add them via <em>Deductions → Add Quarterly House Deductions</em>, or generate the report anyway.</p>
+                        </div>
+                    )}
 
                     <div className="btn-row">
                         <button
@@ -412,10 +450,10 @@ const TaxReportModal = ({ isOpen, onClose }) => {
                         </button>
                         <button
                             className="generate-btn"
-                            onClick={handleGenerate}
+                            onClick={() => handleGenerate(missingWarning.length > 0)}
                             disabled={!selectedYear || !selectedMonth || generating}
                         >
-                            {generating ? 'Generating PDF…' : '⬇ Generate PDF'}
+                            {generating ? 'Generating PDF…' : missingWarning.length > 0 ? '⚠️ Generate Anyway' : '⬇ Generate PDF'}
                         </button>
                     </div>
                 </div>
@@ -536,6 +574,21 @@ const ModalContent = styled.div`
                     color: #9ca3af;
                 }
             }
+        }
+
+        .deduction-warning {
+            background: #fff8e1;
+            border: 1.5px solid #f59e0b;
+            border-radius: 8px;
+            padding: 0.9rem 1.1rem;
+            margin-bottom: 0.5rem;
+            p { margin: 0 0 0.4rem; font-size: 0.88rem; color: #78350f; line-height: 1.4; }
+            ul {
+                margin: 0.3rem 0 0.5rem 1.2rem;
+                padding: 0;
+                li { font-size: 0.85rem; color: #92400e; margin-bottom: 0.15rem; }
+            }
+            .warning-prompt { font-size: 0.83rem; color: #78350f; font-style: italic; }
         }
 
         .btn-row {
