@@ -69,14 +69,37 @@ function QuarterlyDeductionModal({ onClose }) {
         const { quarter: prevQ, year: prevYear } = getPrevQuarter(selectedQuarter, selectedYear)
         const prevFirstMonth = QUARTER_FIRST_MONTH[prevQ]
 
-        const getPrevAmount = (type) => {
+        const savedPct = parseFloat(localStorage.getItem('qdm_officePct') || '2.1')
+        const currentPct = parseFloat(officePct) || 2.1
+
+        const getPrevRaw = (type) => {
             const match = deductions.find(d =>
                 d['Deduction Type'] === type &&
                 String(d.Year) === String(prevYear) &&
                 d.Month === prevFirstMonth
             )
-            if (!match || !match['Deduction Amount']) return ''
-            return match['Deduction Amount'].toString().replace(/\$/g, '').trim()
+            if (!match || !match['Deduction Amount']) return null
+            const val = parseFloat(match['Deduction Amount'].toString().replace(/\$/g, '').trim())
+            return isNaN(val) ? null : val
+        }
+
+        const formatBase = (base) => {
+            const rounded = parseFloat(base.toFixed(2))
+            return '$' + rounded.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+        }
+
+        const getCalculatedAmount = (type) => {
+            const prevAmt = getPrevRaw(type)
+            if (prevAmt === null || savedPct === 0) return ''
+            const baseAmt = prevAmt / (savedPct / 100)
+            return (baseAmt * (currentPct / 100)).toFixed(2)
+        }
+
+        const getDescription = (type) => {
+            const prevAmt = getPrevRaw(type)
+            if (prevAmt === null || savedPct === 0) return ''
+            const baseAmt = prevAmt / (savedPct / 100)
+            return `${currentPct}% of ${formatBase(baseAmt)}`
         }
 
         let startingRecordNumber = 1
@@ -92,8 +115,8 @@ function QuarterlyDeductionModal({ onClose }) {
 
         const initialRows = HOUSE_CATEGORIES.map((type, i) => ({
             deductionType: type,
-            deductionDescription: '',
-            deductionAmount: getPrevAmount(type),
+            deductionDescription: getDescription(type),
+            deductionAmount: getCalculatedAmount(type),
             year: parseInt(selectedYear),
             month: firstMonth,
             deductionRecordNumber: startingRecordNumber + i,
