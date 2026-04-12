@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { plus, x } from '../../utils/Icons';
+import { useGlobalContext } from '../../context/globalContext';
+import PastTripProfitModal from './PastTripProfitModal';
 
 const TripCostCalculator = () => {
+  const { revenue, expenses } = useGlobalContext();
+  const formRef = useRef(null);
+  const [showPastTripModal, setShowPastTripModal] = useState(false);
   const [tripDetails, setTripDetails] = useState({
     hotelCostPerNight: '',
     flightCost: '',
@@ -381,6 +386,25 @@ const TripCostCalculator = () => {
       <div className="content-wrapper">
         <h2>Trip Cost Calculator</h2>
 
+        <div className="trip-action-buttons">
+          <button
+            className="btn btn-past-trips"
+            onClick={() => setShowPastTripModal(true)}
+          >
+            📊 Calculate Profit for Past Trips
+          </button>
+          <button
+            className="btn btn-future-trips"
+            onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          >
+            🧮 Estimate Profit for Future Trips
+          </button>
+        </div>
+
+        {showPastTripModal && (
+          <PastTripProfitModal onClose={() => setShowPastTripModal(false)} />
+        )}
+
         {showProfitResult && (
           <div className="profit-result-section">
             <table className="profit-result-table">
@@ -394,7 +418,7 @@ const TripCostCalculator = () => {
           </div>
         )}
 
-        <div className="form-container">
+        <div className="form-container" ref={formRef}>
           <h3>Enter Trip Details Below:</h3>
           
           <div className="form-content">
@@ -1071,6 +1095,25 @@ const TripCostCalculatorStyled = styled.div`
   h2 {
     margin-bottom: 1.5rem;
     color: var(--text-color);
+  }
+
+  .trip-action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-past-trips {
+    background: #222260;
+    color: white;
+    &:hover { background: #1a1a4a; }
+  }
+
+  .btn-future-trips {
+    background: #4ecdc4;
+    color: white;
+    &:hover { background: #45b8af; }
   }
 
   .table-buttons {
