@@ -263,6 +263,46 @@ export const GlobalProvider = ({ children }) => {
     return quarters;
   };
 
+  const quarterlyExpectedRevenue = (year) => {
+    const quarters = {
+      Q1: 0,
+      Q2: 0,
+      Q3: 0,
+      Q4: 0
+    };
+
+    const getQuarter = (month) => {
+      if (month <= 2) return 'Q1';
+      if (month <= 5) return 'Q2';
+      if (month <= 7) return 'Q3';
+      return 'Q4';
+    };
+
+    const parseField = (val) => {
+      if (!val) return 0;
+      const parsed = parseFloat(val.toString().replace('$', '').replace(/,/g, '').trim());
+      return isNaN(parsed) ? 0 : parsed;
+    };
+
+    revenue.forEach((item) => {
+      const dateValue = item.date || item.Date || item.createdAt;
+      if (dateValue) {
+        const date = new Date(dateValue);
+        if (year && date.getUTCFullYear() !== year) return;
+        const month = date.getUTCMonth();
+        const quarterKey = getQuarter(month);
+
+        const serviceFee = parseField(item['Service Fee']);
+        const travelFee = parseField(item['Travel Fee']);
+        const discount = parseField(item['Discount']);
+
+        quarters[quarterKey] += serviceFee + travelFee - discount;
+      }
+    });
+
+    return quarters;
+  };
+
   const quarterlyExpenses = (year) => {
     const quarters = {
       Q1: 0,
@@ -652,6 +692,7 @@ export const GlobalProvider = ({ children }) => {
       totalExpenses,
       totalBalance,
       quarterlyRevenue,
+      quarterlyExpectedRevenue,
       quarterlyExpenses,
       quarterlyDeductions,
       transactionHistory,
