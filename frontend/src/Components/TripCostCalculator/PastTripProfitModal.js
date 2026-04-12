@@ -68,11 +68,19 @@ function PastTripProfitModal({ onClose }) {
         const totalExpenses = filteredExpenses.reduce((sum, e) => sum + parseAmount(e.Amount), 0)
         const profit = totalRevenue - totalExpenses
 
+        const MASSAGE_TYPES = new Set(['Introductory Massage', '1 Hour Massage'])
+        const massageCount = filteredRevenue.reduce((sum, r) => {
+            if (MASSAGE_TYPES.has(r.Service)) {
+                return sum + (parseFloat(r.Quantity) || 0)
+            }
+            return sum
+        }, 0)
+
         setResults({
             monthName: MONTH_NAMES[mn - 1],
             year: yr,
             location: selectedLocation,
-            revenueCount: filteredRevenue.length,
+            massageCount,
             expenseCount: filteredExpenses.length,
             totalRevenue,
             totalExpenses,
@@ -147,19 +155,19 @@ function PastTripProfitModal({ onClose }) {
                                 <thead>
                                     <tr>
                                         <th>Category</th>
-                                        <th># Records</th>
+                                        <th># Massages</th>
                                         <th>Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>Actual Revenue</td>
-                                        <td>{results.revenueCount}</td>
+                                        <td>{results.massageCount}</td>
                                         <td className="amount positive">{fmt(results.totalRevenue)}</td>
                                     </tr>
                                     <tr>
                                         <td>Expenses</td>
-                                        <td>{results.expenseCount}</td>
+                                        <td></td>
                                         <td className="amount negative">{fmt(results.totalExpenses)}</td>
                                     </tr>
                                     <tr className="profit-row">
@@ -171,7 +179,7 @@ function PastTripProfitModal({ onClose }) {
                                     </tr>
                                 </tbody>
                             </table>
-                            {(results.revenueCount === 0 && results.expenseCount === 0) && (
+                            {(results.totalRevenue === 0 && results.expenseCount === 0) && (
                                 <p className="no-data-note">No revenue or expense records found for this selection.</p>
                             )}
                         </div>
