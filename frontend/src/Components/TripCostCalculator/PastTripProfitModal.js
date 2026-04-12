@@ -182,6 +182,7 @@ function PastTripProfitModal({ onClose }) {
                             {(results.totalRevenue === 0 && results.expenseCount === 0) && (
                                 <p className="no-data-note">No revenue or expense records found for this selection.</p>
                             )}
+                            <p className="footnote">* Profit calculations do not factor in tax impacts.</p>
                         </div>
                     )}
                 </div>
@@ -364,6 +365,14 @@ const Modal = styled.div`
         opacity: 0.6;
         font-style: italic;
         text-align: center;
+    }
+
+    .footnote {
+        margin-top: 0.75rem;
+        font-size: 0.8rem;
+        color: var(--text-color);
+        opacity: 0.5;
+        font-style: italic;
     }
 `
 
