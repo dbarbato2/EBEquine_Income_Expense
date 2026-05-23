@@ -285,8 +285,9 @@ export const GlobalProvider = ({ children }) => {
     };
 
     revenue.forEach((item) => {
-      // Professional Courtesy items are intentionally $0 — exclude from expected revenue
+      // Professional Courtesy and Gift Certificate items are intentionally $0 — exclude from expected revenue
       if (item['Payment Type'] === 'Professional Courtesy') return;
+      if (item['Payment Type'] === 'Gift Certificate') return;
       const dateValue = item.date || item.Date || item.createdAt;
       if (dateValue) {
         const date = new Date(dateValue);
