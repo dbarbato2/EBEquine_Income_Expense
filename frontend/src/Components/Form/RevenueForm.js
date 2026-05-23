@@ -239,6 +239,7 @@ function RevenueForm() {
                     <option value="Cash and Venmo">Cash and Venmo</option>
                     <option value="Check">Check</option>
                     <option value="Gift Certificate">Gift Certificate</option>
+                    <option value="Professional Courtesy">Professional Courtesy</option>
                 </select>
             </div>
             <div className="input-control">

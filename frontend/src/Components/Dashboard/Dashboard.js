@@ -65,7 +65,9 @@ function Dashboard() {
     }
 
     // Filter revenue items where Actual Fees is null, empty, or equals 0 (unpaid invoices)
+    // Exclude 'Professional Courtesy' items — those are intentionally $0 and not owed
     const unpaidInvoices = revenue.filter(item => {
+        if (item['Payment Type'] === 'Professional Courtesy') return false
         const actualFees = item['Actual Fees']
         // Include items with null, undefined, or empty string
         if (!actualFees) return true

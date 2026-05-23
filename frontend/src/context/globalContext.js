@@ -285,6 +285,8 @@ export const GlobalProvider = ({ children }) => {
     };
 
     revenue.forEach((item) => {
+      // Professional Courtesy items are intentionally $0 — exclude from expected revenue
+      if (item['Payment Type'] === 'Professional Courtesy') return;
       const dateValue = item.date || item.Date || item.createdAt;
       if (dateValue) {
         const date = new Date(dateValue);

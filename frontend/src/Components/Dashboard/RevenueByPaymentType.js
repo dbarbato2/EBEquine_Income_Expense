@@ -39,7 +39,8 @@ function RevenueByPaymentType() {
             'venmo': 'Venmo',
             'cash': 'Cash',
             'check': 'Check',
-            'gift certificate': 'Gift Certificate'
+            'gift certificate': 'Gift Certificate',
+            'professional courtesy': 'Professional Courtesy'
         }
         
         const lowerPaymentType = paymentType.toLowerCase()

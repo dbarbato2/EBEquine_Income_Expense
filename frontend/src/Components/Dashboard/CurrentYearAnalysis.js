@@ -147,8 +147,10 @@ function CurrentYearAnalysis() {
             })
             
             // Calculate outstanding balances (unpaid invoices)
+            // Professional Courtesy items are intentionally $0 — exclude from outstanding balances
             let outstandingBalances = 0
             monthRevenue.forEach(item => {
+                if (item['Payment Type'] === 'Professional Courtesy') return
                 const actualFees = item['Actual Fees']
                 // Check if Actual Fees is 0, null, or empty
                 const parsedFees = parseFloat((actualFees || '0').toString().replace('$', '').replace(/,/g, '').trim()) || 0
