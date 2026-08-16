@@ -205,7 +205,10 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
-    a.download = `Invoice_${fields.invoiceNumber || 'draft'}_${(fields.clientName || 'client').replace(/\s+/g, '_')}.html`;
+    const horsePart = (fields.horseName || '').replace(/\s+/g, '_');
+    const clientPart = (fields.clientName || 'client').replace(/\s+/g, '_');
+    const namePart = horsePart ? `${horsePart}_${clientPart}` : clientPart;
+    a.download = `Invoice_${fields.invoiceNumber || 'draft'}_${namePart}.html`;
     a.click();
     URL.revokeObjectURL(url);
   };

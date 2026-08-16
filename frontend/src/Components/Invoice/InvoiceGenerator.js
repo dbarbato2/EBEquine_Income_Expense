@@ -346,8 +346,10 @@ export const downloadInvoice = async (revenueData, clientData = null) => {
   try {
     const doc = await generateInvoicePDF(revenueData, clientData);
     const invoiceNumber = revenueData['Invoice Number'] || 'invoice';
-    const clientName = revenueData.Client ? revenueData.Client.replace(/\s+/g, '_') : 'client';
-    doc.save(`Invoice_${invoiceNumber}_${clientName}.pdf`);
+    const horseName = revenueData.Client ? revenueData.Client.replace(/\s+/g, '_') : '';
+    const ownerName = clientData?.Name ? clientData.Name.replace(/\s+/g, '_') : 'client';
+    const namePart = horseName ? `${horseName}_${ownerName}` : ownerName;
+    doc.save(`Invoice_${invoiceNumber}_${namePart}.pdf`);
   } catch (error) {
     console.error('Error downloading invoice:', error);
     alert('Error generating invoice for download');
