@@ -398,11 +398,16 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
 
 /* ─── Full HTML document (shared by print and save) ────────────────────────── */
 function buildFullHTML(fields, subtotal, total, discount, qty, logoDataUrl, extraRows = [], venmoDataUrl = '') {
+  const _horsePart = (fields.horseName || '').replace(/\s+/g, '_');
+  const _clientPart = (fields.clientName || 'client').replace(/\s+/g, '_');
+  const _namePart = _horsePart ? `${_horsePart}_${_clientPart}` : _clientPart;
+  const _datePart = fields.date ? fields.date.replace(/[^0-9A-Za-z]/g, '_') : '';
+  const _docTitle = `Invoice_${fields.invoiceNumber || 'draft'}_${_namePart}${_datePart ? '_' + _datePart : ''}`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Invoice #${fields.invoiceNumber} - ${fields.clientName}</title>
+  <title>${_docTitle}</title>
   <style>
     @page{margin:0}
     *{box-sizing:border-box}
