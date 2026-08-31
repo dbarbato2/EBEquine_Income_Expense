@@ -208,7 +208,8 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
     const horsePart = (fields.horseName || '').replace(/\s+/g, '_');
     const clientPart = (fields.clientName || 'client').replace(/\s+/g, '_');
     const namePart = horsePart ? `${horsePart}_${clientPart}` : clientPart;
-    a.download = `Invoice_${fields.invoiceNumber || 'draft'}_${namePart}.html`;
+    const datePart = fields.date ? fields.date.replace(/[^0-9A-Za-z]/g, '_') : '';
+    a.download = `Invoice_${fields.invoiceNumber || 'draft'}_${namePart}${datePart ? '_' + datePart : ''}.html`;
     a.click();
     URL.revokeObjectURL(url);
   };

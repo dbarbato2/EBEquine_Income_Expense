@@ -349,7 +349,9 @@ export const downloadInvoice = async (revenueData, clientData = null) => {
     const horseName = revenueData.Client ? revenueData.Client.replace(/\s+/g, '_') : '';
     const ownerName = clientData?.Name ? clientData.Name.replace(/\s+/g, '_') : 'client';
     const namePart = horseName ? `${horseName}_${ownerName}` : ownerName;
-    doc.save(`Invoice_${invoiceNumber}_${namePart}.pdf`);
+    const rawDate = revenueData.Date || revenueData.date || '';
+    const datePart = rawDate ? new Date(rawDate).toISOString().slice(0, 10) : '';
+    doc.save(`Invoice_${invoiceNumber}_${namePart}${datePart ? '_' + datePart : ''}.pdf`);
   } catch (error) {
     console.error('Error downloading invoice:', error);
     alert('Error generating invoice for download');
