@@ -189,6 +189,12 @@ const InvoiceModal = ({ isOpen, onClose, revenueData, clientData }) => {
     if (!printWindow) return;
     printWindow.document.write(html);
     printWindow.document.close();
+    // Explicitly set the title so browsers use it as the default "Save as PDF" filename
+    const horsePart = (fields.horseName || '').replace(/\s+/g, '_');
+    const clientPart = (fields.clientName || 'client').replace(/\s+/g, '_');
+    const namePart = horsePart ? `${horsePart}_${clientPart}` : clientPart;
+    const datePart = fields.date ? fields.date.replace(/[^0-9A-Za-z]/g, '_') : '';
+    printWindow.document.title = `Invoice_${fields.invoiceNumber || 'draft'}_${namePart}${datePart ? '_' + datePart : ''}`;
     printWindow.focus();
     setTimeout(() => {
       printWindow.print();
