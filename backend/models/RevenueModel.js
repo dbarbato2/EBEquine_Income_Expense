@@ -37,7 +37,7 @@ const RevenueSchema = new mongoose.Schema({
     },
     'Service Location': {
         type: String,
-        enum: ['MA', 'NH', 'NJ', 'FL'],
+        enum: ['MA', 'NH', 'NJ', 'FL', 'PA'],
         required: false
     },
     'Service Fee': {

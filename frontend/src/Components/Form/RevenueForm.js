@@ -187,6 +187,7 @@ function RevenueForm() {
                     <option value="NH">NH</option>
                     <option value="NJ">NJ</option>
                     <option value="FL">FL</option>
+                    <option value="PA">PA</option>
                 </select>
             </div>
             <div className="input-control">
